@@ -1,7 +1,7 @@
 [project]
-name = "mms-backend"
+name = "backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "湖南大学岳麓幻境社社员管理系统 HMO Member Management System 后端."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
