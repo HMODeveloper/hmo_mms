@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+  --breakpoint-xs: 420px;
+}
+
+@theme static {
+  --font-sans: "Public Sans", sans-serif;
+}
