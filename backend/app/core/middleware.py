@@ -1,9 +1,9 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 from inspect import cleandoc
 from typing import Callable
 
 from fastapi import HTTPException, Request, Depends
-from fastapi.responses import JSONResponse, RedirectResponse, Response
+from fastapi.responses import JSONResponse, Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -16,7 +16,6 @@ from app.model import User
 EXCLUDE_API_PATHS = ["/login"]
 
 
-# TODO: 修改 RedirectResponse 为 JSONResponse
 class AuthMiddleware(BaseHTTPMiddleware):
     """用户认证中间件"""
 
@@ -44,7 +43,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         # 验证 Token
         if not user_id or not token:
             logger.info("认证失败: 缺少 user_id 或 token")
-            return RedirectResponse(url="/login")
+            return JSONResponse(status_code=401, content={"detail": "认证失败: 缺少 user_id 或 token"})
 
         async for db in get_db():
             try:
@@ -60,15 +59,15 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
                 if not user:
                     logger.info("未找到该用户")
-                    return RedirectResponse(url="/login")
+                    return JSONResponse(status_code=401, content={"detail": "未找到该用户"})
 
                 if not user.update_at:
                     logger.info("认证失败: 登录已过期")
-                    return RedirectResponse(url="/login")
+                    return JSONResponse(status_code=401, content={"detail": "认证失败: 登录已过期"})
 
                 if user.update_at + timedelta(seconds=CONFIG.TOME_OUT) < datetime.now():
                     logger.info("认证失败: 登录已过期")
-                    return RedirectResponse(url="/login")
+                    return JSONResponse(status_code=401, content={"detail": "认证失败: 登录已过期"})
 
                 user.update_at = datetime.now()
                 await db.commit()
@@ -90,6 +89,4 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 await db.close()
 
         logger.error("数据库连接失败")
-        return RedirectResponse(
-            url=request.url_for("exception", status_code=500, message="数据库连接失败")
-        )
+        return JSONResponse(status_code=500, content={"detail": "数据库连接失败"})
