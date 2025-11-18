@@ -13,7 +13,7 @@ from app.core.config import CONFIG
 from app.core.logger import logger
 from app.model import User
 
-EXCLUDE_API_PATHS = ["/login"]
+EXCLUDE_PATHS = ["/", "/login"]
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
@@ -33,7 +33,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         # 放行不需要认证的 API 路径
-        if request.url.path in EXCLUDE_API_PATHS:
+        if request.url.path in EXCLUDE_PATHS:
             return await call_next(request)
 
         # 获取 Token 和 user_id

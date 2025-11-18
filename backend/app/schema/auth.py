@@ -10,4 +10,3 @@ class LoginResponse(BaseModel):
     user_id: int
     nickname: str
     token: str
-

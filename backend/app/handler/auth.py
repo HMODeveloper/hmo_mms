@@ -2,9 +2,8 @@ import secrets
 from datetime import datetime
 
 from fastapi import Depends, HTTPException
-from sqlalchemy import select, null
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Mapped
 
 from app.core.database import get_db
 from app.utils import get_current_user
@@ -38,7 +37,7 @@ async def login_handler(
         return LoginResponse(
             user_id=user.id,
             nickname=user.nickname,
-            token=user.token,
+            token=str(user.token),
         )
     except Exception as e:
         raise e
@@ -56,7 +55,3 @@ async def logout_handler(
         return {"message": "注销成功"}
     except Exception as e:
         raise e
-
-
-async def hw_handler():
-    return {"message": "Hello World"}
