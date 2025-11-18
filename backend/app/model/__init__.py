@@ -137,6 +137,7 @@ class User(Base):
     qq_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
     nickname: Mapped[str] = mapped_column(String(50), nullable=False)
     mc_name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    # TODO: 将 mc_name 改为可空, 迁移数据库
 
     # 敏感信息
     real_name: Mapped[str] = mapped_column(String(20), nullable=False)

@@ -13,6 +13,7 @@ class AppConfig(BaseSettings):
         DEBUG (bool): 是否启用调试模式
         SECRET_KEY (str): 用于加密的密钥
         NO_LOGIN (bool): 免登录模式
+        TIME_OUT (int): 请求超时时间，单位秒
     """
 
     PORT: int = 8080
@@ -21,6 +22,7 @@ class AppConfig(BaseSettings):
     DEBUG: bool = False
     SECRET_KEY: str = ""
     NO_LOGIN: bool = False
+    TOME_OUT: int = 60 * 60
 
     class Config:
         env_file = ".env"

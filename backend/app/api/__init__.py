@@ -1,12 +1,6 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter
 
-from app.core.database import get_db
-from app.model import UserLevel, College, Department, User
+from .login import router as login_router
+
 api_router = APIRouter()
-
-@api_router.get("/test")
-async def test(
-    db: AsyncSession = Depends(get_db),
-):
-    ...
+api_router.include_router(login_router)

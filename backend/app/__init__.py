@@ -6,6 +6,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.api import api_router
 from app.core.database import async_session, init_db
 from app.core.logger import logger
+from app.core.middleware import AuthMiddleware
 from app.core.config import CONFIG
 
 
@@ -39,9 +40,11 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json",
     )
 
+    app.add_middleware(AuthMiddleware)
+
     app.add_middleware(SessionMiddleware, secret_key=CONFIG.SECRET_KEY)
 
-    app.include_router(api_router, prefix="/api")
+    app.include_router(api_router)
 
     @app.get("/")
     async def root():
