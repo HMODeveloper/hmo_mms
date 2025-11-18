@@ -6,7 +6,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.api import router
 from app.core.database import async_session, init_db
 from app.core.logger import logger
-from app.core.middleware import AuthMiddleware
+from app.utils import AuthMiddleware
 from app.core.config import CONFIG
 
 

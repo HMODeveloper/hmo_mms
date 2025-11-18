@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy import ForeignKey, Integer, String, DateTime, Table, Column
@@ -136,7 +136,7 @@ class User(Base):
     # 基本信息
     qq_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
     nickname: Mapped[str] = mapped_column(String(50), nullable=False)
-    mc_name: Mapped[str] = mapped_column(String(50), unique=True, nullable=True)
+    mc_name: Mapped[Optional[str]] = mapped_column(String(50), unique=True, nullable=True)
 
     # 敏感信息
     real_name: Mapped[str] = mapped_column(String(20), nullable=False)
@@ -157,8 +157,8 @@ class User(Base):
 
     # 其他信息
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    update_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
-    token: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=True)
+    update_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    token: Mapped[Optional[str]] = mapped_column(String(255), unique=True, index=True, nullable=True)
 
     @property
     def password(self):

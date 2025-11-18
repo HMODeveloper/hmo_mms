@@ -2,13 +2,14 @@ import secrets
 from datetime import datetime
 
 from fastapi import Depends, HTTPException
-from pyexpat.errors import messages
-from sqlalchemy import select
+from sqlalchemy import select, null
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Mapped
 
 from app.core.database import get_db
+from app.utils import get_current_user
 from app.model import User
-from app.schema.login import LoginRequest, LoginResponse
+from app.schema.auth import LoginRequest, LoginResponse
 
 
 async def login_handler(
@@ -39,6 +40,20 @@ async def login_handler(
             nickname=user.nickname,
             token=user.token,
         )
+    except Exception as e:
+        raise e
+
+
+async def logout_handler(
+        user: User = Depends(get_current_user),
+        db: AsyncSession = Depends(get_db)
+):
+    try:
+        user.token = None
+        user.update_at = None
+
+        await db.commit()
+        return {"message": "注销成功"}
     except Exception as e:
         raise e
 
