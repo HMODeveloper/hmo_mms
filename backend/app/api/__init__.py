@@ -1,6 +1,8 @@
 from fastapi import APIRouter
 
-from .login import router as login_router
+from app.handler.auth import login_handler, hw_handler
 
-api_router = APIRouter()
-api_router.include_router(login_router)
+router = APIRouter()
+
+router.post("/login", name="login")(login_handler)
+router.get("/hw")(hw_handler)

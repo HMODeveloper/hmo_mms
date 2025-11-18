@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 
-from app.api import api_router
+from app.api import router
 from app.core.database import async_session, init_db
 from app.core.logger import logger
 from app.core.middleware import AuthMiddleware
@@ -44,7 +44,7 @@ def create_app() -> FastAPI:
 
     app.add_middleware(SessionMiddleware, secret_key=CONFIG.SECRET_KEY)
 
-    app.include_router(api_router)
+    app.include_router(router)
 
     @app.get("/")
     async def root():

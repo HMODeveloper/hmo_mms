@@ -1,22 +1,17 @@
 import secrets
-from datetime import datetime, timezone
+from datetime import datetime
 
-from fastapi import Depends, HTTPException, APIRouter
+from fastapi import Depends, HTTPException
 from pyexpat.errors import messages
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.responses import RedirectResponse
 
 from app.core.database import get_db
 from app.model import User
 from app.schema.login import LoginRequest, LoginResponse
 
 
-router = APIRouter(tags=["login"])
-
-
-@router.post("/login", name="login")
-async def login(
+async def login_handler(
         request: LoginRequest,
         db: AsyncSession = Depends(get_db),
 ):
@@ -48,6 +43,5 @@ async def login(
         raise e
 
 
-@router.get("/hw")
-async def hw():
-    return {"message": "hello world"}
+async def hw_handler():
+    return {"message": "Hello World"}
