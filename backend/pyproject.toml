@@ -6,7 +6,6 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "aiosqlite>=0.21.0",
-    "alembic>=1.16.5",
     "fastapi>=0.118.0",
     "fastapi-sessions>=0.3.2",
     "loguru>=0.7.3",
