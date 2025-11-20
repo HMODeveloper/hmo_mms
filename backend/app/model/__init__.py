@@ -77,6 +77,7 @@ class College(Enum):
     SCSS = "网络空间安全学院"
     LCA = "隆平农学院"
     SFT = "未来技术学院"
+    NOT_HNU = "外校学生"
     OTHERS = "其他"
 
 
@@ -112,12 +113,12 @@ class User(Base):
         nickname (str): 昵称.
         mc_name (str): Minecraft用户名.
         real_name (str): 真实姓名.
-        student_id (str): 学号.
+        student_id (str): 学号(外校学生不必填写).
         college_enum (College): 学院枚举.
-        college_name (str): 学院名称.
-        major (str): 专业.
-        grade (int): 年级.
-        class_index (int): 班级序号.
+        college_name (str): 学院名称("其他"填写具体学院名, 外校学生填写学校名称).
+        major (str): 专业(外校学生不必填写).
+        grade (int): 年级(外校学生不必填写).
+        class_index (int): 班级序号(外校学生不必填写).
         departments (List[Department]): 所属部门列表.
         level (UserLevel): 权限级别.
         password_hash (str): 密码哈希.
@@ -141,12 +142,12 @@ class User(Base):
 
     # 敏感信息
     real_name: Mapped[str] = mapped_column(String(20), nullable=False)
-    student_id: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
+    student_id: Mapped[Optional[str]] = mapped_column(String(20), unique=True, nullable=True)
     college_enum: Mapped[College] = mapped_column(SAEnum(College), nullable=False)
     college_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    major: Mapped[str] = mapped_column(String(20), nullable=False)
-    grade: Mapped[int] = mapped_column(Integer, nullable=False)
-    class_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    major: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    grade: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    class_index: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     # 任职信息
     departments: Mapped[List["Department"]] = relationship(
