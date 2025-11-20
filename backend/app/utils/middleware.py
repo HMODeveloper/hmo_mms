@@ -13,7 +13,9 @@ from app.core.config import CONFIG
 from app.core.logger import logger
 from app.model import User
 
-EXCLUDE_PATHS = ["/", "/login"]
+SIGNUP_PATHS = ["/signup", "/signup/info", "/signup/check_qq"]
+EXCLUDE_PATHS = ["/login", *SIGNUP_PATHS]
+EXCLUDE_API_PATHS = ["/api" + api for api in EXCLUDE_PATHS]
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
@@ -29,11 +31,16 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if CONFIG.NO_LOGIN:
             return await call_next(request)
 
+        # 放行文档相关路径
         if request.url.path in ["/docs", "/openapi.json", "/redoc"]:
             return await call_next(request)
 
+        # 放行非 API 路径
+        if not request.url.path.startswith("/api"):
+            return await call_next(request)
+
         # 放行不需要认证的 API 路径
-        if request.url.path in EXCLUDE_PATHS:
+        if request.url.path in EXCLUDE_API_PATHS:
             return await call_next(request)
 
         # 获取 Token 和 user_id
