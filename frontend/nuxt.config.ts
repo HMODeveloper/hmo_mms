@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["@nuxtjs/color-mode", "@nuxt/eslint", "@nuxt/eslint-config", "@nuxt/ui"],
+  modules: ["@nuxtjs/color-mode", "@nuxt/eslint", "@nuxt/eslint-config", "@nuxt/ui", "@pinia/nuxt"],
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
   ui: {
