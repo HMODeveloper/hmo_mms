@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as z from "zod"
-import type { AuthFormField } from "@nuxt/ui"
+import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui"
 
 definePageMeta({
   layout: false,
