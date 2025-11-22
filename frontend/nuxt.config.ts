@@ -22,6 +22,7 @@ export default defineNuxtConfig({
     routeRules: {
       "/nitro-api/**": {
         proxy: {
+          // TODO: 配置 nitro 代理携带 cookies
           to: `${process.env.API_URL || ""}/**`,
         },
       },

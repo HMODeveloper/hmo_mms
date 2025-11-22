@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui"
 
+import { logoutAPI } from "~/apis/auth"
+
 const route = useRoute()
 
 const items = computed<NavigationMenuItem[]>(() => [
   { label: "仪表盘", to: "/dashboard", active: route.path === "/dashboard" },
 ])
+
+const handleLogout = () => {
+  logoutAPI()
+}
 </script>
 
 <template>
@@ -17,19 +23,15 @@ const items = computed<NavigationMenuItem[]>(() => [
     <UNavigationMenu :items="items" />
 
     <template #right>
-      <UColorModeButton />
-
       <UTooltip
         text="Open on GitHub"
         :kbds="['meta', 'G']"
       >
         <UButton
-          color="neutral"
-          variant="ghost"
-          to="https://github.com/nuxt/ui"
-          target="_blank"
-          icon="i-simple-icons-github"
-          aria-label="GitHub"
+          color="primary"
+          label="退出登录"
+          icon="i-tabler-logout"
+          @click="handleLogout"
         />
       </UTooltip>
     </template>

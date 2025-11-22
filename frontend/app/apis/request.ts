@@ -1,4 +1,9 @@
-import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios"
+import axios, { type AxiosRequestConfig } from "axios"
+
+interface Response<T> {
+  status: number
+  data: T
+}
 
 const API_URL = "/nitro-api"
 
@@ -8,18 +13,23 @@ const myAxios = axios.create({
   withCredentials: true,
 })
 
-console.log(API_URL)
-
 const request = {
-  request<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  request<T>(config: AxiosRequestConfig): Promise<Response<T>> {
     console.log("Request URL:", config.url)
     return new Promise((resolve, reject) => {
       myAxios(config)
         .then((response) => {
-          resolve(response)
+          resolve({
+            status: response.status,
+            data: response.data as T,
+          })
         })
         .catch((error) => {
-          reject(error)
+          const response = error.response
+          reject({
+            status: response.status,
+            detail: response.data.detail || "请求失败",
+          })
         })
     })
   },

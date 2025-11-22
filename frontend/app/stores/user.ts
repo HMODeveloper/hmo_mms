@@ -2,8 +2,7 @@ import { ref } from "vue"
 import { defineStore } from "pinia"
 
 export interface UserInfo {
-  userID: number
-  token: string
+  nickname: string
 }
 
 export const useUserStore = defineStore("user", () => {

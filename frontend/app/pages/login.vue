@@ -2,12 +2,17 @@
 import * as z from "zod"
 import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui"
 
-import type { LoginRequest, LoginResponse } from "~/apis/auth"
+import type { LoginRequest } from "~/apis/auth"
 import { loginAPI } from "~/apis/auth"
+import { useUserStore } from "~/stores/user"
 
 definePageMeta({
   layout: false,
 })
+
+const passwordHint = ref<string>("")
+const attemptCount = ref<number>(0)
+const userStore = useUserStore()
 
 const fields = ref<AuthFormField[]>([
   {
@@ -34,14 +39,30 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 const handleSubmit = async (payload: FormSubmitEvent<Schema>) => {
-  console.log("Form submitted:", payload.data)
   const loginRequest: LoginRequest = {
     QQID: payload.data.QQID,
     password: payload.data.password,
   }
 
-  const response = await loginAPI(loginRequest)
-  console.log(response)
+  loginAPI(loginRequest)
+    .then((response) => {
+      userStore.setUserInfo({
+        nickname: response.data.nickname,
+      })
+      navigateTo("/dashboard")
+    })
+    .catch((error) => {
+      if (error.status === 404) {
+        passwordHint.value = "该 QQ 号不存在, 请先注册."
+      }
+
+      if (error.status === 403) {
+        attemptCount.value++
+        passwordHint.value = attemptCount.value < 5
+          ? "密码错误, 请重试"
+          : "忘记密码可联系管理员找回密码"
+      }
+    })
 }
 </script>
 
@@ -50,7 +71,6 @@ const handleSubmit = async (payload: FormSubmitEvent<Schema>) => {
     <UPageCard class="w-full max-w-md">
       <UAuthForm
         title="登录"
-        icon="i-lucide-user"
         :fields="fields"
         :schema="schema"
         :submit="{
@@ -68,6 +88,9 @@ const handleSubmit = async (payload: FormSubmitEvent<Schema>) => {
             注册
           </ULink>
           .
+        </template>
+        <template #password-hint>
+          <span class="text-error">{{ passwordHint }}</span>
         </template>
       </UAuthForm>
     </UPageCard>

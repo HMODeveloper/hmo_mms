@@ -1,5 +1,5 @@
 import secrets
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import Depends, HTTPException
 from sqlalchemy import select
@@ -31,7 +31,7 @@ async def login_handler(
 
 
     try:
-        user.update_at = datetime.now()
+        user.update_at = datetime.now(timezone.utc)
         user.token = secrets.token_hex(32)
         await db.commit()
 

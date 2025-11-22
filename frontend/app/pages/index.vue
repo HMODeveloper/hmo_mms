@@ -9,7 +9,7 @@ const items: ButtonProps[] = [
   {
     label: "登录",
     to: "/login",
-    trailingIcon: "mdi-login",
+    trailingIcon: "i-tabler-login",
     size: "xl",
   },
 ]

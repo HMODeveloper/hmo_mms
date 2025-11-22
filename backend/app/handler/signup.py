@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import Depends, HTTPException
 from sqlalchemy import select
@@ -80,7 +80,7 @@ async def signup_handler(
 
 
     user.password=request.password
-    user.create_at=datetime.now()
+    user.create_at=datetime.now(timezone.utc)
 
     try:
         db.add(user)

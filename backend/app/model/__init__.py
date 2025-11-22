@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import List, Optional
 
@@ -138,7 +138,9 @@ class User(Base):
     qq_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
     nickname: Mapped[str] = mapped_column(String(50), nullable=False)
     mc_name: Mapped[Optional[str]] = mapped_column(String(50), unique=True, nullable=True)
-    create_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(), nullable=False)
+    create_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.now(timezone.utc), nullable=False
+    )
 
     # 敏感信息
     real_name: Mapped[str] = mapped_column(String(20), nullable=False)

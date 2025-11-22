@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from inspect import cleandoc
 from typing import Callable
 
@@ -68,11 +68,11 @@ class AuthMiddleware(BaseHTTPMiddleware):
                     logger.info("认证失败: 登录已过期")
                     return JSONResponse(status_code=401, content={"detail": "认证失败: 登录已过期"})
 
-                if user.update_at + timedelta(seconds=CONFIG.TOME_OUT) < datetime.now():
+                if user.update_at + timedelta(seconds=CONFIG.TOME_OUT) < datetime.now(timezone.utc):
                     logger.info("认证失败: 登录已过期")
                     return JSONResponse(status_code=401, content={"detail": "认证失败: 登录已过期"})
 
-                user.update_at = datetime.now()
+                user.update_at = datetime.now(timezone.utc)
                 await db.commit()
 
                 return await call_next(request)
