@@ -43,23 +43,19 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if request.url.path in EXCLUDE_API_PATHS:
             return await call_next(request)
 
-        # 获取 Token 和 user_id
-        user_id = request.cookies.get("user_id")
+        # 获取 Token
         token = request.cookies.get("token")
 
         # 验证 Token
-        if not user_id or not token:
-            logger.info("认证失败: 缺少 user_id 或 token")
-            return JSONResponse(status_code=401, content={"detail": "认证失败: 缺少 user_id 或 token"})
+        if not token:
+            logger.info("认证失败: 缺少 token")
+            return JSONResponse(status_code=401, content={"detail": "认证失败: 缺少 token"})
 
         async for db in get_db():
             try:
                 user = (
                     (await db.execute(
-                        select(User).where(
-                            User.id == user_id,
-                            User.token == token,
-                        )
+                        select(User).where(User.token ==  token)
                     ))
                     .scalars().first()
                 )

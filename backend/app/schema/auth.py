@@ -7,6 +7,6 @@ class LoginRequest(BaseModel):
 
 
 class LoginResponse(BaseModel):
-    user_id: int = Field(..., serialization_alias='userID')
+    qq_id: int = Field(..., serialization_alias="QQID")
+    mc_name: str = Field(..., serialization_alias="MCName")
     nickname: str
-    token: str

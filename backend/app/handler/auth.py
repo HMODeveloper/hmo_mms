@@ -4,6 +4,7 @@ from datetime import datetime
 from fastapi import Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.responses import JSONResponse
 
 from app.core.database import get_db
 from app.utils import get_current_user
@@ -34,11 +35,21 @@ async def login_handler(
         user.token = secrets.token_hex(32)
         await db.commit()
 
-        return LoginResponse(
-            user_id=user.id,
-            nickname=user.nickname,
-            token=str(user.token),
+        response = JSONResponse(
+            content=LoginResponse(
+                qq_id=user.qq_id,
+                mc_name=user.mc_name,
+                nickname=user.nickname,
+            ).model_dump(),
         )
+
+        response.set_cookie(
+            "token",
+            value=str(user.token),
+            max_age=86400,
+        )
+
+        return response
     except Exception as e:
         raise e
 
