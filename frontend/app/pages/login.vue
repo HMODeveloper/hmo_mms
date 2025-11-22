@@ -2,6 +2,9 @@
 import * as z from "zod"
 import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui"
 
+import type { LoginRequest, LoginResponse } from "~/apis/auth"
+import { loginAPI } from "~/apis/auth"
+
 definePageMeta({
   layout: false,
 })
@@ -30,8 +33,15 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
-const handleSubmit = (payload: FormSubmitEvent<Schema>) => {
+const handleSubmit = async (payload: FormSubmitEvent<Schema>) => {
   console.log("Form submitted:", payload.data)
+  const loginRequest: LoginRequest = {
+    QQID: payload.data.QQID,
+    password: payload.data.password,
+  }
+
+  const response = await loginAPI(loginRequest)
+  console.log(response)
 }
 </script>
 

@@ -6,17 +6,25 @@ export default defineNuxtConfig({
     "@nuxt/eslint-config",
     "@nuxt/ui",
     "@pinia/nuxt",
-    "@nuxtjs/axios",
   ],
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
   ui: {
     fonts: false,
   },
-  compatibilityDate: "2025-07-15",
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE || "http://localhost:3000/api",
-    }
-  }
+      apiUrl: "http://localhost:8080/api",
+    },
+  },
+  compatibilityDate: "2025-07-15",
+  nitro: {
+    routeRules: {
+      "/nitro-api/**": {
+        proxy: {
+          to: `${process.env.API_URL || ""}/**`,
+        },
+      },
+    },
+  },
 })
