@@ -91,12 +91,20 @@ user_department_association = Table(
 
 
 class Department(Base):
-    """部门"""
+    """部门
+
+    Attributes:
+        id (int): 唯一标识符.
+        name (str): 部门名称.
+        code (str): 部门代码.
+        users (List[User]): 部门成员列表.
+    """
 
     __tablename__ = "departments"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    code: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     users: Mapped[List["User"]] = relationship(
         "User",
         secondary=user_department_association,
