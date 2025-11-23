@@ -2,8 +2,10 @@
 import type { NavigationMenuItem } from "@nuxt/ui"
 
 import { logoutAPI } from "~/apis/auth"
+import { useUserStore } from "~/stores/user"
 
 const route = useRoute()
+const userStore = useUserStore()
 
 const items = computed<NavigationMenuItem[]>(() => [
   { label: "仪表盘", to: "/dashboard", active: route.path === "/dashboard" },
@@ -11,6 +13,11 @@ const items = computed<NavigationMenuItem[]>(() => [
 
 const handleLogout = () => {
   logoutAPI()
+    .then((_response) => {
+      userStore.clearUserInfo()
+      console.log(userStore.userInfo)
+      navigateTo("/")
+    })
 }
 </script>
 

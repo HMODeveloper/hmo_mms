@@ -49,18 +49,24 @@ const handleSubmit = async (payload: FormSubmitEvent<Schema>) => {
       userStore.setUserInfo({
         nickname: response.data.nickname,
       })
+      console.log(userStore.userInfo)
       navigateTo("/dashboard")
     })
     .catch((error) => {
-      if (error.status === 404) {
-        passwordHint.value = "该 QQ 号不存在, 请先注册."
-      }
+      switch (error.code) {
+        case "USER_NOT_FOUND":
+          passwordHint.value = "该 QQ 号不存在, 请先注册."
+          break
 
-      if (error.status === 403) {
-        attemptCount.value++
-        passwordHint.value = attemptCount.value < 5
-          ? "密码错误, 请重试"
-          : "忘记密码可联系管理员找回密码"
+        case "INVALID_PASSWORD":
+          attemptCount.value++
+          passwordHint.value = attemptCount.value < 5
+            ? "密码错误, 请重试"
+            : "忘记密码可联系管理员找回密码"
+          break
+
+        default:
+          passwordHint.value = "登录失败, 请稍后重试"
       }
     })
 }

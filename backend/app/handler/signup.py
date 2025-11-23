@@ -4,6 +4,7 @@ from fastapi import Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.responses import JSONResponse
 
 from app.core.logger import logger
 from app.core.database import get_db
@@ -43,7 +44,10 @@ async def check_qq_handler(
     if user:
         return HTTPException(
             status_code=409,
-            detail="QQ号已被注册"
+            detail={
+                "message": "该 QQ 号已被注册",
+                "code": "QQID_EXISTS"
+            }
         )
 
     return {"qq_id": qq_id}
@@ -86,14 +90,17 @@ async def signup_handler(
         db.add(user)
         await db.commit()
 
-        return {"message": "注册成功"}
+        return JSONResponse(content="注册成功")
     except IntegrityError as e:
         await db.rollback()
 
         logger.error(e)
         return HTTPException(
             status_code=500,
-            detail="注册失败，填写信息有误."
+            detail={
+                "message": "注册失败，填写信息有误",
+                "code": "INTEGRITY_ERROR"
+            }
         )
     except Exception as e:
         await db.rollback()
@@ -101,5 +108,8 @@ async def signup_handler(
         logger.error(e)
         return HTTPException(
             status_code=500,
-            detail="注册失败，服务器错误."
+            detail={
+                "message": "服务器内部错误，请联系管理员",
+                "code": "SERVER_ERROR"
+            }
         )

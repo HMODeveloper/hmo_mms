@@ -15,7 +15,6 @@ const myAxios = axios.create({
 
 const request = {
   request<T>(config: AxiosRequestConfig): Promise<Response<T>> {
-    console.log("Request URL:", config.url)
     return new Promise((resolve, reject) => {
       myAxios(config)
         .then((response) => {
@@ -26,9 +25,11 @@ const request = {
         })
         .catch((error) => {
           const response = error.response
+          const data = response.data
           reject({
             status: response.status,
-            detail: response.data.detail || "请求失败",
+            code: data.detail.code,
+            message: data.detail.message || "请求失败",
           })
         })
     })

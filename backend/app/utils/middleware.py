@@ -3,7 +3,7 @@ from inspect import cleandoc
 from typing import Callable
 
 from fastapi import HTTPException, Request, Depends
-from fastapi.responses import JSONResponse, Response
+from starlette.responses import Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -49,7 +49,12 @@ class AuthMiddleware(BaseHTTPMiddleware):
         # 验证 Token
         if not token:
             logger.info("认证失败: 缺少 token")
-            return JSONResponse(status_code=401, content={"detail": "认证失败: 缺少 token"})
+            raise HTTPException(
+                status_code=401, detail={
+                    "message": "认证失败: 缺少 token",
+                    "code": "NO_TOKEN"
+                }
+            )
 
         async for db in get_db():
             try:
@@ -61,35 +66,47 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 )
 
                 if not user:
-                    logger.info("未找到该用户")
-                    return JSONResponse(status_code=401, content={"detail": "未找到该用户"})
+                    logger.info("认证失败: 用户不存在")
+                    raise HTTPException(status_code=401, detail={
+                        "message": "认证失败: 用户不存在",
+                        "code": "USER_NOT_FOUND"
+                    })
 
                 if not user.update_at:
                     logger.info("认证失败: 登录已过期")
-                    return JSONResponse(status_code=401, content={"detail": "认证失败: 登录已过期"})
+                    raise HTTPException(status_code=401, detail={
+                        "message": "认证失败: 登录已过期",
+                        "code": "EXPIRED"
+                    })
 
                 if user.update_at + timedelta(seconds=CONFIG.TOME_OUT) < datetime.now(timezone.utc):
                     logger.info("认证失败: 登录已过期")
-                    return JSONResponse(status_code=401, content={"detail": "认证失败: 登录已过期"})
+                    raise HTTPException(status_code=401, detail={
+                        "message": "认证失败: 登录已过期",
+                        "code": "EXPIRED"
+                    })
 
                 user.update_at = datetime.now(timezone.utc)
                 await db.commit()
 
                 return await call_next(request)
-            except HTTPException as e:
-                return JSONResponse(status_code=e.status_code, content={"detail": e.detail})
             except Exception as e:
-                return JSONResponse(
+                # 把内部错误也规范成对象形式，便于前端解析
+                raise HTTPException(
                     status_code=500,
-                    content={
-                        "detail": cleandoc(f"""
+                    detail={
+                        "message": cleandoc(f"""
                                 服务器内部错误: {e}
                                 请联系管理员。
-                            """)
-                    },
+                            """),
+                        "code": "SERVER_ERROR"
+                    }
                 )
             finally:
                 await db.close()
 
         logger.error("数据库连接失败")
-        return JSONResponse(status_code=500, content={"detail": "数据库连接失败"})
+        raise HTTPException(status_code=500, detail={
+            "message": "数据库连接失败",
+            "code": "DB_CONN_FAIL"
+        })

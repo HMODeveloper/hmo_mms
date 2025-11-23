@@ -24,10 +24,22 @@ async def login_handler(
     )
 
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "message": "用户不存在",
+                "code": "USER_NOT_FOUND"
+            }
+        )
 
     if not user.verify_password(request.password):
-        raise HTTPException(status_code=403, detail="密码错误")
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "message": "密码错误",
+                "code": "INVALID_PASSWORD"
+            }
+        )
 
 
     try:
@@ -63,6 +75,6 @@ async def logout_handler(
         user.update_at = None
 
         await db.commit()
-        return {"message": "注销成功"}
+        return JSONResponse(content="注销成功")
     except Exception as e:
         raise e
