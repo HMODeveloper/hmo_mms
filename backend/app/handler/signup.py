@@ -42,7 +42,7 @@ async def check_qq_handler(
     )
 
     if user:
-        return HTTPException(
+        raise HTTPException(
             status_code=409,
             detail={
                 "message": "该 QQ 号已被注册",
@@ -50,7 +50,9 @@ async def check_qq_handler(
             }
         )
 
-    return {"qq_id": qq_id}
+    return JSONResponse(
+        content={"QQID": qq_id}
+    )
 
 
 async def signup_handler(
@@ -95,7 +97,7 @@ async def signup_handler(
         await db.rollback()
 
         logger.error(e)
-        return HTTPException(
+        raise HTTPException(
             status_code=500,
             detail={
                 "message": "注册失败，填写信息有误",
@@ -106,7 +108,7 @@ async def signup_handler(
         await db.rollback()
 
         logger.error(e)
-        return HTTPException(
+        raise HTTPException(
             status_code=500,
             detail={
                 "message": "服务器内部错误，请联系管理员",

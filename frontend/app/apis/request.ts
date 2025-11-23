@@ -5,6 +5,12 @@ interface Response<T> {
   data: T
 }
 
+interface ErrorResponse {
+  status: number
+  code: string
+  message: string
+}
+
 const API_URL = "/nitro-api"
 
 const myAxios = axios.create({
@@ -20,17 +26,26 @@ const request = {
         .then((response) => {
           resolve({
             status: response.status,
-            data: response.data as T,
+            data: response.data as T || "" as T,
           })
         })
         .catch((error) => {
-          const response = error.response
-          const data = response.data
-          reject({
-            status: response.status,
-            code: data.detail.code,
-            message: data.detail.message || "请求失败",
-          })
+          if (error.response) {
+            const response = error.response
+            const data = response.data || {}
+            reject({
+              status: response.status,
+              code: data.detail?.code || "UNKNOWN_ERROR",
+              message: data.detail?.message || "请求失败",
+            } as ErrorResponse)
+          }
+          else {
+            reject({
+              status: 500,
+              code: "NETWORK_ERROR",
+              message: "网络错误或服务器无响应",
+            } as ErrorResponse)
+          }
         })
     })
   },
