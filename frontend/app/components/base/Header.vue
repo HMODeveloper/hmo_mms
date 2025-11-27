@@ -9,6 +9,7 @@ const userStore = useUserStore()
 
 const items = computed<NavigationMenuItem[]>(() => [
   { label: "仪表盘", to: "/dashboard", active: route.path === "/dashboard" },
+  { label: "个人中心", to: "/profile", active: route.path === "/profile" },
 ])
 
 const handleLogout = () => {
@@ -30,17 +31,12 @@ const handleLogout = () => {
     <UNavigationMenu :items="items" />
 
     <template #right>
-      <UTooltip
-        text="Open on GitHub"
-        :kbds="['meta', 'G']"
-      >
-        <UButton
-          color="primary"
-          label="退出登录"
-          icon="i-tabler-logout"
-          @click="handleLogout"
-        />
-      </UTooltip>
+      <UButton
+        color="primary"
+        label="退出登录"
+        icon="i-tabler-logout"
+        @click="handleLogout"
+      />
     </template>
   </UHeader>
 </template>

@@ -39,6 +39,5 @@ export const checkQQAPI = (data: CheckQQRequest) => {
 }
 
 export const signUpAPI = (data: SignUpRequest) => {
-  console.log(data)
   return request.post<SignUpRequest>("/signup", data)
 }
