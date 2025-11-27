@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, Field
 
@@ -20,7 +20,7 @@ class GetProfileResponse(BaseModel):
     major: Optional[str]
     grade: Optional[int]
     class_index: Optional[int] = Field(..., serialization_alias="classIndex")
-    departments: list[DepartmentInfo]
+    departments: List[DepartmentInfo]
     level: str
 
 

@@ -106,7 +106,10 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 await db.close()
 
         logger.error("数据库连接失败")
-        raise HTTPException(status_code=500, detail={
-            "message": "数据库连接失败",
-            "code": "DB_CONN_FAIL"
-        })
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "message": "数据库连接失败",
+                "code": "DB_CONN_FAIL"
+            }
+        )

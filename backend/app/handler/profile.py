@@ -6,7 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 from starlette.responses import JSONResponse
 
-from app.core.database import get_db, logger
+from app.core.database import get_db
+from app.core.logger import logger
 from app.utils import get_current_user
 from app.model import User, College
 from app.schema.profile import (
