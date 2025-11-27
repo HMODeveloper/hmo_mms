@@ -22,7 +22,7 @@ class AppConfig(BaseSettings):
     DEBUG: bool = False
     SECRET_KEY: str = ""
     NO_LOGIN: bool = False
-    TOME_OUT: int = 60 * 60
+    TIME_OUT: int = 60 * 60
 
     class Config:
         env_file = ".env"

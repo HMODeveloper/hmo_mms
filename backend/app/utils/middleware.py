@@ -79,7 +79,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                         "code": "EXPIRED"
                     })
 
-                if user.update_at + timedelta(seconds=CONFIG.TOME_OUT) < datetime.now(timezone.utc):
+                if user.update_at + timedelta(seconds=CONFIG.TIME_OUT) < datetime.now(timezone.utc):
                     logger.info("认证失败: 登录已过期")
                     raise HTTPException(status_code=401, detail={
                         "message": "认证失败: 登录已过期",
