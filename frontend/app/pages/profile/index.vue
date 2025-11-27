@@ -31,7 +31,7 @@ const majorClassFormat = () => {
     <p class="text-4xl font-bold">
       你好, {{ profile.nickname }} !
     </p>
-    <ProfileSection
+    <BaseSection
       title="基本信息"
       icon="i-tabler-info-circle"
     >
@@ -64,8 +64,8 @@ const majorClassFormat = () => {
           />
         </UPageCard>
       </div>
-    </ProfileSection>
-    <ProfileSection
+    </BaseSection>
+    <BaseSection
       title="入库信息"
       icon="i-tabler-database"
     >
@@ -98,8 +98,8 @@ const majorClassFormat = () => {
           />
         </UPageCard>
       </div>
-    </ProfileSection>
-    <ProfileSection
+    </BaseSection>
+    <BaseSection
       title="个人信息"
       icon="i-tabler-eye"
     >
@@ -141,7 +141,7 @@ const majorClassFormat = () => {
           />
         </UPageCard>
       </div>
-    </ProfileSection>
+    </BaseSection>
 
     <div class="w-full mt-4 flex items-center justify-end gap-4">
       <UButton
