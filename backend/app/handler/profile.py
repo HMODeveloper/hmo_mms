@@ -55,9 +55,7 @@ async def get_info_handler(
         level=user.level.value,
     )
 
-    return JSONResponse(
-        content=response,
-    )
+    return response
 
 
 async def update_profile_handler(

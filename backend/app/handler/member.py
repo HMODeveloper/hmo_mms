@@ -57,9 +57,7 @@ async def get_search_info_handler(
         departments=department_name,
         levels=levels,
     )
-    return JSONResponse(
-        content=response,
-    )
+    return response
 
 
 async def search_handler(
@@ -170,9 +168,7 @@ async def search_handler(
             members=members,
             total=total,
         )
-        return JSONResponse(
-            content=response,
-        )
+        return response
     except Exception as e:
         logger.error(e)
         raise HTTPException(
