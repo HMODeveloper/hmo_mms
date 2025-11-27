@@ -3,11 +3,11 @@ from datetime import timezone
 from fastapi import Depends, HTTPException
 from sqlalchemy import select, or_, and_
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
-from starlette.responses import JSONResponse
+from sqlalchemy.orm import subqueryload
 
 from app.core.database import get_db
 from app.core.logger import logger
+from app.schema.signup import CollegeInfo
 from app.utils import get_current_user, has_permission
 from app.model import User, UserLevel, College, Department
 from app.schema.member import (
@@ -23,12 +23,15 @@ from app.schema.profile import DepartmentInfo
 async def get_search_info_handler(
         db: AsyncSession = Depends(get_db),
 ):
-    college_name = []
+    colleges_info = []
     for college in College:
         if college != College.OTHERS:
-            college_name.append(college.value)
+            colleges_info.append(CollegeInfo(
+                name=str(college.value),
+                code=college.name,
+            ))
 
-    department_name = []
+    departments_info = []
     departments = (
         (await db.execute(
             select(Department)
@@ -36,16 +39,16 @@ async def get_search_info_handler(
         .scalars().all()
     )
     for department in departments:
-        department_name.append(
+        departments_info.append(
             DepartmentInfo(
                 name=department.name,
                 code=department.code
             )
         )
 
-    levels = []
+    levels_info = []
     for level in UserLevel:
-        levels.append(
+        levels_info.append(
             UserLevelInfo(
                 level=level.value,
                 code=level.name
@@ -53,9 +56,9 @@ async def get_search_info_handler(
         )
 
     response = SearchInfoResponse(
-        college_names=college_name,
-        departments=department_name,
-        levels=levels,
+        colleges=colleges_info,
+        departments=departments_info,
+        levels=levels_info,
     )
     return response
 
@@ -94,10 +97,10 @@ async def search_handler(
             filters.append(User.create_at.between(request.create_at_start, request.create_at_start))
 
         # 学院
-        if request.college_name is not None:
+        if request.colleges is not None:
             colleges = []
             for college in College:
-                if college.value == request.college_name:
+                if college.name == request.colleges:
                     colleges.append(college)
             filters.append(User.college_enum.in_(colleges))
 
@@ -130,7 +133,7 @@ async def search_handler(
                 .offset(offset)
                 .limit(request.page_size)
             ).options(
-                joinedload(User.departments),
+                subqueryload(User.departments),
             )
         )
         users = (

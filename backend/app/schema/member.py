@@ -4,6 +4,7 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 
 from .profile import DepartmentInfo
+from .signup import CollegeInfo
 
 
 class UserLevelInfo(BaseModel):
@@ -34,7 +35,7 @@ class MemberListResponse(BaseModel):
 class SearchInfoResponse(BaseModel):
     """搜索信息响应"""
 
-    college_names: List[str] = Field(..., serialization_alias="collegeNames")
+    colleges: List[CollegeInfo] = Field(...)
     departments: List[DepartmentInfo] = Field(..., serialization_alias="departments")
     levels: List[UserLevelInfo]
 
@@ -43,14 +44,14 @@ class SearchRequest(BaseModel):
     """搜索请求
 
     Notes:
-        college_name, levels 传入对应模型的 `code`.
+        colleges, levels 传入对应模型的 `code`.
     """
     global_query: Optional[str] = Field(None, serialization_alias="globalQuery")
     create_at_start: Optional[datetime] = Field(None, serialization_alias="createAtStart")
     create_at_end: Optional[datetime] = Field(None, serialization_alias="createAtEnd")
-    college_name: Optional[str] = Field(None, serialization_alias="collegeName")
+    colleges: Optional[str] = Field(None)
     departments: Optional[List[str]] = Field(None)
     levels: Optional[List[str]] = Field(None)
-    page_size: int = Field(5, serialization_alias="pageSize")
-    page_index: int = Field(1, serialization_alias="pageIndex")
+    page_size: Optional[int] = Field(5, serialization_alias="pageSize")
+    page_index: Optional[int] = Field(1, serialization_alias="pageIndex")
 

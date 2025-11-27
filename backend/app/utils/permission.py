@@ -3,7 +3,7 @@ from typing import List
 from app.model import User, UserLevel
 
 
-async def has_permission(
+def has_permission(
         user: User,
         permission: UserLevel | List[UserLevel]
 ):
