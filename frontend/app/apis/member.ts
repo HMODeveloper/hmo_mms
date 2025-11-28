@@ -50,9 +50,9 @@ export interface SearchRequest {
   globalQuery?: string
   createAtStart?: string
   createAtEnd?: string
-  colleges?: string
-  departments?: string
-  levels?: string
+  colleges?: string[]
+  departments?: string[]
+  levels?: string[]
   pageSize?: number
   pageIndex?: number
 }

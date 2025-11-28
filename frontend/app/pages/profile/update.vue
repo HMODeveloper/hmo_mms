@@ -29,35 +29,28 @@ const majorClassFormat = () => {
 <template>
   <UContainer class="mt-4 py-2">
     <p class="text-4xl font-bold">
-      修改个人信息:
-      <!-- TODO -->
+      修改个人信息
     </p>
-    <ProfileSection
+    <BaseSection
       title="基本信息"
       icon="i-tabler-info-circle"
     >
       <div class="w-full grid grid-cols-3">
-        <UPageCard
-          variant="ghost"
-        >
+        <UPageCard variant="ghost">
           <UPageFeature
             title="昵称"
             icon="i-tabler-user"
             :description="profile.nickname"
           />
         </UPageCard>
-        <UPageCard
-          variant="ghost"
-        >
+        <UPageCard variant="ghost">
           <UPageFeature
             title="QQ 号"
             icon="i-tabler-brand-qq"
             :description="`${profile.QQID}`"
           />
         </UPageCard>
-        <UPageCard
-          variant="ghost"
-        >
+        <UPageCard variant="ghost">
           <UPageFeature
             title="游戏 ID"
             icon="i-tabler-brand-minecraft"
@@ -65,33 +58,27 @@ const majorClassFormat = () => {
           />
         </UPageCard>
       </div>
-    </ProfileSection>
-    <ProfileSection
+    </BaseSection>
+    <BaseSection
       title="入库信息"
       icon="i-tabler-database"
     >
       <div class="w-full grid grid-cols-3">
-        <UPageCard
-          variant="ghost"
-        >
+        <UPageCard variant="ghost">
           <UPageFeature
             title="登记时间"
             icon="i-tabler-calendar-user"
             :description="createAtFormat()"
           />
         </UPageCard>
-        <UPageCard
-          variant="ghost"
-        >
+        <UPageCard variant="ghost">
           <UPageFeature
             title="用户等级"
             icon="i-tabler-certificate"
             :description="profile.level"
           />
         </UPageCard>
-        <UPageCard
-          variant="ghost"
-        >
+        <UPageCard variant="ghost">
           <UPageFeature
             title="任职部门"
             icon="i-tabler-calendar-user"
@@ -99,42 +86,34 @@ const majorClassFormat = () => {
           />
         </UPageCard>
       </div>
-    </ProfileSection>
-    <ProfileSection
+    </BaseSection>
+    <BaseSection
       title="个人信息"
       icon="i-tabler-eye"
     >
       <div class="w-full grid grid-cols-4">
-        <UPageCard
-          variant="ghost"
-        >
+        <UPageCard variant="ghost">
           <UPageFeature
             title="学院"
             icon="i-tabler-building-community"
             :description="profile.collegeName"
           />
         </UPageCard>
-        <UPageCard
-          variant="ghost"
-        >
+        <UPageCard variant="ghost">
           <UPageFeature
             title="专业班级"
             icon="i-tabler-school"
             :description="majorClassFormat()"
           />
         </UPageCard>
-        <UPageCard
-          variant="ghost"
-        >
+        <UPageCard variant="ghost">
           <UPageFeature
             title="姓名"
             icon="i-tabler-id-badge-2"
             :description="profile.realName"
           />
         </UPageCard>
-        <UPageCard
-          variant="ghost"
-        >
+        <UPageCard variant="ghost">
           <UPageFeature
             title="学号"
             icon="i-tabler-id"
@@ -142,7 +121,7 @@ const majorClassFormat = () => {
           />
         </UPageCard>
       </div>
-    </ProfileSection>
+    </BaseSection>
 
     <div class="w-full mt-4 flex items-center justify-end gap-4">
       <UButton

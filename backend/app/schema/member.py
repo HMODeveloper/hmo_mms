@@ -49,7 +49,7 @@ class SearchRequest(BaseModel):
     global_query: Optional[str] = Field(None, serialization_alias="globalQuery")
     create_at_start: Optional[datetime] = Field(None, serialization_alias="createAtStart")
     create_at_end: Optional[datetime] = Field(None, serialization_alias="createAtEnd")
-    colleges: Optional[str] = Field(None)
+    colleges: Optional[List[str]] = Field(None)
     departments: Optional[List[str]] = Field(None)
     levels: Optional[List[str]] = Field(None)
     page_size: Optional[int] = Field(5, serialization_alias="pageSize")

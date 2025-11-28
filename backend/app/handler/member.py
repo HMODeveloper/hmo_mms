@@ -1,4 +1,4 @@
-from datetime import timezone
+from datetime import timezone, datetime
 
 from fastapi import Depends, HTTPException
 from sqlalchemy import select, or_, and_
@@ -9,7 +9,7 @@ from app.core.database import get_db
 from app.core.logger import logger
 from app.schema.signup import CollegeInfo
 from app.utils import get_current_user, has_permission
-from app.model import User, UserLevel, College, Department
+from app.model import User, UserLevel, College, Department, user_department_association
 from app.schema.member import (
     UserLevelInfo,
     MemberInfo,
@@ -74,19 +74,20 @@ async def search_handler(
 
     try:
         # 全局搜索
+        # TODO: None问题
         if request.global_query is not None:
             global_filters = [
-                User.qq_id.like(f"%{request.global_query}%"),
-                User.nickname.like(f"%{request.global_query}%"),
-                User.mc_name.like(f"%{request.global_query}%"),
+                User.qq_id.ilike(f"%{request.global_query}%"),
+                User.nickname.ilike(f"%{request.global_query}%"),
+                User.mc_name.ilike(f"%{request.global_query}%"),
             ]
 
             if sensitivePermission:
                 sensitive_global_filters = [
-                    User.real_name.like(f"%{request.global_query}%"),
-                    User.student_id.like(f"%{request.global_query}%"),
-                    User.college_name.like(f"%{request.global_query}%"),
-                    User.major.name.like(f"%{request.global_query}%"),
+                    User.real_name.ilike(f"%{request.global_query}%"),
+                    User.student_id.ilike(f"%{request.global_query}%"),
+                    User.college_name.ilike(f"%{request.global_query}%"),
+                    User.major.name.ilike(f"%{request.global_query}%"),
                 ]
                 global_filters.extend(sensitive_global_filters)
 
@@ -97,15 +98,15 @@ async def search_handler(
             filters.append(User.create_at.between(request.create_at_start, request.create_at_start))
 
         # 学院
-        if request.colleges is not None:
+        if request.colleges:
             colleges = []
             for college in College:
-                if college.name == request.colleges:
+                if college.name in request.colleges:
                     colleges.append(college)
             filters.append(User.college_enum.in_(colleges))
 
         # 部门
-        if request.departments is not None:
+        if request.departments:
             departments = (
                 (await db.execute(
                     select(Department)
@@ -113,10 +114,17 @@ async def search_handler(
                 ))
                 .scalars().all()
             )
-            filters.append(User.departments.in_(departments))
+
+            department_ids = [_.id for _ in departments]
+            filters.append(
+                User.id.in_(
+                    select(user_department_association.c.user_id)
+                    .where(user_department_association.c.department_id.in_(department_ids))
+                )
+            )
 
         # 等级
-        if request.levels is not None:
+        if request.levels:
             levels = []
             for level in UserLevel:
                 if level.name in request.levels:
