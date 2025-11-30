@@ -1,7 +1,7 @@
-from datetime import timezone, datetime
+from datetime import timezone
 
 from fastapi import Depends, HTTPException
-from sqlalchemy import select, or_, and_
+from sqlalchemy import select, or_, and_, func, cast, String
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import subqueryload
 
@@ -74,10 +74,9 @@ async def search_handler(
 
     try:
         # 全局搜索
-        # TODO: None问题
         if request.global_query is not None:
             global_filters = [
-                User.qq_id.ilike(f"%{request.global_query}%"),
+                func.lower(cast(User.qq_id, String)).ilike(f"%{request.global_query}%"),
                 User.nickname.ilike(f"%{request.global_query}%"),
                 User.mc_name.ilike(f"%{request.global_query}%"),
             ]
@@ -87,7 +86,7 @@ async def search_handler(
                     User.real_name.ilike(f"%{request.global_query}%"),
                     User.student_id.ilike(f"%{request.global_query}%"),
                     User.college_name.ilike(f"%{request.global_query}%"),
-                    User.major.name.ilike(f"%{request.global_query}%"),
+                    User.major.ilike(f"%{request.global_query}%"),
                 ]
                 global_filters.extend(sensitive_global_filters)
 
@@ -95,7 +94,7 @@ async def search_handler(
 
         # 入库时间
         if request.create_at_start is not None and request.create_at_end is not None:
-            filters.append(User.create_at.between(request.create_at_start, request.create_at_start))
+            filters.append(User.create_at.between(request.create_at_start, request.create_at_end))
 
         # 学院
         if request.colleges:

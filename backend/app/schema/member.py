@@ -46,12 +46,12 @@ class SearchRequest(BaseModel):
     Notes:
         colleges, levels 传入对应模型的 `code`.
     """
-    global_query: Optional[str] = Field(None, serialization_alias="globalQuery")
-    create_at_start: Optional[datetime] = Field(None, serialization_alias="createAtStart")
-    create_at_end: Optional[datetime] = Field(None, serialization_alias="createAtEnd")
-    colleges: Optional[List[str]] = Field(None)
-    departments: Optional[List[str]] = Field(None)
-    levels: Optional[List[str]] = Field(None)
-    page_size: Optional[int] = Field(5, serialization_alias="pageSize")
-    page_index: Optional[int] = Field(1, serialization_alias="pageIndex")
+    global_query: Optional[str] = Field(None, alias="globalQuery")
+    create_at_start: Optional[datetime] = Field(None, alias="createAtStart")
+    create_at_end: Optional[datetime] = Field(None, alias="createAtEnd")
+    colleges: Optional[List[str]]
+    departments: Optional[List[str]]
+    levels: Optional[List[str]]
+    page_size: Optional[int] = Field(5, alias="pageSize")
+    page_index: Optional[int] = Field(1, alias="pageIndex")
 
