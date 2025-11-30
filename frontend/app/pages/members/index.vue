@@ -14,7 +14,7 @@ const memberList = ref<MemberInfo[]>([])
     <MembersSearch
       v-model="memberList"
     />
-    {{ memberList }}
+    <MembersTable :member-list="memberList" />
   </UContainer>
 </template>
 
