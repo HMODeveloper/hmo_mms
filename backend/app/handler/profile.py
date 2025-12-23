@@ -99,7 +99,7 @@ async def update_profile_handler(
         user.class_index = request.class_index
 
     # 学院枚举处理
-    if request.departments is not None:
+    if request.college_name is not None:
         matching_college = None
         for college in College:
             if college.name == request.college_name:

@@ -73,34 +73,36 @@ const handleSubmit = async (payload: FormSubmitEvent<Schema>) => {
 </script>
 
 <template>
-  <div class="w-full h-screen flex flex-col items-center justify-center gap-4 p-4">
-    <UPageCard class="w-full max-w-md">
-      <UAuthForm
-        title="登录"
-        :fields="fields"
-        :schema="schema"
-        :submit="{
-          label: '登录',
-          color: 'primary',
-        }"
-        @submit="handleSubmit"
-      >
-        <template #description>
-          首次登录? 请
-          <ULink
-            to="/signup"
-            class="text-primary font-medium hover:text-primary"
-          >
-            注册
-          </ULink>
-          .
-        </template>
-        <template #password-hint>
-          <span class="text-error">{{ passwordHint }}</span>
-        </template>
-      </UAuthForm>
-    </UPageCard>
-  </div>
+  <UPageSection>
+    <div class="w-full h-full flex items-center justify-center">
+      <UPageCard class="w-full max-w-md">
+        <UAuthForm
+          title="登录"
+          :fields="fields"
+          :schema="schema"
+          :submit="{
+            label: '登录',
+            color: 'primary',
+          }"
+          @submit="handleSubmit"
+        >
+          <template #description>
+            首次登录? 请
+            <ULink
+              to="/signup"
+              class="text-primary font-medium hover:text-primary"
+            >
+              注册
+            </ULink>
+            .
+          </template>
+          <template #password-hint>
+            <span class="text-error">{{ passwordHint }}</span>
+          </template>
+        </UAuthForm>
+      </UPageCard>
+    </div>
+  </UPageSection>
 </template>
 
 <style scoped>

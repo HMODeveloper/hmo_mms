@@ -25,10 +25,25 @@ export interface ChangePasswordRequest {
   newPassword: string
 }
 
+export interface ProfileUpdateRequest {
+  MCName?: string
+  nickname?: string
+  realName?: string
+  studentID?: string
+  collegeName?: string
+  major?: string
+  grade?: number
+  classIndex?: number
+}
+
 export const getProfileAPI = () => {
   return request.get<GetProfileResponse>("/profile")
 }
 
 export const changePasswordAPI = (data: ChangePasswordRequest) => {
   return request.put("/profile/change_password", data)
+}
+
+export const updateProfileAPI = (data: ProfileUpdateRequest) => {
+  return request.put("/profile/update", data)
 }
