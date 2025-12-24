@@ -70,6 +70,8 @@ const handleReset = () => {
   state.levels = []
   state.pageSize = 5
   state.pageIndex = 1
+
+  handleSearch()
 }
 
 const handleSearch = () => {

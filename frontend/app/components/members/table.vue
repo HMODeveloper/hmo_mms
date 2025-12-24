@@ -64,13 +64,48 @@ const columns: ColumnDef<MemberInfo>[] = [
     header: "任职部门",
     cell: ({ row }) => {
       const member = data.value.find(item => item.QQID === row.getValue("QQID"))
-      return member?.departments.map(item => item.name).join(", ") || "无"
+      if (!member || member.departments.length === 0) return h("p", {}, h(UButton, {
+        color: "error",
+        variant: "outline",
+      }, "无"))
+      return h("p", {}, member.departments.map((item, index) => h(UButton, {
+        color: ["primary", "secondary", "info", "warning", "success", "error"][index % 6],
+        variant: "outline",
+      }, item.name)))
     },
   },
   {
     accessorKey: "level",
     header: "等级",
-    cell: ({ row }) => row.getValue("level"),
+    cell: ({ row }) => {
+      switch (row.getValue("level")) {
+        case "超级管理员":
+          return h(UButton, {
+            color: "error",
+            variant: "outline",
+          }, "超级管理员")
+        case "管理员":
+          return h(UButton, {
+            color: "info",
+            variant: "outline",
+          }, "管理员")
+        case "部长":
+          return h(UButton, {
+            color: "secondary",
+            variant: "outline",
+          }, "部长")
+        case "普通成员":
+          return h(UButton, {
+            color: "primary",
+            variant: "outline",
+          }, "普通成员")
+        default:
+          return h(UButton, {
+            color: "info",
+            variant: "outline",
+          }, "其他")
+      }
+    },
   },
   {
     accessorKey: "operation",
