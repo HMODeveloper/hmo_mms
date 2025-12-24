@@ -24,3 +24,4 @@ router.put("/profile/change_password", name="change_password")(profile.change_pa
 # member
 router.get("/member/info", name="search_info")(member.get_search_info_handler)
 router.post("/member/search", name="member_search")(member.search_handler)
+router.get("/member/profile", name="member_profile")(member.get_member_profile_handler)

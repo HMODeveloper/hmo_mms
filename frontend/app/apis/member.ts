@@ -64,3 +64,7 @@ export const getSearchInfoAPI = () => {
 export const memberSearchAPI = (data: SearchRequest) => {
   return request.post<MemberListResponse>("/member/search", data)
 }
+
+export const memberProfileAPI = (QQID: number) => {
+  return request.get<MemberInfo>("/member/profile", { qq_id: QQID })
+}

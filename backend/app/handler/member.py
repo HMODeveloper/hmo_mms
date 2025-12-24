@@ -3,7 +3,7 @@ from datetime import timezone
 from fastapi import Depends, HTTPException
 from sqlalchemy import select, or_, and_, func, cast, String
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import subqueryload
+from sqlalchemy.orm import subqueryload, joinedload
 
 from app.core.database import get_db
 from app.core.logger import logger
@@ -188,3 +188,55 @@ async def search_handler(
                 "code": "SERVER_ERROR"
             }
         )
+
+
+async def get_member_profile_handler(
+        qq_id: int,
+        current_user: User = Depends(get_current_user),
+        db: AsyncSession = Depends(get_db),
+):
+    sensitivePermission = has_permission(current_user, UserLevel.ADMIN)
+
+    user = (
+        (await db.execute(
+            select(User)
+            .where(User.qq_id == qq_id)
+            .options(joinedload(User.departments))
+        ))
+        .scalars().first()
+    )
+
+    if user is None:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "message": "用户不存在",
+                "code": "USER_NOT_FOUND"
+            }
+        )
+
+    if user.id == current_user.id:
+        sensitivePermission = True
+
+    departments = []
+    for department in user.departments:
+        departments.append(DepartmentInfo(
+            name=department.name,
+            code=department.code
+        ))
+
+    response = MemberInfo(
+        qq_id=user.qq_id,
+        mc_name=user.mc_name,
+        nickname=user.nickname,
+        create_at=user.create_at.replace(tzinfo=timezone.utc),
+        real_name=user.real_name if sensitivePermission else "***",
+        student_id=user.student_id if sensitivePermission else "***",
+        college_name=user.college_name,
+        major=user.major if sensitivePermission else None,
+        grade=user.grade if sensitivePermission else None,
+        class_index=user.class_index if sensitivePermission else None,
+        departments=departments,
+        level=user.level.value,
+    )
+    return response

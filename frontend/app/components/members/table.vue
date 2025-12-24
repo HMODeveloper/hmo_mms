@@ -2,6 +2,7 @@
 import type { MemberInfo } from "~/apis/member"
 import type { ColumnDef } from "@tanstack/vue-table"
 import dayjs from "dayjs"
+import { UButton } from "#components"
 
 const props = defineProps<{
   memberList: MemberInfo[]
@@ -70,6 +71,15 @@ const columns: ColumnDef<MemberInfo>[] = [
     accessorKey: "level",
     header: "等级",
     cell: ({ row }) => row.getValue("level"),
+  },
+  {
+    accessorKey: "operation",
+    header: "操作",
+    cell: ({ row }) => h(UButton, {
+      color: "info",
+      variant: "outline",
+      to: `/members/${row.getValue("QQID")}`,
+    }, "编辑"),
   },
 ]
 </script>

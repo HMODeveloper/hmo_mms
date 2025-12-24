@@ -13,10 +13,6 @@ const userInfo = userStore.userInfo
     <p class="text-2xl">
       欢迎回来: {{ userInfo?.nickname }}
     </p>
-    <UButton
-      label="回到主页"
-      to="/"
-    />
   </UPageSection>
 </template>
 
