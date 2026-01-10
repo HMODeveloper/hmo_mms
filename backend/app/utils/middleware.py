@@ -27,10 +27,6 @@ class AuthMiddleware(BaseHTTPMiddleware):
             call_next: Callable,
             db: AsyncSession = Depends(get_db),
     ) -> Response:
-        # 免登录模式, 取消所有验证
-        if CONFIG.NO_LOGIN:
-            return await call_next(request)
-
         # 放行文档相关路径
         if request.url.path in ["/docs", "/openapi.json", "/redoc"]:
             return await call_next(request)

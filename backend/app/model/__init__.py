@@ -89,6 +89,14 @@ user_department_association = Table(
     Column("department_id", Integer, ForeignKey("departments.id"), primary_key=True),
 )
 
+"""部门 - 部长关联表"""
+department_minister_association = Table(
+    "department_minister_association",
+    Base.metadata,
+    Column("user_id", ForeignKey("users.id"), primary_key=True),
+    Column("department_id", Integer, ForeignKey("departments.id"), primary_key=True),
+)
+
 
 class Department(Base):
     """部门
@@ -97,6 +105,7 @@ class Department(Base):
         id (int): 唯一标识符.
         name (str): 部门名称.
         code (str): 部门代码.
+        ministers (List[User]): 部门部长列表.
         users (List[User]): 部门成员列表.
     """
 
@@ -105,6 +114,11 @@ class Department(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     code: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    ministers: Mapped[List["User"]] = relationship(
+        "User",
+        secondary=user_department_association,
+        back_populates="departments",
+    )
     users: Mapped[List["User"]] = relationship(
         "User",
         secondary=user_department_association,
