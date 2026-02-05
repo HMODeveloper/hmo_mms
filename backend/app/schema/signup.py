@@ -1,6 +1,15 @@
 from pydantic import BaseModel
 
 
+class CollegeInfo(BaseModel):
+    name: str
+    code: str
+
+
+class SignUpInfoResponse(BaseModel):
+    colleges: list[CollegeInfo]
+
+
 class SignUpRequest(BaseModel):
     qq_id: int
     nickname: str
