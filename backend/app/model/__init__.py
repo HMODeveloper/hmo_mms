@@ -2,8 +2,8 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import List, Optional
 
-from sqlalchemy import Enum as SAEnum
-from sqlalchemy import ForeignKey, Integer, String, DateTime, Table, Column
+from sqlalchemy import Enum as SAEnum, Boolean
+from sqlalchemy import ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -74,21 +74,32 @@ class College(Enum):
     OTHERS = "其他"
 
 
-"""用户 - 部门关联表"""
-user_department_association = Table(
-    "user_department_association",
-    Base.metadata,
-    Column("user_id", ForeignKey("users.id"), primary_key=True),
-    Column("department_id", Integer, ForeignKey("departments.id"), primary_key=True),
-)
+class UserDepartment(Base):
+    """用户 - 部门关联对象
 
-"""部门 - 部长关联表"""
-department_minister_association = Table(
-    "department_minister_association",
-    Base.metadata,
-    Column("user_id", ForeignKey("users.id"), primary_key=True),
-    Column("department_id", Integer, ForeignKey("departments.id"), primary_key=True),
-)
+    用于存储用户和部门的关联关系及部长标识
+
+    Attributes:
+        user_id (int): 用户ID.
+        department_id (int): 部门ID.
+        is_minister (bool): 是否为部长.
+        user (User): 关联的用户对象.
+        department (Department): 关联的部门对象.
+    """
+
+    __tablename__ = "user_department_association"
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    department_id: Mapped[int] = mapped_column(
+        ForeignKey("departments.id"), primary_key=True
+    )
+    is_minister: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+
+    # 关联到用户和部门
+    user: Mapped["User"] = relationship("User", back_populates="user_departments")
+    department: Mapped["Department"] = relationship(
+        "Department", back_populates="user_departments"
+    )
 
 
 class Department(Base):
@@ -98,8 +109,11 @@ class Department(Base):
         id (int): 唯一标识符.
         name (str): 部门名称.
         code (str): 部门代码.
-        ministers (List[User]): 部门部长列表.
+        user_departments (List[UserDepartment]): 用户-部门关联列表.
+
+    Properties:
         users (List[User]): 部门成员列表.
+        ministers (List[User]): 部门部长列表(从用户列表中筛选).
     """
 
     __tablename__ = "departments"
@@ -107,16 +121,21 @@ class Department(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     code: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-    ministers: Mapped[List["User"]] = relationship(
-        "User",
-        secondary=user_department_association,
-        back_populates="departments",
+
+    # 关联对象
+    user_departments: Mapped[List["UserDepartment"]] = relationship(
+        "UserDepartment", back_populates="department", cascade="all, delete-orphan"
     )
-    users: Mapped[List["User"]] = relationship(
-        "User",
-        secondary=user_department_association,
-        back_populates="departments",
-    )
+
+    @property
+    def users(self) -> List["User"]:
+        """返回该部门的所有用户列表"""
+        return [ud.user for ud in self.user_departments]
+
+    @property
+    def ministers(self) -> List["User"]:
+        """返回该部门的部长列表"""
+        return [ud.user for ud in self.user_departments if ud.is_minister]
 
 
 class User(Base):
@@ -134,14 +153,17 @@ class User(Base):
         major (str): 专业(外校学生不必填写).
         grade (int): 年级(外校学生不必填写).
         class_index (int): 班级序号(外校学生不必填写).
-        departments (List[Department]): 所属部门列表.
+        user_departments (List[UserDepartment]): 用户-部门关联列表.
         level (UserLevel): 权限级别.
         password_hash (str): 密码哈希.
         update_at (datetime): 最近一次登录更新时间.
         token (str): 用于身份验证的唯一令牌.
 
-    Methods:
+    Properties:
+        departments (List[Department]): 所属部门列表.
         password: 设置密码时自动生成哈希值, 不可读取.
+
+    Methods:
         verify_password(password: str) -> bool: 验证密码是否正确.
     """
 
@@ -171,14 +193,17 @@ class User(Base):
     class_index: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     # 任职信息
-    departments: Mapped[List["Department"]] = relationship(
-        "Department",
-        secondary=user_department_association,
-        back_populates="users",
+    user_departments: Mapped[List["UserDepartment"]] = relationship(
+        "UserDepartment", back_populates="user", cascade="all, delete-orphan"
     )
     level: Mapped[UserLevel] = mapped_column(
         SAEnum(UserLevel), nullable=False, default=UserLevel.MEMBER
     )
+
+    @property
+    def departments(self) -> List["Department"]:
+        """返回用户所属的部门列表"""
+        return [ud.department for ud in self.user_departments]
 
     # 其他信息
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
