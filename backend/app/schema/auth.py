@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 
 
 class LoginRequest(BaseModel):
-    qq_id: int = Field(..., alias='QQID')
+    qq_id: int = Field(..., alias="QQID")
     password: str
 
 

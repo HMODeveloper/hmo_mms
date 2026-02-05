@@ -1,4 +1,3 @@
-import typing
 from pathlib import Path
 
 from sqlalchemy import select
@@ -47,6 +46,7 @@ async def init_db():
         await conn.run_sync(Base.metadata.create_all)
 
     from app.model import Department, UserLevel, College, User
+
     async for db in get_db():
         departments = await db.execute(select(Department))
         if not departments:
@@ -61,9 +61,13 @@ async def init_db():
             logger.info("默认部门数据初始化完成")
 
     async for db in get_db():
-        superadmins = await db.execute(select(User).where(User.level == UserLevel.SUPERADMIN))
+        superadmins = await db.execute(
+            select(User).where(User.level == UserLevel.SUPERADMIN)
+        )
         if not superadmins.scalars().first():
-            logger.warning("检测到超级管理员用户不存在，正在初始化默认超级管理员用户...")
+            logger.warning(
+                "检测到超级管理员用户不存在，正在初始化默认超级管理员用户..."
+            )
 
             default_superadmin = User(
                 qq_id=0,

@@ -22,10 +22,10 @@ class AuthMiddleware(BaseHTTPMiddleware):
     """用户认证中间件"""
 
     async def dispatch(
-            self,
-            request: Request,
-            call_next: Callable,
-            db: AsyncSession = Depends(get_db),
+        self,
+        request: Request,
+        call_next: Callable,
+        db: AsyncSession = Depends(get_db),
     ) -> Response:
         # 放行文档相关路径
         if request.url.path in ["/docs", "/openapi.json", "/redoc"]:
@@ -46,41 +46,43 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if not token:
             logger.info("认证失败: 缺少 token")
             raise HTTPException(
-                status_code=401, detail={
-                    "message": "认证失败: 缺少 token",
-                    "code": "NO_TOKEN"
-                }
+                status_code=401,
+                detail={"message": "认证失败: 缺少 token", "code": "NO_TOKEN"},
             )
 
         async for db in get_db():
             try:
                 user = (
-                    (await db.execute(
-                        select(User).where(User.token ==  token)
-                    ))
-                    .scalars().first()
+                    (await db.execute(select(User).where(User.token == token)))
+                    .scalars()
+                    .first()
                 )
 
                 if not user:
                     logger.info("认证失败: 用户不存在")
-                    raise HTTPException(status_code=401, detail={
-                        "message": "认证失败: 用户不存在",
-                        "code": "USER_NOT_FOUND"
-                    })
+                    raise HTTPException(
+                        status_code=401,
+                        detail={
+                            "message": "认证失败: 用户不存在",
+                            "code": "USER_NOT_FOUND",
+                        },
+                    )
 
                 if not user.update_at:
                     logger.info("认证失败: 登录已过期")
-                    raise HTTPException(status_code=401, detail={
-                        "message": "认证失败: 登录已过期",
-                        "code": "EXPIRED"
-                    })
+                    raise HTTPException(
+                        status_code=401,
+                        detail={"message": "认证失败: 登录已过期", "code": "EXPIRED"},
+                    )
 
-                if user.update_at + timedelta(seconds=CONFIG.TIME_OUT) < datetime.now(timezone.utc):
+                if user.update_at + timedelta(seconds=CONFIG.TIME_OUT) < datetime.now(
+                    timezone.utc
+                ):
                     logger.info("认证失败: 登录已过期")
-                    raise HTTPException(status_code=401, detail={
-                        "message": "认证失败: 登录已过期",
-                        "code": "EXPIRED"
-                    })
+                    raise HTTPException(
+                        status_code=401,
+                        detail={"message": "认证失败: 登录已过期", "code": "EXPIRED"},
+                    )
 
                 user.update_at = datetime.now(timezone.utc)
                 await db.commit()
@@ -95,8 +97,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
                                 服务器内部错误: {e}
                                 请联系管理员。
                             """),
-                        "code": "SERVER_ERROR"
-                    }
+                        "code": "SERVER_ERROR",
+                    },
                 )
             finally:
                 await db.close()
@@ -104,8 +106,5 @@ class AuthMiddleware(BaseHTTPMiddleware):
         logger.error("数据库连接失败")
         raise HTTPException(
             status_code=500,
-            detail={
-                "message": "数据库连接失败",
-                "code": "DB_CONN_FAIL"
-            }
+            detail={"message": "数据库连接失败", "code": "DB_CONN_FAIL"},
         )

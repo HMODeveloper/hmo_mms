@@ -9,11 +9,7 @@ from starlette.responses import JSONResponse
 from app.core.logger import logger
 from app.core.database import get_db
 from app.model import User, College
-from app.schema.signup import (
-    CollegeInfo,
-    CollegeListResponse,
-    SignUpRequest
-)
+from app.schema.signup import CollegeInfo, CollegeListResponse, SignUpRequest
 
 
 async def get_info_handler():
@@ -22,42 +18,34 @@ async def get_info_handler():
         if college == College.OTHERS:
             continue
 
-        colleges.append(CollegeInfo(
-            name=str(college.value),
-            code=college.name,
-        ))
+        colleges.append(
+            CollegeInfo(
+                name=str(college.value),
+                code=college.name,
+            )
+        )
 
     return CollegeListResponse(colleges=colleges)
 
 
 async def check_qq_handler(
-        qq_id: int,
-        db: AsyncSession = Depends(get_db),
+    qq_id: int,
+    db: AsyncSession = Depends(get_db),
 ):
-    user = (
-        (await db.execute(
-            select(User).where(User.qq_id == qq_id)
-        ))
-        .scalars().first()
-    )
+    user = (await db.execute(select(User).where(User.qq_id == qq_id))).scalars().first()
 
     if user:
         raise HTTPException(
             status_code=409,
-            detail={
-                "message": "该 QQ 号已被注册",
-                "code": "QQID_EXISTS"
-            }
+            detail={"message": "该 QQ 号已被注册", "code": "QQID_EXISTS"},
         )
 
-    return JSONResponse(
-        content={"QQID": qq_id}
-    )
+    return JSONResponse(content={"QQID": qq_id})
 
 
 async def signup_handler(
-        request: SignUpRequest,
-        db: AsyncSession = Depends(get_db),
+    request: SignUpRequest,
+    db: AsyncSession = Depends(get_db),
 ):
     user = User(
         qq_id=request.qq_id,
@@ -84,9 +72,8 @@ async def signup_handler(
     else:
         user.college_name = str(matching_college.value)
 
-
-    user.password=request.password
-    user.create_at=datetime.now(timezone.utc)
+    user.password = request.password
+    user.create_at = datetime.now(timezone.utc)
 
     try:
         db.add(user)
@@ -99,10 +86,7 @@ async def signup_handler(
         logger.error(e)
         raise HTTPException(
             status_code=500,
-            detail={
-                "message": "注册失败，填写信息有误",
-                "code": "INTEGRITY_ERROR"
-            }
+            detail={"message": "注册失败，填写信息有误", "code": "INTEGRITY_ERROR"},
         )
     except Exception as e:
         await db.rollback()
@@ -110,8 +94,5 @@ async def signup_handler(
         logger.error(e)
         raise HTTPException(
             status_code=500,
-            detail={
-                "message": "服务器内部错误，请联系管理员",
-                "code": "SERVER_ERROR"
-            }
+            detail={"message": "服务器内部错误，请联系管理员", "code": "SERVER_ERROR"},
         )

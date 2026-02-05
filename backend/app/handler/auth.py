@@ -14,34 +14,24 @@ from app.schema.auth import LoginRequest, LoginResponse
 
 
 async def login_handler(
-        request: LoginRequest,
-        db: AsyncSession = Depends(get_db),
+    request: LoginRequest,
+    db: AsyncSession = Depends(get_db),
 ):
     user = (
-        (await db.execute(
-            select(User).where(User.qq_id == request.qq_id)
-        ))
-        .scalars().first()
+        (await db.execute(select(User).where(User.qq_id == request.qq_id)))
+        .scalars()
+        .first()
     )
 
     if not user:
         raise HTTPException(
-            status_code=404,
-            detail={
-                "message": "用户不存在",
-                "code": "USER_NOT_FOUND"
-            }
+            status_code=404, detail={"message": "用户不存在", "code": "USER_NOT_FOUND"}
         )
 
     if not user.verify_password(request.password):
         raise HTTPException(
-            status_code=403,
-            detail={
-                "message": "密码错误",
-                "code": "INVALID_PASSWORD"
-            }
+            status_code=403, detail={"message": "密码错误", "code": "INVALID_PASSWORD"}
         )
-
 
     try:
         user.update_at = datetime.now(timezone.utc)
@@ -67,16 +57,12 @@ async def login_handler(
         logger.error(e)
         raise HTTPException(
             status_code=500,
-            detail={
-                "message": "服务器内部错误，请联系管理员",
-                "code": "SERVER_ERROR"
-            }
+            detail={"message": "服务器内部错误，请联系管理员", "code": "SERVER_ERROR"},
         )
 
 
 async def logout_handler(
-        user: User = Depends(get_current_user),
-        db: AsyncSession = Depends(get_db)
+    user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)
 ):
     try:
         user.token = None

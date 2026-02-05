@@ -19,25 +19,25 @@ from app.schema.profile import (
 
 
 async def get_info_handler(
-        user: User = Depends(get_current_user),
-        db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ):
     user_with_departments = (
-        (await db.execute(
-            select(User)
-            .where(User.id == user.id)
-            .options(joinedload(User.departments))
-        ))
-        .scalars().first()
+        (
+            await db.execute(
+                select(User)
+                .where(User.id == user.id)
+                .options(joinedload(User.departments))
+            )
+        )
+        .scalars()
+        .first()
     )
 
     department_info = []
     for department in user_with_departments.departments:
         department_info.append(
-            DepartmentInfo(
-                name=department.name,
-                code=department.code
-            )
+            DepartmentInfo(name=department.name, code=department.code)
         )
 
     response = GetProfileResponse(
@@ -59,9 +59,9 @@ async def get_info_handler(
 
 
 async def update_profile_handler(
-        request: UpdateProfileRequest,
-        user: User = Depends(get_current_user),
-        db: AsyncSession = Depends(get_db)
+    request: UpdateProfileRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ):
     if request.mc_name is not None:
         user.mc_name = request.mc_name
@@ -70,10 +70,7 @@ async def update_profile_handler(
         if not request.nickname:
             raise HTTPException(
                 status_code=400,
-                detail={
-                    "message": "昵称不能为空.",
-                    "code": "INVALID_NICKNAME"
-                }
+                detail={"message": "昵称不能为空.", "code": "INVALID_NICKNAME"},
             )
 
         user.nickname = request.nickname
@@ -82,10 +79,7 @@ async def update_profile_handler(
         if not request.real_name:
             raise HTTPException(
                 status_code=400,
-                detail={
-                    "message": "真实姓名不能为空.",
-                    "code": "INVALID_REAL_NAME"
-                }
+                detail={"message": "真实姓名不能为空.", "code": "INVALID_REAL_NAME"},
             )
         user.real_name = request.real_name
 
@@ -123,25 +117,19 @@ async def update_profile_handler(
         logger.error(e)
         raise HTTPException(
             status_code=500,
-            detail={
-                "message": "服务器内部错误，请联系管理员",
-                "code": "SERVER_ERROR"
-            }
+            detail={"message": "服务器内部错误，请联系管理员", "code": "SERVER_ERROR"},
         )
 
 
 async def change_password_handler(
-        request: ChangePasswordRequest,
-        user: User = Depends(get_current_user),
-        db: AsyncSession = Depends(get_db),
+    request: ChangePasswordRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
 ):
     if not user.verify_password(request.old_password):
         raise HTTPException(
             status_code=403,
-            detail={
-                "message": "旧密码错误.",
-                "code": "INVALID_OLD_PASSWORD"
-            }
+            detail={"message": "旧密码错误.", "code": "INVALID_OLD_PASSWORD"},
         )
 
     if user.verify_password(request.new_password):
@@ -149,8 +137,8 @@ async def change_password_handler(
             status_code=400,
             detail={
                 "message": "新密码不能与旧密码相同.",
-                "code": "SAME_AS_OLD_PASSWORD"
-            }
+                "code": "SAME_AS_OLD_PASSWORD",
+            },
         )
 
     user.password = request.new_password
@@ -164,8 +152,5 @@ async def change_password_handler(
         logger.error(e)
         raise HTTPException(
             status_code=500,
-            detail={
-                "message": "服务器内部错误，请联系管理员",
-                "code": "SERVER_ERROR"
-            }
+            detail={"message": "服务器内部错误，请联系管理员", "code": "SERVER_ERROR"},
         )

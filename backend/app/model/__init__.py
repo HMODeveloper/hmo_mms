@@ -159,14 +159,18 @@ class User(Base):
     # 基本信息
     qq_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
     nickname: Mapped[str] = mapped_column(String(50), nullable=False)
-    mc_name: Mapped[Optional[str]] = mapped_column(String(50), unique=True, nullable=True)
+    mc_name: Mapped[Optional[str]] = mapped_column(
+        String(50), unique=True, nullable=True
+    )
     create_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=datetime.now(timezone.utc), nullable=False
     )
 
     # 敏感信息
     real_name: Mapped[str] = mapped_column(String(20), nullable=False)
-    student_id: Mapped[Optional[str]] = mapped_column(String(20), unique=True, nullable=True)
+    student_id: Mapped[Optional[str]] = mapped_column(
+        String(20), unique=True, nullable=True
+    )
     college_enum: Mapped[College] = mapped_column(SAEnum(College), nullable=False)
     college_name: Mapped[str] = mapped_column(String(50), nullable=False)
     major: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
@@ -179,12 +183,18 @@ class User(Base):
         secondary=user_department_association,
         back_populates="users",
     )
-    level: Mapped[UserLevel] = mapped_column(SAEnum(UserLevel), nullable=False, default=UserLevel.MEMBER)
+    level: Mapped[UserLevel] = mapped_column(
+        SAEnum(UserLevel), nullable=False, default=UserLevel.MEMBER
+    )
 
     # 其他信息
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    update_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
-    token: Mapped[Optional[str]] = mapped_column(String(255), unique=True, index=True, nullable=True)
+    update_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    token: Mapped[Optional[str]] = mapped_column(
+        String(255), unique=True, index=True, nullable=True
+    )
 
     @property
     def password(self):
@@ -196,3 +206,12 @@ class User(Base):
 
     def verify_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)
+
+    def has_permission(self, permission: UserLevel | List[UserLevel]):
+        if self.level == UserLevel.SUPERADMIN:
+            return True
+
+        if isinstance(permission, list):
+            return self.level in permission
+
+        return self.level == permission
