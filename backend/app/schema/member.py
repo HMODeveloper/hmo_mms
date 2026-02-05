@@ -5,10 +5,10 @@ from pydantic import BaseModel
 from app.schema import BaseUserInfo
 
 
-class MemberListResponse(List[BaseUserInfo]): ...
+MemberListResponse = List[BaseUserInfo]
 
 
-class MemberInfoResponse(BaseUserInfo): ...
+MemberInfoResponse = BaseUserInfo
 
 
 class UpdateMemberInfoRequest(BaseModel):

@@ -17,7 +17,7 @@ class DepartmentListResponse(BaseModel):
     minister: List[MinisterInfo]
 
 
-class DepartmentMemberListResponse(List[BaseUserInfo]): ...
+DepartmentMemberListResponse = List[BaseUserInfo]
 
 
 class AddDepartmentRequest(BaseModel):

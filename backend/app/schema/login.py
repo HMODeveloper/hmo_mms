@@ -8,4 +8,4 @@ class LoginRequest(BaseModel):
     password: str
 
 
-class UserInfoResponse(BaseUserInfo): ...
+UserInfoResponse = BaseUserInfo
