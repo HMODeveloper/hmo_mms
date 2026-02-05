@@ -11,11 +11,13 @@ class MinisterInfo(BaseModel):
     mc_name: Optional[str]
 
 
-class DepartmentListResponse(BaseModel):
+class DepartmentInfo(BaseModel):
     name: str
     code: str
     minister: List[MinisterInfo]
 
+
+DepartmentListResponse = List[DepartmentInfo]
 
 DepartmentMemberListResponse = List[BaseUserInfo]
 
