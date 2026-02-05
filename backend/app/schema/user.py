@@ -1,17 +1,14 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel
 
-from app.schema import BaseUserInfo
+
+class ChangePasswordRequest(BaseModel):
+    old: str
+    new: str
 
 
-class MemberListResponse(List[BaseUserInfo]): ...
-
-
-class MemberInfoResponse(BaseUserInfo): ...
-
-
-class UpdateMemberInfoRequest(BaseModel):
+class UpdateUserInfoRequest(BaseModel):
     nickname: Optional[str]
     password: Optional[str]
     mc_name: Optional[str]
