@@ -165,6 +165,8 @@ class User(Base):
 
     Methods:
         verify_password(password: str) -> bool: 验证密码是否正确.
+        has_permission(permission: UserLevel | List[UserLevel]) -> bool: 检查用户是否具有指定权限.
+        is_minister(code: str) -> bool: 检查用户是否为指定部门的部长.
     """
 
     __tablename__ = "users"
@@ -233,3 +235,9 @@ class User(Base):
             return self.level in permission
 
         return self.level == permission
+
+    def is_minister(self, code: str) -> bool:
+        for ud in self.user_departments:
+            if ud.department.code == code and ud.is_minister:
+                return True
+        return False

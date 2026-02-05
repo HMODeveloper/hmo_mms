@@ -312,12 +312,10 @@ async def add_department_member_handler(
         )
 
     # Check if current user is minister of this department or superadmin
-    is_minister = any(
-        ud.user_id == current_user.id and ud.is_minister
-        for ud in department.user_departments
-    )
-
-    if not (current_user.has_permission(UserLevel.SUPERADMIN) or is_minister):
+    if not (
+        current_user.has_permission(UserLevel.SUPERADMIN)
+        or current_user.is_minister(code)
+    ):
         raise ErrorResponse(
             status_code=403,
             code="MINISTER_REQUIRED",
@@ -417,12 +415,10 @@ async def remove_department_member_handler(
             )
     else:
         # If removing regular member, check if current user is minister or superadmin
-        is_minister = any(
-            ud.user_id == current_user.id and ud.is_minister
-            for ud in department.user_departments
-        )
-
-        if not (current_user.has_permission(UserLevel.SUPERADMIN) or is_minister):
+        if not (
+            current_user.has_permission(UserLevel.SUPERADMIN)
+            or current_user.is_minister(code)
+        ):
             raise ErrorResponse(
                 status_code=403,
                 code="MINISTER_REQUIRED",
