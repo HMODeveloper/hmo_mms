@@ -11,33 +11,11 @@ from app.core.database import Base
 
 
 class UserLevel(Enum):
-    """用户级别枚举
-
-    定义系统中不同用户的级别.
-
-    各个级别用户拥有的权限可以叠加.
-    """
+    """用户级别枚举"""
 
     SUPERADMIN = "超级管理员"
-    """超级管理员权限:
-
-    - 查看修改所有成员的所有信息.
-    - 拥有所有部长的部门权限.
-    """
-
     ADMIN = "管理员"
-    """管理员权限:
-
-    - 查看修改所有用户的基本信息和敏感信息.
-    - 查看所有用户的任职信息和级别信息.
-    """
-
     MEMBER = "普通成员"
-    """普通成员权限:
-
-    - 查看所有用户的基本信息, 任职信息和级别信息.
-    - 修改自己的基本信息和敏感信息.
-    """
 
 
 class College(Enum):
@@ -146,6 +124,7 @@ class User(Base):
         qq_id (int): QQ号.
         nickname (str): 昵称.
         mc_name (str): Minecraft用户名.
+        create_at (datetime): 账号创建时间.
         real_name (str): 真实姓名.
         student_id (str): 学号(外校学生不必填写).
         college_enum (College): 学院枚举.
@@ -202,11 +181,6 @@ class User(Base):
         SAEnum(UserLevel), nullable=False, default=UserLevel.MEMBER
     )
 
-    @property
-    def departments(self) -> List["Department"]:
-        """返回用户所属的部门列表"""
-        return [ud.department for ud in self.user_departments]
-
     # 其他信息
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     update_at: Mapped[Optional[datetime]] = mapped_column(
@@ -223,6 +197,11 @@ class User(Base):
     @password.setter
     def password(self, password: str):
         self.password_hash = generate_password_hash(password, method="pbkdf2:sha512")
+
+    @property
+    def departments(self) -> List["Department"]:
+        """返回用户所属的部门列表"""
+        return [ud.department for ud in self.user_departments]
 
     def verify_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)
@@ -241,3 +220,53 @@ class User(Base):
             if ud.department.code == code and ud.is_minister:
                 return True
         return False
+
+
+class DeletedUser(Base):
+    """已删除的用户表
+
+    Attributes:
+        id (int): 唯一标识符.
+        qq_id (int): QQ号.
+        nickname (str): 昵称.
+        mc_name (str): Minecraft用户名.
+        create_at (datetime): 账号创建时间.
+        real_name (str): 真实姓名.
+        student_id (str): 学号(外校学生不必填写).
+        college_enum (College): 学院枚举.
+        college_name (str): 学院名称("其他"填写具体学院名, 外校学生填写学校名称).
+        major (str): 专业(外校学生不必填写).
+        grade (int): 年级(外校学生不必填写).
+        class_index (int): 班级序号(外校学生不必填写).
+        deleted_at (datetime): 删除时间.
+    """
+
+    __tablename__ = "deleted_users"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    # 基本信息
+    qq_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    nickname: Mapped[str] = mapped_column(String(50), nullable=False)
+    mc_name: Mapped[Optional[str]] = mapped_column(
+        String(50), unique=True, nullable=True
+    )
+    create_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.now(timezone.utc), nullable=False
+    )
+
+    # 敏感信息
+    real_name: Mapped[str] = mapped_column(String(20), nullable=False)
+    student_id: Mapped[Optional[str]] = mapped_column(
+        String(20), unique=True, nullable=True
+    )
+    college_enum: Mapped[College] = mapped_column(SAEnum(College), nullable=False)
+    college_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    major: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    grade: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    class_index: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+
+    # 其他信息
+    deleted_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.now(timezone.utc), nullable=False
+    )
