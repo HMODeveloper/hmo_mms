@@ -4,6 +4,7 @@ import app.handler.auth as auth
 import app.handler.signup as signup
 import app.handler.user as user
 import app.handler.member as member
+import app.handler.member.info as member_info
 import app.handler.department as department
 import app.handler.department.member as department_member
 import app.handler.department.minister as department_minister
@@ -30,13 +31,13 @@ router.get("/member", name="member_list")(member.member_list_handler)
 router.post("/member", name="add_member")(member.add_member_handler)
 router.delete("/member", name="remove_member")(member.remove_member_handler)
 router.get("/member/{qq_id}/info", name="get_member_info")(
-    member.get_member_info_handler
+    member_info.get_member_info_handler
 )
 router.put("/member/{qq_id}/info", name="update_member_info")(
-    member.update_member_info_handler
+    member_info.update_member_info_handler
 )
 router.put("/member/{qq_id}/password", name="reset_member_password")(
-    member.reset_member_password_handler
+    member_info.reset_member_password_handler
 )
 
 # department
