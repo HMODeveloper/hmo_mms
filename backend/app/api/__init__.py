@@ -23,6 +23,7 @@ router.get("/signup/check", name="check_qq")(signup.check_qq_handler)
 router.post("/signup", name="signup")(signup.signup_handler)
 
 # user
+router.delete("/user", name="delete_user")(user.remove_user_handler)
 router.put("/user/password", name="change_password")(user.change_password_handler)
 router.put("/user/info", name="update_user_info")(user.update_user_info_handler)
 

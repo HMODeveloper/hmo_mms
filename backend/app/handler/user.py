@@ -1,13 +1,95 @@
-from fastapi import Depends
+from datetime import datetime, timezone
+
 from sqlalchemy.exc import IntegrityError
+from fastapi import Depends
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.core.database import get_db
 from app.core.logger import logger
-from app.model import User
+from app.model import User, UserDepartment, UserLevel, DeletedUser
 from app.schema import Response, ErrorResponse
 from app.schema.user import ChangePasswordRequest, UpdateUserInfoRequest
 from app.utils import get_current_user
+
+
+async def remove_user_handler(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> Response:
+    user_with_departments = (
+        (
+            await db.execute(
+                select(User)
+                .where(User.id == user.id)
+                .options(
+                    joinedload(User.user_departments).joinedload(
+                        UserDepartment.department
+                    )
+                )
+            )
+        )
+        .unique()
+        .scalars()
+        .first()
+    )
+
+    if not user_with_departments:
+        raise ErrorResponse(
+            status_code=404,
+            code="USER_NOT_FOUND",
+        )
+
+    is_admin_or_minister = user.has_permission(UserLevel.ADMIN)
+    if not is_admin_or_minister:
+        for ud in user.user_departments:
+            if ud.is_minister:
+                is_admin_or_minister = True
+                break
+
+    if is_admin_or_minister:
+        if not user.has_permission(UserLevel.SUPERADMIN):
+            raise ErrorResponse(
+                status_code=403,
+                code="SUPERADMIN_REQUIRED",
+            )
+
+    try:
+        if user.level in (UserLevel.ADMIN, UserLevel.SUPERADMIN):
+            user.level = UserLevel.MEMBER
+
+        for ud in user.user_departments:
+            if ud.is_minister:
+                ud.is_minister = False
+
+        await db.flush()
+
+        deleted_user = DeletedUser(
+            qq_id=user.qq_id,
+            nickname=user.nickname,
+            mc_name=user.mc_name,
+            create_at=user.create_at,
+            real_name=user.real_name,
+            student_id=user.student_id,
+            college_enum=user.college_enum,
+            college_name=user.college_name,
+            major=user.major,
+            grade=user.grade,
+            class_index=user.class_index,
+            deleted_at=datetime.now(timezone.utc),
+        )
+
+        db.add(deleted_user)
+
+        await db.delete(user)
+        await db.commit()
+
+        return Response()
+    except Exception as e:
+        await db.rollback()
+        logger.error(e)
+        raise ErrorResponse()
 
 
 async def change_password_handler(
