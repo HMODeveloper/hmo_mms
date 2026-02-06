@@ -19,6 +19,7 @@ from app.utils import get_current_user
 
 async def get_member_info_handler(
     qq_id: int,
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> Response[MemberInfoResponse]:
     user = (
@@ -58,12 +59,16 @@ async def get_member_info_handler(
         nickname=user.nickname,
         mc_name=user.mc_name,
         create_at=user.create_at.replace(tzinfo=timezone.utc),
-        real_name=user.real_name,
-        student_id=user.student_id,
+        real_name=user.real_name if current_user.sensitive_permission(user) else "***",
+        student_id=user.student_id
+        if current_user.sensitive_permission(user)
+        else "***",
         college_name=user.college_name,
-        major=user.major,
-        grade=user.grade,
-        class_index=user.class_index,
+        major=user.major if current_user.sensitive_permission(user) else None,
+        grade=user.grade if current_user.sensitive_permission(user) else None,
+        class_index=user.class_index
+        if current_user.sensitive_permission(user)
+        else None,
         departments=departments,
         level=user.level.value,
     )
