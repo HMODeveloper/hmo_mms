@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -14,10 +16,10 @@ class SignUpRequest(BaseModel):
     qq_id: int
     nickname: str
     password: str
-    mc_name: str
+    mc_name: Optional[str]
     real_name: str
-    student_id: str
+    student_id: Optional[str]
     college_name: str
-    major: str
-    grade: int
-    class_index: int
+    major: Optional[str]
+    grade: Optional[int]
+    class_index: Optional[int]

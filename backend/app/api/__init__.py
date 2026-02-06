@@ -27,6 +27,8 @@ router.put("/user/info", name="update_user_info")(user.update_user_info_handler)
 
 # member
 router.get("/member", name="member_list")(member.member_list_handler)
+router.post("/member", name="add_member")(member.add_member_handler)
+router.delete("/member", name="remove_member")(member.remove_member_handler)
 router.get("/member/{qq_id}/info", name="get_member_info")(
     member.get_member_info_handler
 )
