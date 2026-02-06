@@ -8,7 +8,7 @@ from sqlalchemy.orm import joinedload
 from app.core.config import CONFIG
 from app.core.database import get_db
 from app.core.logger import logger
-from app.model import User, UserLevel
+from app.model import User, UserLevel, UserDepartment
 from app.schema import Response, ErrorResponse, BaseDepartment
 from app.schema.member import (
     MemberListResponse,
@@ -23,7 +23,16 @@ async def member_list_handler(
 ) -> Response[MemberListResponse]:
     try:
         users = (
-            (await db.execute(select(User).options(joinedload(User.departments))))
+            (
+                await db.execute(
+                    select(User).options(
+                        joinedload(User.user_departments).joinedload(
+                            UserDepartment.department
+                        )
+                    )
+                )
+            )
+            .unique()
             .scalars()
             .all()
         )
@@ -71,9 +80,14 @@ async def get_member_info_handler(
             await db.execute(
                 select(User)
                 .where(User.qq_id == qq_id)
-                .options(joinedload(User.departments))
+                .options(
+                    joinedload(User.user_departments).joinedload(
+                        UserDepartment.department
+                    )
+                )
             )
         )
+        .unique()
         .scalars()
         .first()
     )
