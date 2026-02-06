@@ -10,7 +10,7 @@ from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserDepartment
 from app.schema import Response, ErrorResponse, BaseDepartment
-from app.schema.login import LoginRequest, UserInfoResponse
+from app.schema.auth import LoginRequest, UserInfoResponse
 from app.utils.get_current_user import get_current_user
 
 
