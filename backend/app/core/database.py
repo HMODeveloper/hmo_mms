@@ -48,9 +48,11 @@ async def init_db():
     from app.model import Department, UserLevel, College, User
 
     async for db in get_db():
-        departments = await db.execute(select(Department))
-        if not departments:
-            logger.warning("检测到部门表为空，正在初始化默认部门数据...")
+        departments_result = await db.execute(select(Department))
+        existing_department = departments_result.scalars().first()
+
+        if not existing_department:
+            logger.warning("检测到部门表为空, 正在初始化默认部门数据...")
 
             default_department = Department(
                 name="默认部门",
@@ -60,13 +62,15 @@ async def init_db():
             await db.commit()
             logger.info("默认部门数据初始化完成")
 
+        break
+
     async for db in get_db():
         superadmins = await db.execute(
             select(User).where(User.level == UserLevel.SUPERADMIN)
         )
         if not superadmins.scalars().first():
             logger.warning(
-                "检测到超级管理员用户不存在，正在初始化默认超级管理员用户..."
+                "检测到超级管理员用户不存在, 正在初始化默认超级管理员用户..."
             )
 
             default_superadmin = User(
@@ -81,6 +85,8 @@ async def init_db():
             db.add(default_superadmin)
             await db.commit()
             logger.info("默认超级管理员用户初始化完成")
+
+        break
 
 
 async def get_db():
