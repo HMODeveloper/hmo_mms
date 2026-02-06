@@ -123,20 +123,20 @@ class User(Base):
         id (int): 唯一标识符.
         qq_id (int): QQ号.
         nickname (str): 昵称.
-        mc_name (str): Minecraft用户名.
+        mc_name (Optional[str]): Minecraft用户名.
         create_at (datetime): 账号创建时间.
         real_name (str): 真实姓名.
-        student_id (str): 学号(外校学生不必填写).
+        student_id (Optional[str]): 学号(外校学生不必填写).
         college_enum (College): 学院枚举.
         college_name (str): 学院名称("其他"填写具体学院名, 外校学生填写学校名称).
-        major (str): 专业(外校学生不必填写).
-        grade (int): 年级(外校学生不必填写).
-        class_index (int): 班级序号(外校学生不必填写).
+        major (Optional[str]): 专业(外校学生不必填写).
+        grade (Optional[int]): 年级(外校学生不必填写).
+        class_index (Optional[int]): 班级序号(外校学生不必填写).
         user_departments (List[UserDepartment]): 用户-部门关联列表.
         level (UserLevel): 权限级别.
         password_hash (str): 密码哈希.
-        update_at (datetime): 最近一次登录更新时间.
-        token (str): 用于身份验证的唯一令牌.
+        update_at (Optional[datetime]): 最近一次登录更新时间.
+        token (Optional[str]): 用于身份验证的唯一令牌.
 
     Properties:
         departments (List[Department]): 所属部门列表.
@@ -229,15 +229,15 @@ class DeletedUser(Base):
         id (int): 唯一标识符.
         qq_id (int): QQ号.
         nickname (str): 昵称.
-        mc_name (str): Minecraft用户名.
+        mc_name (Optional[str]): Minecraft用户名.
         create_at (datetime): 账号创建时间.
         real_name (str): 真实姓名.
-        student_id (str): 学号(外校学生不必填写).
+        student_id (Optional[str]): 学号(外校学生不必填写).
         college_enum (College): 学院枚举.
         college_name (str): 学院名称("其他"填写具体学院名, 外校学生填写学校名称).
-        major (str): 专业(外校学生不必填写).
-        grade (int): 年级(外校学生不必填写).
-        class_index (int): 班级序号(外校学生不必填写).
+        major (Optional[str]): 专业(外校学生不必填写).
+        grade (Optional[int]): 年级(外校学生不必填写).
+        class_index (Optional[int]): 班级序号(外校学生不必填写).
         deleted_at (datetime): 删除时间.
     """
 
