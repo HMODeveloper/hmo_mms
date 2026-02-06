@@ -5,6 +5,8 @@ import app.handler.signup as signup
 import app.handler.user as user
 import app.handler.member as member
 import app.handler.department as department
+import app.handler.department.member as department_member
+import app.handler.department.minister as department_minister
 import app.handler.superadmin as superadmin
 
 router = APIRouter(prefix="/api")
@@ -37,24 +39,26 @@ router.put("/member/{qq_id}/password", name="reset_member_password")(
 
 # department
 router.get("/department", name="department_list")(department.department_list_handler)
-router.get("/department/{code}", name="department_member_list")(
-    department.department_member_list_handler
-)
 router.post("/department", name="add_department")(department.add_department_handler)
 router.delete("/department/{code}", name="remove_department")(
     department.remove_department_handler
 )
+
+router.get("/department/{code}", name="department_member_list")(
+    department_member.department_member_list_handler
+)
 router.post("/department/{code}/member", name="add_department_member")(
-    department.add_department_member_handler
+    department_member.add_department_member_handler
 )
 router.delete("/department/{code}/member", name="remove_department_member")(
-    department.remove_department_member_handler
+    department_member.remove_department_member_handler
 )
+
 router.post("/department/{code}/minister", name="add_department_minister")(
-    department.add_department_minister_handler
+    department_minister.add_department_minister_handler
 )
 router.delete("/department/{code}/minister", name="remove_department_minister")(
-    department.remove_department_minister_handler
+    department_minister.remove_department_minister_handler
 )
 
 # superadmin
