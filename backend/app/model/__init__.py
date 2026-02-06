@@ -36,7 +36,7 @@ class College(Enum):
     CMVE = "机械与运载工程学院"
     SMSE = "材料科学与工程学院"
     CEIE = "电气与信息工程学院"
-    CCSEE = "信息科学与工程学院"
+    CCSEE = "计算机学院"
     SAP = "建筑与规划学院"
     CCE = "土木工程学院"
     CESE = "环境科学与工程学院"
