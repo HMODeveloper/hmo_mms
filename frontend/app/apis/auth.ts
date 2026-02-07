@@ -1,20 +1,11 @@
-import request from "~/apis/request"
+import type { UserInfo } from "~/model/user"
 
 export interface LoginRequest {
-  QQID: number
+  qq_id: number
   password: string
 }
 
-export interface LoginResponse {
-  QQID: string
-  MCName: string
-  nickname: string
-}
+export type LoginResponse = UserInfo
 
-export const loginAPI = (data: LoginRequest) => {
-  return request.post<LoginResponse>("/login", data)
-}
-
-export const logoutAPI = () => {
-  return request.get("/logout")
-}
+// TODO: 封装 request
+// TODO: 封装字段转换
