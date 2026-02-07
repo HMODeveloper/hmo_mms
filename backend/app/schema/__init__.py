@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, TypeVar, Generic, List
 
 from fastapi import HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -33,15 +33,15 @@ class BaseDepartment(BaseModel):
 
 
 class BaseUserInfo(BaseModel):
-    qq_id: int
+    qq_id: int = Field(..., serialization_alias="QQID")
     nickname: str
-    mc_name: Optional[str]
-    create_at: datetime
-    real_name: str
-    student_id: Optional[str]
-    college_name: str
+    mc_name: Optional[str] = Field(..., serialization_alias="mcName")
+    create_at: datetime = Field(..., serialization_alias="createAt")
+    real_name: str = Field(..., serialization_alias="realName")
+    student_id: Optional[str] = Field(..., serialization_alias="studentId")
+    college_name: str = Field(..., serialization_alias="collegeName")
     major: Optional[str]
     grade: Optional[int]
-    class_index: Optional[int]
+    class_index: Optional[int] = Field(..., serialization_alias="classIndex")
     departments: List[BaseDepartment]
     level: str

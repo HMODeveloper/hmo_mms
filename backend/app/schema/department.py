@@ -1,14 +1,14 @@
 from typing import Optional, List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.schema import BaseUserInfo
 
 
 class MinisterInfo(BaseModel):
-    qq_id: int
+    qq_id: int = Field(..., serialization_alias="QQID")
     nickname: str
-    mc_name: Optional[str]
+    mc_name: Optional[str] = Field(..., serialization_alias="mcName")
 
 
 class DepartmentInfo(BaseModel):

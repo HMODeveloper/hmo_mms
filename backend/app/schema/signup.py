@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class CollegeInfo(BaseModel):
@@ -13,13 +13,13 @@ class SignUpInfoResponse(BaseModel):
 
 
 class SignUpRequest(BaseModel):
-    qq_id: int
+    qq_id: int = Field(..., alias="QQID")
     nickname: str
     password: str
-    mc_name: Optional[str]
-    real_name: str
-    student_id: Optional[str]
-    college_name: str
+    mc_name: Optional[str] = Field(..., alias="mcName")
+    real_name: str = Field(..., alias="realName")
+    student_id: Optional[str] = Field(..., alias="studentId")
+    college_name: str = Field(..., alias="collegeName")
     major: Optional[str]
     grade: Optional[int]
-    class_index: Optional[int]
+    class_index: Optional[int] = Field(..., alias="classIndex")
