@@ -8,11 +8,11 @@ export interface LoginRequest {
 
 export type LoginResponse = UserInfo
 
-export async function login(req: LoginRequest) {
+export async function userLogin(req: LoginRequest) {
   return await request.post("/login", req)
 }
 
-export async function logout() {
+export async function userLogout() {
   return await request.get("/logout")
 }
 

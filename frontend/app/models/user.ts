@@ -4,16 +4,16 @@ export interface DepartmentInfo {
 }
 
 export interface UserInfo {
-  qq_id: number
+  QQID: number
   nickname: string
-  mc_name: string
-  create_at: string
-  real_name: string
-  student_id: string
-  college_name: string
+  mcName: string
+  createAt: string
+  realName: string
+  studentID: string
+  collegeName: string
   major: string
   grade: number
-  class_index: number
+  classIndex: number
   departments: DepartmentInfo[]
   level: "superadmin" | "admin" | "member"
 }

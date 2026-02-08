@@ -3,13 +3,15 @@ import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui"
 
 import type { LoginRequest } from "~/apis/auth"
 import * as z from "zod"
-import { login } from "~/apis/auth"
+import { getUserInfo, userLogin } from "~/apis/auth"
+import { useUserStore } from "~/stores/user"
 
 definePageMeta({
   layout: false,
 })
 
 const toast = useToast()
+const { setUserInfo } = useUserStore()
 
 const fields: AuthFormField[] = [
   {
@@ -41,12 +43,25 @@ function handleSubmit(payload: FormSubmitEvent<Schema>) {
     password: payload.data.password,
   }
 
-  login(request)
+  userLogin(request)
     .then((_response) => {
       toast.add({
         title: "登录成功",
       })
-      navigateTo("/dashboard")
+
+      getUserInfo()
+        .then((response) => {
+          setUserInfo(response)
+
+          navigateTo("/dashboard")
+        })
+        .catch((_error) => {
+          toast.add({
+            title: "获取用户信息失败",
+            description: "发生未知错误，请稍后再试",
+            color: "error",
+          })
+        })
     })
     .catch((error) => {
       switch (error.code) {
