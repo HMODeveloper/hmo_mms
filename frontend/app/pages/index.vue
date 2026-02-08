@@ -4,14 +4,13 @@ import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui"
 import type { LoginRequest } from "~/apis/auth"
 import * as z from "zod"
 import { getUserInfo, userLogin } from "~/apis/auth"
-import { useUserStore } from "~/stores/user"
 
 definePageMeta({
   layout: false,
 })
 
 const toast = useToast()
-const { setUserInfo } = useUserStore()
+const { setUserInfo } = useAuth()
 
 const fields: AuthFormField[] = [
   {

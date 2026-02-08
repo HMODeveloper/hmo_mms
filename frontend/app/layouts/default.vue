@@ -2,7 +2,7 @@
 import type { NavigationMenuItem } from "@nuxt/ui"
 
 const route = useRoute()
-const { userInfo, logout } = useUserStore()
+const { userInfo, logout } = useAuth()
 
 const navItems = computed<NavigationMenuItem[]>(() => [
   { label: "仪表盘", to: "/dashboard", active: route.path === "/dashboard" },
