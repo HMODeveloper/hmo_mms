@@ -48,10 +48,10 @@ router.post("/department", name="add_department")(department.add_department_hand
 router.delete("/department/{code}", name="remove_department")(
     department.remove_department_handler
 )
-
-router.get("/department/{code}", name="department_member_list")(
-    department_member.department_member_list_handler
+router.get("/department/{code}", name="department_info")(
+    department.department_info_handler
 )
+
 router.post("/department/{code}/member", name="add_department_member")(
     department_member.add_department_member_handler
 )

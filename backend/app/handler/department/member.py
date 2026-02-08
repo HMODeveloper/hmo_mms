@@ -1,5 +1,3 @@
-from datetime import timezone
-
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,70 +6,9 @@ from sqlalchemy.orm import joinedload
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserLevel, Department, UserDepartment
-from app.schema import ErrorResponse, BaseDepartment, BaseUserInfo
-from app.schema.department import (
-    DepartmentMemberListResponse,
-    AddDepartmentMemberRequest,
-)
+from app.schema import ErrorResponse
+from app.schema.department import AddDepartmentMemberRequest
 from app.utils import get_current_user
-
-
-async def department_member_list_handler(
-    code: str,
-    db: AsyncSession = Depends(get_db),
-) -> DepartmentMemberListResponse:
-    department = (
-        (
-            await db.execute(
-                select(Department)
-                .where(Department.code == code)
-                .options(
-                    joinedload(Department.user_departments).joinedload(
-                        UserDepartment.user
-                    )
-                )
-            )
-        )
-        .unique()
-        .scalars()
-        .first()
-    )
-
-    if not department:
-        raise ErrorResponse(
-            status_code=404,
-            code="DEPT_NOT_FOUND",
-        )
-
-    member_list = []
-    for user in department.users:
-        departments = []
-        for dept in user.departments:
-            departments.append(
-                BaseDepartment(
-                    name=dept.name,
-                    code=dept.code,
-                )
-            )
-
-        member_list.append(
-            BaseUserInfo(
-                qq_id=user.qq_id,
-                nickname=user.nickname,
-                mc_name=user.mc_name,
-                create_at=user.create_at.replace(tzinfo=timezone.utc),
-                real_name=user.real_name,
-                student_id=user.student_id,
-                college_name=user.college_name,
-                major=user.major,
-                grade=user.grade,
-                class_index=user.class_index,
-                departments=departments,
-                level=user.level.value,
-            )
-        )
-
-    return DepartmentMemberListResponse(member_list)
 
 
 async def add_department_member_handler(

@@ -1,4 +1,4 @@
-interface DepartmentInfo {
+export interface DepartmentInfo {
   name: string
   code: string
 }

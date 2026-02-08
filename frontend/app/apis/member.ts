@@ -1,4 +1,5 @@
 import request from "~/lib/client"
+import type { UserInfo } from "~/models/user"
 
 export interface AddMemberRequest {
   QQID: number
@@ -27,7 +28,7 @@ export interface UpdateInfoRequest {
 }
 
 export async function memberList() {
-  return await request.get("/member")
+  return await request.get<UserInfo[]>("/member")
 }
 
 export async function addMember(req: AddMemberRequest) {
@@ -39,7 +40,7 @@ export async function removeMember(QQID: number) {
 }
 
 export async function memberInfo(QQID: number) {
-  return await request.get(`/member/${QQID}`)
+  return await request.get<UserInfo>(`/member/${QQID}`)
 }
 
 export async function updateInfo(QQID: number, req: UpdateInfoRequest) {

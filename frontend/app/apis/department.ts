@@ -1,4 +1,5 @@
 import request from "~/lib/client"
+import type { DepartmentInfo, UserInfo } from "~/models/user"
 
 export interface AddMemberRequest {
   name: string
@@ -7,8 +8,15 @@ export interface AddMemberRequest {
   member: number
 }
 
+export interface DepartmentInfoResponse {
+  name: string
+  code: string
+  minister: number[]
+  member: UserInfo[]
+}
+
 export async function departmentList() {
-  return await request.get("/department")
+  return await request.get<DepartmentInfo[]>("/department")
 }
 
 export async function addDepartment(req: AddMemberRequest) {
@@ -19,8 +27,8 @@ export async function removeDepartment(code: string) {
   return await request.delete(`/department/${code}`)
 }
 
-export async function departmentMemberList(code: string) {
-  return await request.get(`/department/${code}/member`)
+export async function departmentInfo(code: string) {
+  return await request.get<DepartmentInfoResponse>(`/department/${code}`)
 }
 
 export async function addDepartmentMember(code: string, QQID: number) {

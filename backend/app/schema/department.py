@@ -20,7 +20,11 @@ class DepartmentInfo(BaseModel):
 DepartmentListResponse = List[DepartmentInfo]
 
 
-DepartmentMemberListResponse = List[BaseUserInfo]
+class DepartmentInfoResponse(BaseModel):
+    name: str
+    code: str
+    minister: List[int]
+    member: List[BaseUserInfo]
 
 
 class AddDepartmentRequest(BaseModel):
