@@ -48,7 +48,7 @@ function onSubmit(payload: FormSubmitEvent<Schema>) {
       </template>
       <UAuthForm
         :schema="schema"
-        icon="i-lucide-user"
+        icon="i-tabler-user"
         :fields="fields"
         @submit="onSubmit"
       />
