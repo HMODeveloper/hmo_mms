@@ -1,5 +1,5 @@
-import request from "~/lib/client"
 import type { DepartmentInfo, UserInfo } from "~/models/user"
+import request from "~/lib/client"
 
 export interface AddMemberRequest {
   name: string

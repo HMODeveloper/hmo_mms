@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui"
+import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui"
 
+import type { LoginRequest } from "~/apis/auth"
 import * as z from "zod"
-import { login, type LoginRequest } from "~/apis/auth"
+import { login } from "~/apis/auth"
 
 definePageMeta({
   layout: false,
@@ -34,7 +35,7 @@ const schema = z.object({
 
 type Schema = z.output<typeof schema>
 
-const handleSubmit = (payload: FormSubmitEvent<Schema>) => {
+function handleSubmit(payload: FormSubmitEvent<Schema>) {
   const request: LoginRequest = {
     QQID: payload.data.QQID,
     password: payload.data.password,

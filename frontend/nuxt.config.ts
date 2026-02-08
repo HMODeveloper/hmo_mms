@@ -1,9 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
-    "@nuxtjs/color-mode",
-    "@nuxt/eslint",
-    "@nuxt/eslint-config",
     "@nuxt/ui",
     "@pinia/nuxt",
   ],
@@ -22,6 +19,7 @@ export default defineNuxtConfig({
     routeRules: {
       "/nitro-api/**": {
         proxy: {
+          // eslint-disable-next-line node/prefer-global/process
           to: `${process.env.API_URL || ""}/**`,
         },
       },

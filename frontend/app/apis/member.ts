@@ -1,5 +1,5 @@
-import request from "~/lib/client"
 import type { UserInfo } from "~/models/user"
+import request from "~/lib/client"
 
 export interface AddMemberRequest {
   QQID: number
