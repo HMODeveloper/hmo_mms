@@ -19,6 +19,7 @@ class DepartmentInfo(BaseModel):
 
 DepartmentListResponse = List[DepartmentInfo]
 
+
 DepartmentMemberListResponse = List[BaseUserInfo]
 
 
@@ -27,3 +28,11 @@ class AddDepartmentRequest(BaseModel):
     code: str
     minister: List[int]
     member: List[int]
+
+
+class AddDepartmentMemberRequest(BaseModel):
+    qq_id: int = Field(..., serialization_alias="QQID")
+
+
+class AddDepartmentMinisterRequest(BaseModel):
+    qq_id: int = Field(..., serialization_alias="QQID")

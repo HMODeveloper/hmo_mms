@@ -30,7 +30,8 @@ router.put("/user/info", name="update_user_info")(user.update_user_info_handler)
 # member
 router.get("/member", name="member_list")(member.member_list_handler)
 router.post("/member", name="add_member")(member.add_member_handler)
-router.delete("/member", name="remove_member")(member.remove_member_handler)
+router.delete("/member/{qq_id}", name="remove_member")(member.remove_member_handler)
+
 router.get("/member/{qq_id}/info", name="get_member_info")(
     member_info.get_member_info_handler
 )
@@ -54,21 +55,21 @@ router.get("/department/{code}", name="department_member_list")(
 router.post("/department/{code}/member", name="add_department_member")(
     department_member.add_department_member_handler
 )
-router.delete("/department/{code}/member", name="remove_department_member")(
+router.delete("/department/{code}/member/{qq_id}", name="remove_department_member")(
     department_member.remove_department_member_handler
 )
 
 router.post("/department/{code}/minister", name="add_department_minister")(
     department_minister.add_department_minister_handler
 )
-router.delete("/department/{code}/minister", name="remove_department_minister")(
+router.delete("/department/{code}/minister/{qq_id}", name="remove_department_minister")(
     department_minister.remove_department_minister_handler
 )
 
 # superadmin
 router.post("/admin", name="add_admin")(superadmin.add_admin_handler)
-router.delete("/admin", name="remove_admin")(superadmin.remove_admin_handler)
+router.delete("/admin/{qq_id}", name="remove_admin")(superadmin.remove_admin_handler)
 router.post("/superadmin", name="add_superadmin")(superadmin.add_superadmin_handler)
-router.delete("/superadmin", name="remove_superadmin")(
+router.delete("/superadmin/{qq_id}", name="remove_superadmin")(
     superadmin.remove_superadmin_handler
 )

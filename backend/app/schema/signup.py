@@ -19,6 +19,7 @@ class SignUpRequest(BaseModel):
     mc_name: Optional[str] = Field(..., alias="mcName")
     real_name: str = Field(..., alias="realName")
     student_id: Optional[str] = Field(..., alias="studentId")
+    college_code: str = Field(..., alias="collegeCode")
     college_name: str = Field(..., alias="collegeName")
     major: Optional[str]
     grade: Optional[int]

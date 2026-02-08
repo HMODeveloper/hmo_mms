@@ -11,6 +11,7 @@ from app.model import User, UserLevel, Department, UserDepartment
 from app.schema import ErrorResponse, BaseDepartment, BaseUserInfo
 from app.schema.department import (
     DepartmentMemberListResponse,
+    AddDepartmentMemberRequest,
 )
 from app.utils import get_current_user
 
@@ -75,7 +76,7 @@ async def department_member_list_handler(
 
 async def add_department_member_handler(
     code: str,
-    qq_id: int,
+    request: AddDepartmentMemberRequest,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -112,7 +113,11 @@ async def add_department_member_handler(
             code="MINISTER_REQUIRED",
         )
 
-    user = (await db.execute(select(User).where(User.qq_id == qq_id))).scalars().first()
+    user = (
+        (await db.execute(select(User).where(User.qq_id == request.qq_id)))
+        .scalars()
+        .first()
+    )
 
     if not user:
         raise ErrorResponse(

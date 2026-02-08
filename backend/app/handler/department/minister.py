@@ -7,12 +7,13 @@ from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserLevel, Department, UserDepartment
 from app.schema import ErrorResponse
+from app.schema.department import AddDepartmentMinisterRequest
 from app.utils import get_current_user
 
 
 async def add_department_minister_handler(
     code: str,
-    qq_id: int,
+    request: AddDepartmentMinisterRequest,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -45,7 +46,11 @@ async def add_department_minister_handler(
             code="DEPT_NOT_FOUND",
         )
 
-    user = (await db.execute(select(User).where(User.qq_id == qq_id))).scalars().first()
+    user = (
+        (await db.execute(select(User).where(User.qq_id == request.qq_id)))
+        .scalars()
+        .first()
+    )
 
     if not user:
         raise ErrorResponse(
