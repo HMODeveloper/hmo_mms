@@ -1,11 +1,21 @@
-import type { UserInfo } from "~/model/user"
+import type { UserInfo } from "~/models/user"
+import request from "~/lib/client"
 
 export interface LoginRequest {
-  qq_id: number
+  QQID: number
   password: string
 }
 
 export type LoginResponse = UserInfo
 
-// TODO: 封装 request
-// TODO: 封装字段转换
+export async function login(req: LoginRequest) {
+  return await request.post("/login", req)
+}
+
+export async function logout() {
+  return await request.get("/logout")
+}
+
+export async function getUserInfo() {
+  return await request.get<UserInfo>("/userinfo")
+}

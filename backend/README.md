@@ -132,3 +132,8 @@
 | 移除管理员   | `DELETE` | `/admin`      | `qq_id: int` | `403 SUPERADMIN_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_NOT_ADMIN`                             | [remove_admin_handler](./app/handler/superadmin.py)      |
 | 添加超级管理员 | `POST`   | `/superadmin` | `qq_id: int` | `403 SUPERADMIN_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_ALREADY_SUPERADMIN`                    | [add_superadmin_handler](./app/handler/superadmin.py)    |
 | 移除超级管理员 | `DELETE` | `/superadmin` | `qq_id: int` | `403 SUPERADMIN_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_NOT_SUPERADMIN`, `400 LAST_SUPERADMIN` | [remove_superadmin_handler](./app/handler/superadmin.py) |
+
+1. 注册/添加相关: 添加 `college_code` 字段.
+2. 移除相关: `code`, `qq_id` 等放在 `path` 中.
+3. 添加相关(仅传递 `qq_id` 的): `code` 房子 `path`, `qq_id` 放在请求体中.
+4. 统一命名: `path` 参数用下划线, `query` 用下划线,  `body` 参数转换为驼峰.
