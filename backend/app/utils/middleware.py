@@ -1,9 +1,8 @@
 from datetime import datetime, timedelta, timezone
-from inspect import cleandoc
 from typing import Callable
 
-from fastapi import HTTPException, Request, Depends
-from starlette.responses import Response
+from fastapi import Request, Depends
+from starlette.responses import Response, JSONResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -13,9 +12,13 @@ from app.core.config import CONFIG
 from app.core.logger import logger
 from app.model import User
 
-SIGNUP_PATHS = ["/signup", "/signup/info", "/signup/check_qq"]
-EXCLUDE_PATHS = ["/login", *SIGNUP_PATHS]
+EXCLUDE_PATHS = ["/login", "/signup", "/signup/check"]
 EXCLUDE_API_PATHS = ["/api" + api for api in EXCLUDE_PATHS]
+
+
+class MiddlewareResponse(JSONResponse):
+    def __init__(self, status_code: int = 500, code: str = "INTERNAL_SERVER_ERROR"):
+        super().__init__(status_code=status_code, content={"detail": "AUTH_" + code})
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
@@ -45,10 +48,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         # 验证 Token
         if not token:
             logger.info("认证失败: 缺少 token")
-            raise HTTPException(
-                status_code=401,
-                detail={"message": "认证失败: 缺少 token", "code": "NO_TOKEN"},
-            )
+            return MiddlewareResponse(status_code=401, code="NO_TOKEN")
 
         async for db in get_db():
             try:
@@ -60,51 +60,27 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
                 if not user:
                     logger.info("认证失败: 用户不存在")
-                    raise HTTPException(
-                        status_code=401,
-                        detail={
-                            "message": "认证失败: 用户不存在",
-                            "code": "USER_NOT_FOUND",
-                        },
-                    )
+                    return MiddlewareResponse(status_code=404, code="USER_NOT_FOUND")
 
                 if not user.update_at:
                     logger.info("认证失败: 登录已过期")
-                    raise HTTPException(
-                        status_code=401,
-                        detail={"message": "认证失败: 登录已过期", "code": "EXPIRED"},
-                    )
+                    return MiddlewareResponse(status_code=401, code="EXPIRED")
 
                 if user.update_at + timedelta(seconds=CONFIG.TIME_OUT) < datetime.now(
                     timezone.utc
                 ):
                     logger.info("认证失败: 登录已过期")
-                    raise HTTPException(
-                        status_code=401,
-                        detail={"message": "认证失败: 登录已过期", "code": "EXPIRED"},
-                    )
+                    return MiddlewareResponse(status_code=401, code="EXPIRED")
 
                 user.update_at = datetime.now(timezone.utc)
                 await db.commit()
 
                 return await call_next(request)
             except Exception as e:
-                # 把内部错误也规范成对象形式，便于前端解析
-                raise HTTPException(
-                    status_code=500,
-                    detail={
-                        "message": cleandoc(f"""
-                                服务器内部错误: {e}
-                                请联系管理员。
-                            """),
-                        "code": "SERVER_ERROR",
-                    },
-                )
+                logger.error(f"认证中间件异常: {e}")
+                return MiddlewareResponse(status_code=500, code="INTERNAL_SERVER_ERROR")
             finally:
                 await db.close()
 
         logger.error("数据库连接失败")
-        raise HTTPException(
-            status_code=500,
-            detail={"message": "数据库连接失败", "code": "DB_CONN_FAIL"},
-        )
+        return MiddlewareResponse(status_code=500, code="DB_CONN_FAIL")
