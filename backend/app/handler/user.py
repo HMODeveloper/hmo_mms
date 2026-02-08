@@ -9,7 +9,7 @@ from sqlalchemy.orm import joinedload
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserDepartment, UserLevel, DeletedUser
-from app.schema import Response, ErrorResponse
+from app.schema import ErrorResponse
 from app.schema.user import ChangePasswordRequest, UpdateUserInfoRequest
 from app.utils import get_current_user
 
@@ -17,7 +17,7 @@ from app.utils import get_current_user
 async def remove_user_handler(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     user_with_departments = (
         (
             await db.execute(
@@ -85,7 +85,7 @@ async def remove_user_handler(
         await db.delete(user)
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)
@@ -96,7 +96,7 @@ async def change_password_handler(
     request: ChangePasswordRequest,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     if not user.verify_password(request.old):
         raise ErrorResponse(
             status_code=403,
@@ -113,7 +113,7 @@ async def change_password_handler(
         user.password = request.new
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)
@@ -124,7 +124,7 @@ async def update_user_info_handler(
     request: UpdateUserInfoRequest,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     try:
         if request.nickname is not None:
             user.nickname = request.nickname
@@ -147,7 +147,7 @@ async def update_user_info_handler(
 
         await db.commit()
 
-        return Response()
+        return None
     except IntegrityError as e:
         await db.rollback()
         logger.error(e)

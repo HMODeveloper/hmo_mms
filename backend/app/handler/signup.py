@@ -8,11 +8,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.logger import logger
 from app.core.database import get_db
 from app.model import User, College
-from app.schema import Response, ErrorResponse
+from app.schema import ErrorResponse
 from app.schema.signup import SignUpRequest, CollegeInfo, SignUpInfoResponse
 
 
-async def signup_info_handler() -> Response[SignUpInfoResponse]:
+async def signup_info_handler() -> SignUpInfoResponse:
     colleges = []
     for college in College:
         if college == College.OTHERS:
@@ -25,13 +25,13 @@ async def signup_info_handler() -> Response[SignUpInfoResponse]:
             )
         )
 
-    return Response(SignUpInfoResponse(colleges=colleges))
+    return SignUpInfoResponse(colleges=colleges)
 
 
 async def check_qq_handler(
     qq_id: int,
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     user = (await db.execute(select(User).where(User.qq_id == qq_id))).scalars().first()
 
     if user:
@@ -40,13 +40,13 @@ async def check_qq_handler(
             code="QQID_ALREADY_EXISTS",
         )
 
-    return Response()
+    return None
 
 
 async def signup_handler(
     request: SignUpRequest,
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     user = User(
         qq_id=request.qq_id,
         nickname=request.nickname,
@@ -79,7 +79,7 @@ async def signup_handler(
         db.add(user)
         await db.commit()
 
-        return Response()
+        return None
     except IntegrityError as e:
         await db.rollback()
 

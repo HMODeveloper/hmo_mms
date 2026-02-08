@@ -9,7 +9,7 @@ from sqlalchemy.orm import joinedload
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserDepartment
-from app.schema import Response, ErrorResponse, BaseDepartment
+from app.schema import ErrorResponse, BaseDepartment
 from app.schema.auth import LoginRequest, UserInfoResponse
 from app.utils.get_current_user import get_current_user
 
@@ -18,7 +18,7 @@ async def login_handler(
     request: LoginRequest,
     response: FastAPIResponse,
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     user = (
         (await db.execute(select(User).where(User.qq_id == request.qq_id)))
         .scalars()
@@ -49,7 +49,7 @@ async def login_handler(
             max_age=86400,
         )
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)
@@ -59,7 +59,7 @@ async def login_handler(
 async def get_user_info_handler(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response[UserInfoResponse]:
+) -> UserInfoResponse:
     user_with_departments = (
         (
             await db.execute(
@@ -107,14 +107,14 @@ async def get_user_info_handler(
         level=user.level.value,
     )
 
-    return Response(user_info)
+    return user_info
 
 
 async def logout_handler(
     response: FastAPIResponse,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     if not user:
         raise ErrorResponse(
             status_code=404,
@@ -128,7 +128,7 @@ async def logout_handler(
 
         response.delete_cookie(key="token")
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)

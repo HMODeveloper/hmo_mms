@@ -9,7 +9,7 @@ from app.core.config import CONFIG
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserLevel, UserDepartment
-from app.schema import Response, ErrorResponse, BaseDepartment
+from app.schema import ErrorResponse, BaseDepartment
 from app.schema.member import (
     MemberInfoResponse,
     UpdateMemberInfoRequest,
@@ -21,7 +21,7 @@ async def get_member_info_handler(
     qq_id: int,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response[MemberInfoResponse]:
+) -> MemberInfoResponse:
     user = (
         (
             await db.execute(
@@ -73,7 +73,7 @@ async def get_member_info_handler(
         level=user.level.value,
     )
 
-    return Response(member_info)
+    return member_info
 
 
 async def update_member_info_handler(
@@ -81,7 +81,7 @@ async def update_member_info_handler(
     request: UpdateMemberInfoRequest,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     if not current_user.has_permission(UserLevel.ADMIN):
         raise ErrorResponse(
             status_code=403,
@@ -118,7 +118,7 @@ async def update_member_info_handler(
 
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)
@@ -129,7 +129,7 @@ async def reset_member_password_handler(
     qq_id: int,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     if not current_user.has_permission(UserLevel.ADMIN):
         raise ErrorResponse(
             status_code=403,
@@ -148,7 +148,7 @@ async def reset_member_password_handler(
         user.password = CONFIG.DEFAULT_PASSWORD
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)

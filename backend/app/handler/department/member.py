@@ -8,7 +8,7 @@ from sqlalchemy.orm import joinedload
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserLevel, Department, UserDepartment
-from app.schema import Response, ErrorResponse, BaseDepartment, BaseUserInfo
+from app.schema import ErrorResponse, BaseDepartment, BaseUserInfo
 from app.schema.department import (
     DepartmentMemberListResponse,
 )
@@ -18,7 +18,7 @@ from app.utils import get_current_user
 async def department_member_list_handler(
     code: str,
     db: AsyncSession = Depends(get_db),
-) -> Response[DepartmentMemberListResponse]:
+) -> DepartmentMemberListResponse:
     department = (
         (
             await db.execute(
@@ -70,7 +70,7 @@ async def department_member_list_handler(
             )
         )
 
-    return Response(DepartmentMemberListResponse(member_list))
+    return DepartmentMemberListResponse(member_list)
 
 
 async def add_department_member_handler(
@@ -78,7 +78,7 @@ async def add_department_member_handler(
     qq_id: int,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     department = (
         (
             await db.execute(
@@ -136,7 +136,7 @@ async def add_department_member_handler(
         db.add(user_dept)
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)
@@ -148,7 +148,7 @@ async def remove_department_member_handler(
     qq_id: int,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     department = (
         (
             await db.execute(
@@ -221,7 +221,7 @@ async def remove_department_member_handler(
             await db.delete(user_dept_assoc)
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)

@@ -7,7 +7,7 @@ from sqlalchemy.orm import joinedload
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserLevel, Department, UserDepartment
-from app.schema import Response, ErrorResponse
+from app.schema import ErrorResponse
 from app.schema.department import (
     DepartmentListResponse,
     AddDepartmentRequest,
@@ -19,7 +19,7 @@ from app.utils import get_current_user
 
 async def department_list_handler(
     db: AsyncSession = Depends(get_db),
-) -> Response[DepartmentListResponse]:
+) -> DepartmentListResponse:
     try:
         departments = (
             (
@@ -56,7 +56,7 @@ async def department_list_handler(
                 )
             )
 
-        return Response(DepartmentListResponse(result))
+        return DepartmentListResponse(result)
     except Exception as e:
         logger.error(e)
         raise ErrorResponse()
@@ -66,7 +66,7 @@ async def add_department_handler(
     request: AddDepartmentRequest,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     if not current_user.has_permission(UserLevel.SUPERADMIN):
         raise ErrorResponse(
             status_code=403,
@@ -156,7 +156,7 @@ async def add_department_handler(
 
         await db.commit()
 
-        return Response()
+        return None
     except IntegrityError as e:
         await db.rollback()
         logger.error(e)
@@ -174,7 +174,7 @@ async def remove_department_handler(
     code: str,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     if not current_user.has_permission(UserLevel.SUPERADMIN):
         raise ErrorResponse(
             status_code=403,
@@ -214,7 +214,7 @@ async def remove_department_handler(
         await db.delete(department)
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)

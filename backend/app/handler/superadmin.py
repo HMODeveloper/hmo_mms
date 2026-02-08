@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserLevel
-from app.schema import Response, ErrorResponse
+from app.schema import ErrorResponse
 from app.utils import get_current_user
 
 
@@ -13,7 +13,7 @@ async def add_admin_handler(
     qq_id: int,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     if not current_user.has_permission(UserLevel.SUPERADMIN):
         raise ErrorResponse(
             status_code=403,
@@ -38,7 +38,7 @@ async def add_admin_handler(
         user.level = UserLevel.ADMIN
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)
@@ -49,7 +49,7 @@ async def remove_admin_handler(
     qq_id: int,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     if not current_user.has_permission(UserLevel.SUPERADMIN):
         raise ErrorResponse(
             status_code=403,
@@ -74,7 +74,7 @@ async def remove_admin_handler(
         user.level = UserLevel.MEMBER
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)
@@ -85,7 +85,7 @@ async def add_superadmin_handler(
     qq_id: int,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     if not current_user.has_permission(UserLevel.SUPERADMIN):
         raise ErrorResponse(
             status_code=403,
@@ -110,7 +110,7 @@ async def add_superadmin_handler(
         user.level = UserLevel.SUPERADMIN
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)
@@ -121,7 +121,7 @@ async def remove_superadmin_handler(
     qq_id: int,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     if not current_user.has_permission(UserLevel.SUPERADMIN):
         raise ErrorResponse(
             status_code=403,
@@ -159,7 +159,7 @@ async def remove_superadmin_handler(
         user.level = UserLevel.MEMBER
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)

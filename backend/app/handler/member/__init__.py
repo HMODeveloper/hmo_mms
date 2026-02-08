@@ -9,7 +9,7 @@ from sqlalchemy.orm import joinedload
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserLevel, UserDepartment, College, DeletedUser
-from app.schema import Response, ErrorResponse, BaseDepartment
+from app.schema import ErrorResponse, BaseDepartment
 from app.schema.member import (
     MemberListResponse,
     MemberInfoResponse,
@@ -21,7 +21,7 @@ from app.utils import get_current_user
 async def member_list_handler(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response[MemberListResponse]:
+) -> MemberListResponse:
     try:
         users = (
             (
@@ -76,7 +76,7 @@ async def member_list_handler(
                 )
             )
 
-        return Response(data=MemberListResponse(member_list=member_list))
+        return MemberListResponse(member_list=member_list)
     except Exception as e:
         logger.error(e)
         raise ErrorResponse()
@@ -86,7 +86,7 @@ async def add_member_handler(
     request: AddMemberRequest,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     if not current_user.has_permission(UserLevel.ADMIN):
         raise ErrorResponse(
             status_code=403,
@@ -125,7 +125,7 @@ async def add_member_handler(
         db.add(user)
         await db.commit()
 
-        return Response()
+        return None
     except IntegrityError as e:
         await db.rollback()
 
@@ -145,7 +145,7 @@ async def remove_member_handler(
     qq_id: int,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-) -> Response:
+):
     user = (
         (
             await db.execute(
@@ -219,7 +219,7 @@ async def remove_member_handler(
         await db.delete(user)
         await db.commit()
 
-        return Response()
+        return None
     except Exception as e:
         await db.rollback()
         logger.error(e)
