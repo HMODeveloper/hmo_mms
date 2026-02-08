@@ -1,5 +1,5 @@
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios"
-import type { ErrorResponseData, ResponseData } from "~/models/response"
+import type { ErrorResponseData } from "~/models/response"
 import axios from "axios"
 import { RequestErrorImpl } from "~/models/response"
 
@@ -14,14 +14,14 @@ const myAxios = axios.create({
 const clientRequest = {
   request: async <T>(config: AxiosRequestConfig): Promise<T> => (
     myAxios(config)
-      .then((response: AxiosResponse<ResponseData<T>>) => response.data.data)
+      .then((response: AxiosResponse<T>) => response.data)
       .catch((error: AxiosError<ErrorResponseData>) => {
         if (error.response) {
           // 接受到非 200 响应
           const response = error.response
           throw new RequestErrorImpl(
             response.status,
-            response.data.detail.code,
+            response.data.detail,
             error,
           )
         }

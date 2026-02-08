@@ -1,34 +1,22 @@
 import type { AxiosError } from "axios"
 
 /**
- * 默认响应接口
- *
- * @template T - 响应数据的类型
- * @property {string} status - 请求状态, 成功为 "OK", 失败为对应错误代码
- * @property {T} data - 负载数据
- */
-export interface ResponseData<T> {
-  status: string
-  data: T
-}
-
-/**
  * 默认错误响应接口
  */
 export interface ErrorResponseData {
-  detail: { code: string }
+  detail: string
 }
 
 /**
- * 默认请求错误接口
+ * 错误返回接口
  *
- * @property {string} status - 请求状态, 成功为 "OK", 失败为对应错误代码
- * @property {string} msg - 错误信息文本
+ * @property {string} status - 状态码
+ * @property {string} code - 错误码
  * @property {AxiosError} [originalError] - 原始的 Axios 错误对象
  */
 interface RequestError {
   status: number
-  msg: string
+  code: string
   originalError?: AxiosError
 }
 
@@ -40,24 +28,17 @@ interface RequestError {
  * @class RequestErrorImpl
  * @extends Error
  * @implements RequestError
- * @property {string} status - 请求状态, 成功为 "OK", 失败为对应错误代码
- * @property {string} msg - 错误信息文本
+ * @property {string} status - 状态码
+ * @property {string} code - 错误码
  * @property {AxiosError} [originalError] - 原始的 Axios 错误对象
  */
 export class RequestErrorImpl extends Error implements RequestError {
-/**
- * 创建RequestErrorImpl实例
- *
- * @param {number} status - 请求状态
- * @param {string} msg - 错误信息文本
- * @param {AxiosError} [originalError] - 原始的 Axios 错误对象
- */
   constructor(
     public status: number,
-    public msg: string,
+    public code: string,
     public originalError?: AxiosError,
   ) {
-    super(msg)
+    super(`${status} ${code}`)
     this.name = "RequestError"
   }
 }
