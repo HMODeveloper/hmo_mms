@@ -17,5 +17,5 @@ export async function logout() {
 }
 
 export async function getUserInfo() {
-  return await request.get<UserInfo>("/userinfo")
+  return await request.get<UserInfo>("/user/info")
 }
