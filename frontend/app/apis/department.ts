@@ -1,5 +1,4 @@
 import type { DepartmentInfo, UserInfo } from "~/models/user"
-import request from "~/lib/client"
 
 export interface AddMemberRequest {
   name: string
@@ -16,33 +15,33 @@ export interface DepartmentInfoResponse {
 }
 
 export async function departmentList() {
-  return await request.get<DepartmentInfo[]>("/department")
+  return await useRequest().get<DepartmentInfo[]>("/department")
 }
 
 export async function addDepartment(req: AddMemberRequest) {
-  return await request.post("/department", req)
+  return await useRequest().post("/department", req)
 }
 
 export async function removeDepartment(code: string) {
-  return await request.delete(`/department/${code}`)
+  return await useRequest().delete(`/department/${code}`)
 }
 
 export async function departmentInfo(code: string) {
-  return await request.get<DepartmentInfoResponse>(`/department/${code}`)
+  return await useRequest().get<DepartmentInfoResponse>(`/department/${code}`)
 }
 
 export async function addDepartmentMember(code: string, QQID: number) {
-  return await request.post(`/department/${code}/member`, { QQID })
+  return await useRequest().post(`/department/${code}/member`, { QQID })
 }
 
 export async function removeDepartmentMember(code: string, QQID: number) {
-  return await request.delete(`/department/${code}/member/${QQID}`)
+  return await useRequest().delete(`/department/${code}/member/${QQID}`)
 }
 
 export async function addDepartmentMinister(code: string, QQID: number) {
-  return await request.post(`/department/${code}/minister`, { QQID })
+  return await useRequest().post(`/department/${code}/minister`, { QQID })
 }
 
 export async function removeDepartmentMinister(code: string, QQID: number) {
-  return await request.delete(`/department/${code}/minister/${QQID}`)
+  return await useRequest().delete(`/department/${code}/minister/${QQID}`)
 }

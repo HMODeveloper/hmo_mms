@@ -1,5 +1,3 @@
-import request from "~/lib/client"
-
 export interface ChangePasswordRequest {
   old: string
   new: string
@@ -18,13 +16,13 @@ export interface UpdateInfoRequest {
 }
 
 export async function changePassword(req: ChangePasswordRequest) {
-  return await request.put("/user/password", req)
+  return await useRequest().put("/user/password", req)
 }
 
 export async function updateInfo(req: UpdateInfoRequest) {
-  return await request.put("/user/info", req)
+  return await useRequest().put("/user/info", req)
 }
 
 export async function removeUser() {
-  return await request.delete("/user")
+  return await useRequest().delete("/user")
 }

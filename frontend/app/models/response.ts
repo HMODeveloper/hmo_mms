@@ -1,5 +1,3 @@
-import type { FetchError } from "ofetch"
-
 /**
  * 默认错误响应接口
  */

@@ -1,5 +1,3 @@
-import request from "~/lib/client"
-
 export interface SignUpRequest {
   QQID: number
   nickname: string
@@ -15,13 +13,13 @@ export interface SignUpRequest {
 }
 
 export async function getSignUpInfo() {
-  return await request.get("/signup")
+  return await useRequest().get("/signup")
 }
 
 export async function checkQQ(QQID: number) {
-  return await request.get("/signup/check", { qq_id: QQID })
+  return await useRequest().get("/signup/check", { qq_id: QQID })
 }
 
 export async function signUp(req: SignUpRequest) {
-  return await request.post("/signup", req)
+  return await useRequest().post("/signup", req)
 }

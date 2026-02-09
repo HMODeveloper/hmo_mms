@@ -1,17 +1,15 @@
-import request from "~/lib/client"
-
 export async function addAdmin(QQID: number) {
-  return await request.post("/admin", { QQID })
+  return await useRequest().post("/admin", { QQID })
 }
 
 export async function removeAdmin(QQID: number) {
-  return await request.delete(`/admin/${QQID}`)
+  return await useRequest().delete(`/admin/${QQID}`)
 }
 
 export async function addSuperAdmin(QQID: number) {
-  return await request.post("/superadmin", { QQID })
+  return await useRequest().post("/superadmin", { QQID })
 }
 
 export async function removeSuperAdmin(QQID: number) {
-  return await request.delete(`/superadmin/${QQID}`)
+  return await useRequest().delete(`/superadmin/${QQID}`)
 }

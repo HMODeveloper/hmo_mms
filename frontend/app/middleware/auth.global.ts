@@ -1,4 +1,4 @@
-import { getUserInfo } from "~/apis/auth.server"
+import { getUserInfo } from "~/apis/auth"
 
 const EXCLUDE_PATHS = ["/", "/signup"]
 
