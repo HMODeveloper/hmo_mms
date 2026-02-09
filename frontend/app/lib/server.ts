@@ -10,10 +10,7 @@ const serverRequest = {
       ...(token && { Authorization: `Bearer ${token}` }),
     }
 
-    return await clientRequest.request<T>({
-      ...config,
-      headers,
-    })
+    return await clientRequest.request<T>({ ...config, headers })
   },
 
   get: async <T>(url: string, data?: object, config?: AxiosRequestConfig) => {
