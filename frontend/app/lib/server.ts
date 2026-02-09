@@ -1,32 +1,46 @@
-import type { AxiosRequestConfig } from "axios"
+import type { FetchOptions } from "ofetch"
 import clientRequest from "~/lib/client"
 
+interface RequestConfig extends FetchOptions {
+  params?: object
+}
+
+function getAuthHeaders() {
+  const token = useCookie("token")
+  return token.value ? { Authorization: `Bearer ${token.value}` } : {}
+}
+
 const serverRequest = {
-  request: async <T>(config: AxiosRequestConfig): Promise<T> => {
-    const token = useCookie("token")
-
+  get: async <T>(url: string, data?: object, config?: RequestConfig) => {
     const headers = {
-      ...config.headers,
-      ...(token && { Authorization: `Bearer ${token}` }),
+      ...config?.headers,
+      ...getAuthHeaders(),
     }
-
-    return await clientRequest.request<T>({ ...config, headers })
+    return await clientRequest.get<T>(url, data, { ...config, headers })
   },
 
-  get: async <T>(url: string, data?: object, config?: AxiosRequestConfig) => {
-    return await serverRequest.request<T>({ method: "GET", url, params: data, ...config })
+  post: async <T>(url: string, data?: object, config?: RequestConfig) => {
+    const headers = {
+      ...config?.headers,
+      ...getAuthHeaders(),
+    }
+    return await clientRequest.post<T>(url, data, { ...config, headers })
   },
 
-  post: async <T>(url: string, data?: object, config?: AxiosRequestConfig) => {
-    return await serverRequest.request<T>({ method: "POST", url, data, ...config })
+  put: async <T>(url: string, data?: object, config?: RequestConfig) => {
+    const headers = {
+      ...config?.headers,
+      ...getAuthHeaders(),
+    }
+    return await clientRequest.put<T>(url, data, { ...config, headers })
   },
 
-  put: async <T>(url: string, data?: object, config?: AxiosRequestConfig) => {
-    return await serverRequest.request<T>({ method: "PUT", url, data, ...config })
-  },
-
-  delete: async <T>(url: string, data?: object, config?: AxiosRequestConfig) => {
-    return await serverRequest.request<T>({ method: "DELETE", url, data, ...config })
+  delete: async <T>(url: string, data?: object, config?: RequestConfig) => {
+    const headers = {
+      ...config?.headers,
+      ...getAuthHeaders(),
+    }
+    return await clientRequest.delete<T>(url, data, { ...config, headers })
   },
 }
 

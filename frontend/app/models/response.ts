@@ -1,4 +1,4 @@
-import type { AxiosError } from "axios"
+import type { FetchError } from "ofetch"
 
 /**
  * 默认错误响应接口
@@ -12,12 +12,10 @@ export interface ErrorResponseData {
  *
  * @property {string} status - 状态码
  * @property {string} code - 错误码
- * @property {AxiosError} [originalError] - 原始的 Axios 错误对象
  */
 interface RequestError {
   status: number
   code: string
-  originalError?: AxiosError
 }
 
 /**
@@ -30,13 +28,11 @@ interface RequestError {
  * @implements RequestError
  * @property {string} status - 状态码
  * @property {string} code - 错误码
- * @property {AxiosError} [originalError] - 原始的 Axios 错误对象
  */
 export class RequestErrorImpl extends Error implements RequestError {
   constructor(
     public status: number,
     public code: string,
-    public originalError?: AxiosError,
   ) {
     super(`${status} ${code}`)
     this.name = "RequestError"
