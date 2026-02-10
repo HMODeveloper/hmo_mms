@@ -2,7 +2,7 @@
 interface Props {
   label: string
   icon: string
-  modelValue: string | number | undefined
+  modelValue: string | number | null | undefined
   type?: string
   editing?: boolean
 }

@@ -2,22 +2,11 @@
 import type { SelectMenuItem } from "@nuxt/ui"
 import dayjs from "dayjs"
 import * as z from "zod"
-import { getSignUpInfo } from "~/apis/signup"
 
 const { userInfo } = useAuth()
-const toast = useToast()
+const { colleges } = useCollege()
 
-const colleges = await getSignUpInfo()
-  .then(response => response.colleges)
-  .catch((_error) => {
-    toast.add({
-      title: "学院信息获取错误",
-      color: "error",
-    })
-    return []
-  })
-
-const collegeSelectItem = computed<SelectMenuItem[]>(() => colleges.map(item => ({
+const collegeSelectItem = computed<SelectMenuItem[]>(() => colleges.value.map(item => ({
   label: item.name,
   value: item.code,
 })))
@@ -27,13 +16,14 @@ const isEditing = computed(() => status.value === "edit")
 
 const schema = z.object({
   nickname: z.string(" "),
-  mcName: z.string(" "),
+  mcName: z.string(" ").nullable(),
   realName: z.string(" "),
-  studentID: z.string(" "),
-  collegeName: z.string(" "),
-  major: z.string(" "),
-  grade: z.number(" "),
-  classIndex: z.number(" "),
+  studentID: z.string(" ").nullable(),
+  college: z.string(" "),
+  school: z.string(" ").nullable(),
+  major: z.string(" ").nullable(),
+  grade: z.number(" ").nullable(),
+  classIndex: z.number(" ").nullable(),
 })
 
 type Schema = z.output<typeof schema>
@@ -43,7 +33,8 @@ const state = computed<Partial<Schema>>(() => ({
   mcName: userInfo.value?.mcName,
   realName: userInfo.value?.realName,
   studentID: userInfo.value?.studentID,
-  collegeName: userInfo.value?.collegeName,
+  college: userInfo.value?.college,
+  school: userInfo.value?.school,
   major: userInfo.value?.major,
   grade: userInfo.value?.grade,
   classIndex: userInfo.value?.classIndex,
@@ -107,9 +98,10 @@ const majorClass = computed(() => {
           :editing="isEditing"
         />
 
+        <!-- 学院字段: 显示为文本, 编辑时显示枚举 -->
         <UserProfileFeature
           v-if="!isEditing"
-          v-model="state.collegeName"
+          :model-value="colleges.find(item => item.code === state.college)?.name || '未选择学院'"
           label="学院"
           icon="i-tabler-building-bank"
         />
@@ -127,36 +119,48 @@ const majorClass = computed(() => {
           </template>
         </UPageFeature>
 
+        <!-- 学校字段: 仅外校学生显示 -->
         <UserProfileFeature
-          v-if="!isEditing"
-          :model-value="majorClass"
-          label="专业班级"
-          icon="i-tabler-certificate"
+          v-if="state.college === 'NOT_HNU'"
+          v-model="state.school"
+          label="学校"
+          icon="i-tabler-building"
+          :editing="isEditing"
         />
 
-        <template v-if="isEditing">
+        <!-- 专业班级字段: 外校学生不显示, 显示时组合显示, 编辑时分开显示 -->
+        <template v-if="state.college !== 'NOT_HNU'">
           <UserProfileFeature
-            v-model="state.major"
-            label="专业"
-            icon="i-tabler-book"
-            :editing="isEditing"
+            v-if="!isEditing"
+            :model-value="majorClass"
+            label="专业班级"
+            icon="i-tabler-certificate"
           />
 
-          <UserProfileFeature
-            v-model="state.grade"
-            label="年级"
-            icon="i-tabler-number"
-            type="number"
-            :editing="isEditing"
-          />
+          <template v-if="isEditing">
+            <UserProfileFeature
+              v-model="state.major"
+              label="专业"
+              icon="i-tabler-book"
+              :editing="isEditing"
+            />
 
-          <UserProfileFeature
-            v-model="state.classIndex"
-            label="班级序号"
-            icon="i-tabler-users-group"
-            type="number"
-            :editing="isEditing"
-          />
+            <UserProfileFeature
+              v-model="state.grade"
+              label="年级"
+              icon="i-tabler-number"
+              type="number"
+              :editing="isEditing"
+            />
+
+            <UserProfileFeature
+              v-model="state.classIndex"
+              label="班级序号"
+              icon="i-tabler-users-group"
+              type="number"
+              :editing="isEditing"
+            />
+          </template>
         </template>
       </div>
 
@@ -168,7 +172,7 @@ const majorClass = computed(() => {
         />
 
         <UserProfileFeature
-          :model-value="userInfo?.departments?.map(d => d.name).join(', ') || '不属于任何部门'"
+          :model-value="userInfo?.departments?.map(item => item.name).join(', ') || '不属于任何部门'"
           label="所属部门"
           icon="i-tabler-building"
         />
