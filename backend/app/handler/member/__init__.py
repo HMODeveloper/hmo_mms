@@ -2,7 +2,6 @@ from datetime import timezone, datetime
 
 from fastapi import Depends
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
@@ -128,14 +127,6 @@ async def add_member_handler(
         await db.commit()
 
         return None
-    except IntegrityError as e:
-        await db.rollback()
-
-        logger.error(e)
-        raise ErrorResponse(
-            status_code=409,
-            code="INTEGRITY_ERROR",
-        )
     except Exception as e:
         await db.rollback()
 

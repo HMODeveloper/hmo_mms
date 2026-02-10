@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
 
-from sqlalchemy.exc import IntegrityError
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -161,13 +160,6 @@ async def update_user_info_handler(
         await db.commit()
 
         return None
-    except IntegrityError as e:
-        await db.rollback()
-        logger.error(e)
-        raise ErrorResponse(
-            status_code=409,
-            code="INTEGRITY_ERROR",
-        )
     except Exception as e:
         await db.rollback()
         logger.error(e)

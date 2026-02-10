@@ -2,7 +2,6 @@ from datetime import timezone
 
 from fastapi import Depends
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
@@ -160,13 +159,6 @@ async def add_department_handler(
         await db.commit()
 
         return None
-    except IntegrityError as e:
-        await db.rollback()
-        logger.error(e)
-        raise ErrorResponse(
-            status_code=409,
-            code="INTEGRITY_ERROR",
-        )
     except Exception as e:
         await db.rollback()
         logger.error(e)
@@ -274,7 +266,8 @@ async def department_info_handler(
                 create_at=user.create_at.replace(tzinfo=timezone.utc),
                 real_name=user.real_name,
                 student_id=user.student_id,
-                college_name=user.college_name,
+                college=user.college.name,
+                school=user.school,
                 major=user.major,
                 grade=user.grade,
                 class_index=user.class_index,
