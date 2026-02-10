@@ -15,9 +15,6 @@ from app.schema.signup import SignUpRequest, CollegeInfo, SignUpInfoResponse
 async def signup_info_handler() -> SignUpInfoResponse:
     colleges = []
     for college in College:
-        if college == College.OTHERS:
-            continue
-
         colleges.append(
             CollegeInfo(
                 name=str(college.value),
@@ -64,13 +61,14 @@ async def signup_handler(
             matching_college = college
             break
     if matching_college is None:
-        matching_college = College.OTHERS
+        raise ErrorResponse(
+            status_code=409,
+            code="NO_COLLEGE_MATCHED",
+        )
 
-    user.college_enum = matching_college
-    if matching_college in (College.OTHERS, College.NOT_HNU):
-        user.college_name = request.college_name
-    else:
-        user.college_name = str(matching_college.value)
+    user.college = matching_college
+    if matching_college == College.NOT_HNU:
+        user.school = request.school
 
     user.password = request.password
     user.create_at = datetime.now(timezone.utc)

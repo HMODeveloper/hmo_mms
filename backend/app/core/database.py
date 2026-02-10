@@ -77,8 +77,7 @@ async def init_db():
                 qq_id=0,
                 nickname="超级管理员",
                 real_name="超级管理员",
-                college_enum=College.OTHERS,
-                college_name="其他",
+                college=College.OTHER,
                 level=UserLevel.SUPERADMIN,
             )
             default_superadmin.password = CONFIG.INIT_PASSWORD

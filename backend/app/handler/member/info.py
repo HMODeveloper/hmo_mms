@@ -8,7 +8,7 @@ from sqlalchemy.orm import joinedload
 from app.core.config import CONFIG
 from app.core.database import get_db
 from app.core.logger import logger
-from app.model import User, UserLevel, UserDepartment
+from app.model import User, UserLevel, UserDepartment, College
 from app.schema import ErrorResponse, BaseDepartment
 from app.schema.member import (
     MemberInfoResponse,
@@ -63,7 +63,8 @@ async def get_member_info_handler(
         student_id=user.student_id
         if current_user.sensitive_permission(user)
         else "***",
-        college_name=user.college_name,
+        college=user.college.value,
+        school=user.school,
         major=user.major if current_user.sensitive_permission(user) else None,
         grade=user.grade if current_user.sensitive_permission(user) else None,
         class_index=user.class_index
@@ -107,8 +108,21 @@ async def update_member_info_handler(
             user.real_name = request.real_name
         if request.student_id is not None:
             user.student_id = request.student_id
-        if request.college_name is not None:
-            user.college_name = request.college_name
+        if request.college is not None:
+            matching_college = None
+            for college in College:
+                if college.name == request.college:
+                    matching_college = college
+                    break
+            if matching_college is None:
+                raise ErrorResponse(
+                    status_code=409,
+                    code="NO_COLLEGE_MATCHED",
+                )
+            user.college = matching_college
+            if matching_college == College.NOT_HNU:
+                if request.school is not None:
+                    user.school = request.school
         if request.major is not None:
             user.major = request.major
         if request.grade is not None:

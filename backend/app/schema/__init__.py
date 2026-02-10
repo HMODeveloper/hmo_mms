@@ -24,7 +24,8 @@ class BaseUserInfo(BaseModel):
     create_at: datetime = Field(..., serialization_alias="createAt")
     real_name: str = Field(..., serialization_alias="realName")
     student_id: Optional[str] = Field(..., serialization_alias="studentId")
-    college_name: str = Field(..., serialization_alias="collegeName")
+    college: str
+    school: Optional[str]
     major: Optional[str]
     grade: Optional[int]
     class_index: Optional[int] = Field(..., serialization_alias="classIndex")

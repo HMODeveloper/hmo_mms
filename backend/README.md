@@ -35,8 +35,8 @@
 	- `create_at` (`datetime`): 账号创建时间.
 	- `real_name` (`str`): 真实姓名.
 	- `student_id` (`Optional[str]`): 学号(外校学生不必填写).
-	- `college_enum` (`College`): 学院枚举.
-	- `college_name` (`str`): 学院名称("其他"填写具体学院名, 外校学生填写学校名称).
+	- `college` (`College`): 学院枚举.
+	- `school` (`Optional[str]`): 学校名称(仅外校学生填写).
 	- `major` (`Optional[str]`): 专业(外校学生不必填写).
 	- `grade` (`Optional[int]`): 年级(外校学生不必填写).
 	- `class_index` (`Optional[int]`): 班级序号(外校学生不必填写).
@@ -65,8 +65,8 @@
 	- `create_at` (`datetime`): 账号创建时间.
 	- `real_name` (`str`): 真实姓名.
 	- `student_id` (`Optional[str]`): 学号(外校学生不必填写).
-	- `college_enum` (`College`): 学院枚举.
-	- `college_name` (`str`): 学院名称("其他"填写具体学院名, 外校学生填写学校名称).
+	- `college` (`College`): 学院枚举.
+	- `school` (`Optional[str]`): 学校名称(仅外校学生填写).
 	- `major` (`Optional[str]`): 专业(外校学生不必填写).
 	- `grade` (`Optional[int]`): 年级(外校学生不必填写).
 	- `class_index` (`Optional[int]`): 班级序号(外校学生不必填写).

@@ -48,8 +48,8 @@ class College(Enum):
     SCSS = "网络空间安全学院"
     LCA = "隆平农学院"
     SFT = "未来技术学院"
+    OTHER = "其他"
     NOT_HNU = "外校学生"
-    OTHERS = "其他"
 
 
 class UserDepartment(Base):
@@ -127,8 +127,8 @@ class User(Base):
         create_at (datetime): 账号创建时间.
         real_name (str): 真实姓名.
         student_id (Optional[str]): 学号(外校学生不必填写).
-        college_enum (College): 学院枚举.
-        college_name (str): 学院名称("其他"填写具体学院名, 外校学生填写学校名称).
+        college (College): 学院枚举.
+        school (Optional[str]): 学校名称(仅外校学生填写).
         major (Optional[str]): 专业(外校学生不必填写).
         grade (Optional[int]): 年级(外校学生不必填写).
         class_index (Optional[int]): 班级序号(外校学生不必填写).
@@ -168,8 +168,8 @@ class User(Base):
     student_id: Mapped[Optional[str]] = mapped_column(
         String(20), unique=True, nullable=True
     )
-    college_enum: Mapped[College] = mapped_column(SAEnum(College), nullable=False)
-    college_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    college: Mapped[College] = mapped_column(SAEnum(College), nullable=False)
+    school: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     major: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     grade: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     class_index: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
@@ -238,8 +238,8 @@ class DeletedUser(Base):
         create_at (datetime): 账号创建时间.
         real_name (str): 真实姓名.
         student_id (Optional[str]): 学号(外校学生不必填写).
-        college_enum (College): 学院枚举.
-        college_name (str): 学院名称("其他"填写具体学院名, 外校学生填写学校名称).
+        college (College): 学院枚举.
+        school (Optional[str]): 学校名称.
         major (Optional[str]): 专业(外校学生不必填写).
         grade (Optional[int]): 年级(外校学生不必填写).
         class_index (Optional[int]): 班级序号(外校学生不必填写).
@@ -265,8 +265,8 @@ class DeletedUser(Base):
     student_id: Mapped[Optional[str]] = mapped_column(
         String(20), unique=True, nullable=True
     )
-    college_enum: Mapped[College] = mapped_column(SAEnum(College), nullable=False)
-    college_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    college: Mapped[College] = mapped_column(SAEnum(College), nullable=False)
+    school: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     major: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     grade: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     class_index: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)

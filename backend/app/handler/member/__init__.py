@@ -61,7 +61,8 @@ async def member_list_handler(
                     student_id=user.student_id
                     if current_user.sensitive_permission(user)
                     else "***",
-                    college_name=user.college_name,
+                    college=user.college.value,
+                    school=user.school,
                     major=user.major
                     if current_user.sensitive_permission(user)
                     else None,
@@ -106,17 +107,18 @@ async def add_member_handler(
 
     matching_college = None
     for college in College:
-        if college.name == request.college_name:
+        if college.name == request.college:
             matching_college = college
             break
     if matching_college is None:
-        matching_college = College.OTHERS
+        raise ErrorResponse(
+            status_code=409,
+            code="NO_COLLEGE_MATCHED",
+        )
 
-    user.college_enum = matching_college
-    if matching_college in (College.OTHERS, College.NOT_HNU):
-        user.college_name = request.college_name
-    else:
-        user.college_name = str(matching_college.value)
+    user.college = matching_college
+    if matching_college == College.NOT_HNU:
+        user.school = request.school
 
     user.password = request.password
     user.create_at = datetime.now(timezone.utc)
@@ -206,8 +208,8 @@ async def remove_member_handler(
             create_at=user.create_at,
             real_name=user.real_name,
             student_id=user.student_id,
-            college_enum=user.college_enum,
-            college_name=user.college_name,
+            college=user.college,
+            school=user.school,
             major=user.major,
             grade=user.grade,
             class_index=user.class_index,

@@ -15,8 +15,8 @@ class AddMemberRequest(BaseModel):
     mc_name: Optional[str] = Field(..., alias="mcName")
     real_name: str = Field(..., alias="realName")
     student_id: Optional[str] = Field(..., alias="studentId")
-    college_code: str = Field(..., alias="collegeCode")
-    college_name: str = Field(..., alias="collegeName")
+    college: str
+    school: Optional[str]
     major: Optional[str]
     grade: Optional[int]
     class_index: Optional[int] = Field(..., alias="classIndex")
@@ -31,8 +31,8 @@ class UpdateMemberInfoRequest(BaseModel):
     mc_name: Optional[str] = Field(..., alias="mcName")
     real_name: Optional[str] = Field(..., alias="realName")
     student_id: Optional[str] = Field(..., alias="studentId")
-    college_code: Optional[str] = Field(..., alias="collegeCode")
-    college_name: Optional[str] = Field(..., alias="collegeName")
+    college: Optional[str]
+    school: Optional[str]
     major: Optional[str]
     grade: Optional[int]
     class_index: Optional[int] = Field(..., alias="classIndex")
