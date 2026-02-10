@@ -3,9 +3,12 @@ useGuard()
 </script>
 
 <template>
-  <UPageSection>
-    个人中心
-  </UPageSection>
+  <UPage>
+    <UPageHeader title="个人中心" />
+    <UPageBody>
+      <UserProfile />
+    </UPageBody>
+  </UPage>
 </template>
 
 <style scoped>

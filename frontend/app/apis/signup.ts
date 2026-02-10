@@ -1,3 +1,4 @@
+import type { CollegeInfo } from "~/models/college"
 import request from "~/apis/request"
 
 export interface SignUpRequest {
@@ -14,8 +15,12 @@ export interface SignUpRequest {
   classIndex: number
 }
 
+export interface SignUpInfoResponse {
+  colleges: CollegeInfo[]
+}
+
 export async function getSignUpInfo() {
-  return await request.get("/signup")
+  return await request.get<SignUpInfoResponse>("/signup")
 }
 
 export async function checkQQ(QQID: number) {

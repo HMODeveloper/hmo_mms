@@ -71,9 +71,11 @@ onMounted(() => {
       <UNavigationMenu :items="navItems" orientation="vertical" class="-mx-2.5" />
     </template>
   </UHeader>
-  <UPage>
-    <slot />
-  </UPage>
+  <UMain>
+    <UContainer>
+      <slot />
+    </UContainer>
+  </UMain>
 </template>
 
 <style scoped>
