@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { departmentList } from "~/apis/department"
 
+useGuard()
+
 function handleClick() {
   departmentList()
     .then((response) => {

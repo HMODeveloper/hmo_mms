@@ -1,5 +1,5 @@
 import type { UserInfo } from "~/models/user"
-import { userLogout } from "~/apis/auth"
+import { getUserInfo, userLogout } from "~/apis/auth"
 
 export function useAuth() {
   const userInfo = useState<UserInfo | null>("userInfo", () => null)
@@ -10,6 +10,17 @@ export function useAuth() {
 
   const clearUserInfo = () => {
     userInfo.value = null
+  }
+
+  const initUserInfo = async () => {
+    try {
+      const response = await getUserInfo()
+      setUserInfo(response)
+    }
+    catch (error) {
+      clearUserInfo()
+      throw error
+    }
   }
 
   const logout = async () => {
@@ -28,6 +39,7 @@ export function useAuth() {
     userInfo: readonly(userInfo),
     setUserInfo,
     clearUserInfo,
+    initUserInfo,
     logout,
     isAuthenticated,
   }

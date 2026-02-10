@@ -11,6 +11,10 @@ const navItems = computed<NavigationMenuItem[]>(() => [
   { label: "超管功能", to: "/superadmin", active: route.path.startsWith("/superadmin") },
   { label: "个人中心", to: "/user", active: route.path === "/user" },
 ])
+
+onMounted(() => {
+
+})
 </script>
 
 <template>

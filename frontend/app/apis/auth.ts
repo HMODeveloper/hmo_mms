@@ -6,8 +6,6 @@ export interface LoginRequest {
   password: string
 }
 
-export type LoginResponse = UserInfo
-
 export async function userLogin(req: LoginRequest) {
   return await request.post("/login", req)
 }

@@ -3,6 +3,8 @@ export interface DepartmentInfo {
   code: string
 }
 
+export type UserLevel = "superadmin" | "admin" | "member"
+
 export interface UserInfo {
   QQID: number
   nickname: string
@@ -15,5 +17,5 @@ export interface UserInfo {
   grade: number
   classIndex: number
   departments: DepartmentInfo[]
-  level: "superadmin" | "admin" | "member"
+  level: UserLevel
 }
