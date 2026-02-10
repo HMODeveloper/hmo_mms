@@ -10,7 +10,7 @@ definePageMeta({
 })
 
 const toast = useToast()
-const { setUserInfo } = useAuth()
+const { setUserInfo, clearUserInfo } = useAuth()
 
 const fields: AuthFormField[] = [
   {
@@ -85,6 +85,8 @@ function handleSubmit(payload: FormSubmitEvent<Schema>) {
             color: "error",
           })
       }
+
+      clearUserInfo()
     })
 }
 </script>

@@ -1,4 +1,5 @@
 import type { UserInfo } from "~/models/user"
+import request from "~/apis/request"
 
 export interface LoginRequest {
   QQID: number
@@ -8,13 +9,13 @@ export interface LoginRequest {
 export type LoginResponse = UserInfo
 
 export async function userLogin(req: LoginRequest) {
-  return await useRequest().post("/login", req)
+  return await request.post("/login", req)
 }
 
 export async function userLogout() {
-  return await useRequest().get("/logout")
+  return await request.get("/logout")
 }
 
 export async function getUserInfo() {
-  return await useRequest().get<UserInfo>("/user/info")
+  return await request.get<UserInfo>("/user/info")
 }

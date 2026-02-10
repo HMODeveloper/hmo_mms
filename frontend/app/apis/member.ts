@@ -1,4 +1,5 @@
 import type { UserInfo } from "~/models/user"
+import request from "~/apis/request"
 
 export interface AddMemberRequest {
   QQID: number
@@ -27,25 +28,25 @@ export interface UpdateInfoRequest {
 }
 
 export async function memberList() {
-  return await useRequest().get<UserInfo[]>("/member")
+  return await request.get<UserInfo[]>("/member")
 }
 
 export async function addMember(req: AddMemberRequest) {
-  return await useRequest().post("/member", req)
+  return await request.post("/member", req)
 }
 
 export async function removeMember(QQID: number) {
-  return await useRequest().delete(`/member/${QQID}`)
+  return await request.delete(`/member/${QQID}`)
 }
 
 export async function memberInfo(QQID: number) {
-  return await useRequest().get<UserInfo>(`/member/${QQID}`)
+  return await request.get<UserInfo>(`/member/${QQID}`)
 }
 
 export async function updateInfo(QQID: number, req: UpdateInfoRequest) {
-  return await useRequest().put(`/member/${QQID}/info`, req)
+  return await request.put(`/member/${QQID}/info`, req)
 }
 
 export async function resetPassword(QQID: number) {
-  return await useRequest().put(`/member/${QQID}/password`)
+  return await request.put(`/member/${QQID}/password`)
 }

@@ -1,15 +1,17 @@
+import request from "~/apis/request"
+
 export async function addAdmin(QQID: number) {
-  return await useRequest().post("/admin", { QQID })
+  return await request.post("/admin", { QQID })
 }
 
 export async function removeAdmin(QQID: number) {
-  return await useRequest().delete(`/admin/${QQID}`)
+  return await request.delete(`/admin/${QQID}`)
 }
 
 export async function addSuperAdmin(QQID: number) {
-  return await useRequest().post("/superadmin", { QQID })
+  return await request.post("/superadmin", { QQID })
 }
 
 export async function removeSuperAdmin(QQID: number) {
-  return await useRequest().delete(`/superadmin/${QQID}`)
+  return await request.delete(`/superadmin/${QQID}`)
 }
