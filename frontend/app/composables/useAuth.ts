@@ -3,6 +3,7 @@ import { getUserInfo, userLogout } from "~/apis/auth"
 
 export function useAuth() {
   const userInfo = useState<UserInfo | null>("userInfo", () => null)
+  const isInitialized = useState<boolean>("isAuthInitialized", () => false)
 
   const setUserInfo = (info: UserInfo) => {
     userInfo.value = info
@@ -13,13 +14,28 @@ export function useAuth() {
   }
 
   const initUserInfo = async () => {
+    if (isInitialized.value)
+      return
+
+    const toast = useToast()
     try {
       const response = await getUserInfo()
       setUserInfo(response)
+      toast.add({
+        title: "自动登录成功",
+        color: "success",
+      })
     }
     catch (error) {
       clearUserInfo()
-      throw error
+      console.error("自动登录失败: ", error)
+      toast.add({
+        title: "自动登录失败",
+        color: "error",
+      })
+    }
+    finally {
+      isInitialized.value = true
     }
   }
 
@@ -42,5 +58,6 @@ export function useAuth() {
     initUserInfo,
     logout,
     isAuthenticated,
+    isInitialized: readonly(isInitialized),
   }
 }

@@ -7,17 +7,16 @@ const USER_LEVEL_RANK: Record<UserLevel, number> = {
 }
 
 export function useGuard(level: UserLevel | null = null) {
-  const { userInfo, isAuthenticated, initUserInfo } = useAuth()
+  const { userInfo, initUserInfo, isAuthenticated, isInitialized } = useAuth()
 
   onMounted(async () => {
+    if (!isInitialized.value) {
+      await initUserInfo()
+    }
+
     if (!isAuthenticated.value) {
-      try {
-        await initUserInfo()
-      }
-      catch (error) {
-        console.error("信息获取失败: ", error)
-        navigateTo("/")
-      }
+      navigateTo("/")
+      return
     }
 
     if (level && userInfo.value && USER_LEVEL_RANK[userInfo.value.level] < USER_LEVEL_RANK[level]) {
