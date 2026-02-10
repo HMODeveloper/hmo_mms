@@ -12,7 +12,8 @@ export interface UserInfo {
   createAt: string
   realName: string
   studentID: string
-  collegeName: string
+  college: string
+  school: string
   major: string
   grade: number
   classIndex: number

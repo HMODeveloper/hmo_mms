@@ -5,14 +5,14 @@ export interface AddMemberRequest {
   QQID: number
   nickname: string
   password: string
-  mcMame: string
+  mcMame?: string
   realName: string
-  studentID: string
-  collegeCode: string
-  collegeName: string
-  major: string
-  grade: number
-  classIndex: number
+  studentID?: string
+  college: string
+  school?: string
+  major?: string
+  grade?: number
+  classIndex?: number
 }
 
 export interface UpdateInfoRequest {
@@ -20,8 +20,8 @@ export interface UpdateInfoRequest {
   mcName?: string
   realName?: string
   studentID?: string
-  collegeCode?: string
-  collegeName?: string
+  college?: string
+  school?: string
   major?: string
   grade?: number
   classIndex?: number
