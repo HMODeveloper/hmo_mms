@@ -48,7 +48,7 @@ class College(Enum):
     SCSS = "网络空间安全学院"
     LCA = "隆平农学院"
     SFT = "未来技术学院"
-    OTHER = "其他"
+    OTHERS = "其他"
     NOT_HNU = "外校学生"
 
 
