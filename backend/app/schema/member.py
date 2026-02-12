@@ -1,38 +1,16 @@
-from typing import List, Optional
-
-from pydantic import BaseModel, Field
+from typing import List
 
 from app.schema import BaseUserInfo
+from app.schema.request import AddMemberRequest, UpdateMemberInfoRequest
 
 
 MemberListResponse = List[BaseUserInfo]
 
 
-class AddMemberRequest(BaseModel):
-    qq_id: int = Field(..., alias="QQID")
-    nickname: str
-    password: str
-    mc_name: Optional[str] = Field(..., alias="mcName")
-    real_name: str = Field(..., alias="realName")
-    student_id: Optional[str] = Field(..., alias="studentId")
-    college: str
-    school: Optional[str]
-    major: Optional[str]
-    grade: Optional[int]
-    class_index: Optional[int] = Field(..., alias="classIndex")
+AddMemberRequest = AddMemberRequest
 
 
 MemberInfoResponse = BaseUserInfo
 
 
-class UpdateMemberInfoRequest(BaseModel):
-    nickname: Optional[str]
-    password: Optional[str]
-    mc_name: Optional[str] = Field(..., alias="mcName")
-    real_name: Optional[str] = Field(..., alias="realName")
-    student_id: Optional[str] = Field(..., alias="studentId")
-    college: Optional[str]
-    school: Optional[str]
-    major: Optional[str]
-    grade: Optional[int]
-    class_index: Optional[int] = Field(..., alias="classIndex")
+UpdateMemberInfoRequest = UpdateMemberInfoRequest

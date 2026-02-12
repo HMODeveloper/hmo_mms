@@ -9,7 +9,7 @@ from sqlalchemy.orm import joinedload
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserDepartment
-from app.schema import ErrorResponse, BaseDepartment
+from app.schema import ErrorResponse, BaseUserDepartment
 from app.schema.auth import LoginRequest, UserInfoResponse
 from app.utils.get_current_user import get_current_user
 
@@ -86,9 +86,9 @@ async def get_user_info_handler(
     departments = []
     for department in user_with_departments.departments:
         departments.append(
-            BaseDepartment(
-                name=department.name,
+            BaseUserDepartment(
                 code=department.code,
+                name=department.name,
             )
         )
 
@@ -99,7 +99,7 @@ async def get_user_info_handler(
         create_at=user.create_at.replace(tzinfo=timezone.utc),
         real_name=user.real_name,
         student_id=user.student_id,
-        college=user.college.name,
+        college=user.college.value,
         school=user.school,
         major=user.major,
         grade=user.grade,

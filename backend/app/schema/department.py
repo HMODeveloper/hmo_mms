@@ -1,37 +1,17 @@
-from typing import Optional, List
+from typing import List
 
 from pydantic import BaseModel, Field
 
-from app.schema import BaseUserInfo
+from app.schema import BaseDepartmentInfo
 
 
-class MinisterInfo(BaseModel):
-    qq_id: int = Field(..., serialization_alias="QQID")
-    nickname: str
-    mc_name: Optional[str] = Field(..., serialization_alias="mcName")
+DepartmentListResponse = List[BaseDepartmentInfo]
 
 
-class DepartmentInfo(BaseModel):
-    name: str
-    code: str
-    minister: List[MinisterInfo]
+DepartmentInfoResponse = BaseDepartmentInfo
 
 
-DepartmentListResponse = List[DepartmentInfo]
-
-
-class DepartmentInfoResponse(BaseModel):
-    name: str
-    code: str
-    minister: List[int]
-    member: List[BaseUserInfo]
-
-
-class AddDepartmentRequest(BaseModel):
-    name: str
-    code: str
-    minister: List[int]
-    member: List[int]
+AddDepartmentRequest = BaseDepartmentInfo
 
 
 class AddDepartmentMemberRequest(BaseModel):

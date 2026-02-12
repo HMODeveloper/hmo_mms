@@ -1,6 +1,5 @@
-from typing import Optional
-
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from app.schema.request import UpdateMemberInfoRequest
 
 
 class ChangePasswordRequest(BaseModel):
@@ -8,14 +7,4 @@ class ChangePasswordRequest(BaseModel):
     new: str
 
 
-class UpdateUserInfoRequest(BaseModel):
-    nickname: Optional[str]
-    password: Optional[str]
-    mc_name: Optional[str] = Field(..., alias="mcName")
-    real_name: Optional[str] = Field(..., alias="realName")
-    student_id: Optional[str] = Field(..., alias="studentId")
-    college: Optional[str]
-    school: Optional[str]
-    major: Optional[str]
-    grade: Optional[int]
-    class_index: Optional[int] = Field(..., alias="classIndex")
+UpdateMemberInfoRequest = UpdateMemberInfoRequest

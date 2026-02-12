@@ -12,7 +12,7 @@ class ErrorResponse(HTTPException):
         super().__init__(status_code=status_code, detail=code)
 
 
-class BaseDepartment(BaseModel):
+class BaseUserDepartment(BaseModel):
     code: str
     name: str
 
@@ -29,5 +29,17 @@ class BaseUserInfo(BaseModel):
     major: Optional[str]
     grade: Optional[int]
     class_index: Optional[int] = Field(..., serialization_alias="classIndex")
-    departments: List[BaseDepartment]
+    departments: List[BaseUserDepartment]
     level: str
+
+
+class BaseDepartmentInfo(BaseModel):
+    name: str
+    code: str
+    minister: List[int]
+    member: List[int]
+
+
+class BaseCollegeInfo(BaseModel):
+    name: str
+    code: str

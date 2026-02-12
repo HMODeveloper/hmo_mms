@@ -1,5 +1,3 @@
-from datetime import timezone
-
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,12 +6,10 @@ from sqlalchemy.orm import joinedload
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserLevel, Department, UserDepartment
-from app.schema import ErrorResponse, BaseDepartment, BaseUserInfo
+from app.schema import ErrorResponse, BaseDepartmentInfo
 from app.schema.department import (
     DepartmentListResponse,
     AddDepartmentRequest,
-    MinisterInfo,
-    DepartmentInfo,
     DepartmentInfoResponse,
 )
 from app.utils import get_current_user
@@ -41,20 +37,19 @@ async def department_list_handler(
         result = []
         for dept in departments:
             minister_list = []
-            for minister in dept.ministers:
-                minister_list.append(
-                    MinisterInfo(
-                        qq_id=minister.qq_id,
-                        nickname=minister.nickname,
-                        mc_name=minister.mc_name,
-                    )
-                )
+            member_list = []
+
+            for user in dept.users:
+                member_list.append(user.qq_id)
+                if user.is_minister(dept.code):
+                    minister_list.append(user.qq_id)
 
             result.append(
-                DepartmentInfo(
+                BaseDepartmentInfo(
                     name=dept.name,
                     code=dept.code,
                     minister=minister_list,
+                    member=member_list,
                 )
             )
 
@@ -246,35 +241,9 @@ async def department_info_handler(
     minister_list = []
     member_list = []
     for user in department.users:
+        member_list.append(user.qq_id)
         if user.is_minister(department.code):
             minister_list.append(user.qq_id)
-
-        departments = []
-        for dept in user.departments:
-            departments.append(
-                BaseDepartment(
-                    name=dept.name,
-                    code=dept.code,
-                )
-            )
-
-        member_list.append(
-            BaseUserInfo(
-                qq_id=user.qq_id,
-                nickname=user.nickname,
-                mc_name=user.mc_name,
-                create_at=user.create_at.replace(tzinfo=timezone.utc),
-                real_name=user.real_name,
-                student_id=user.student_id,
-                college=user.college.name,
-                school=user.school,
-                major=user.major,
-                grade=user.grade,
-                class_index=user.class_index,
-                departments=departments,
-                level=user.level.value,
-            )
-        )
 
     return DepartmentInfoResponse(
         name=department.name,

@@ -9,7 +9,7 @@ from app.core.config import CONFIG
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserLevel, UserDepartment, College
-from app.schema import ErrorResponse, BaseDepartment
+from app.schema import ErrorResponse, BaseUserDepartment
 from app.schema.member import (
     MemberInfoResponse,
     UpdateMemberInfoRequest,
@@ -48,9 +48,9 @@ async def get_member_info_handler(
     departments = []
     for department in user.departments:
         departments.append(
-            BaseDepartment(
-                name=department.name,
+            BaseUserDepartment(
                 code=department.code,
+                name=department.name,
             )
         )
 

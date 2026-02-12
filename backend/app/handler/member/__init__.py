@@ -8,7 +8,7 @@ from sqlalchemy.orm import joinedload
 from app.core.database import get_db
 from app.core.logger import logger
 from app.model import User, UserLevel, UserDepartment, College, DeletedUser
-from app.schema import ErrorResponse, BaseDepartment
+from app.schema import ErrorResponse, BaseUserDepartment
 from app.schema.member import (
     MemberListResponse,
     MemberInfoResponse,
@@ -42,9 +42,9 @@ async def member_list_handler(
             departments = []
             for department in user.departments:
                 departments.append(
-                    BaseDepartment(
-                        name=department.name,
+                    BaseUserDepartment(
                         code=department.code,
+                        name=department.name,
                     )
                 )
 
@@ -76,7 +76,7 @@ async def member_list_handler(
                 )
             )
 
-        return MemberListResponse(member_list=member_list)
+        return member_list
     except Exception as e:
         logger.error(e)
         raise ErrorResponse()
