@@ -9,6 +9,7 @@ import app.handler.department as department
 import app.handler.department.member as department_member
 import app.handler.department.minister as department_minister
 import app.handler.superadmin as superadmin
+import app.handler.public as public
 
 router = APIRouter(prefix="/api")
 
@@ -17,8 +18,10 @@ router.post("/login", name="login")(auth.login_handler)
 router.get("/logout", name="logout")(auth.logout_handler)
 router.get("/user/info", name="get_user_info")(auth.get_user_info_handler)
 
+# public
+router.get("/public/college", name="college_list")(public.college_list_handler)
+
 # signup
-router.get("/signup", name="signup_info")(signup.signup_info_handler)
 router.get("/signup/check", name="check_qq")(signup.check_qq_handler)
 router.post("/signup", name="signup")(signup.signup_handler)
 

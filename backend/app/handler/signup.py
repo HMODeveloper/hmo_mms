@@ -7,21 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.logger import logger
 from app.core.database import get_db
 from app.model import User, College
-from app.schema import ErrorResponse, BaseCollegeInfo
-from app.schema.signup import SignUpRequest, SignUpInfoResponse
-
-
-async def signup_info_handler() -> SignUpInfoResponse:
-    colleges = []
-    for college in College:
-        colleges.append(
-            BaseCollegeInfo(
-                code=college.name,
-                name=str(college.value),
-            )
-        )
-
-    return SignUpInfoResponse(colleges=colleges)
+from app.schema import ErrorResponse
+from app.schema.signup import SignUpRequest
 
 
 async def check_qq_handler(

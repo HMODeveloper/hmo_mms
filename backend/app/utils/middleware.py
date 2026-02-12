@@ -12,7 +12,7 @@ from app.core.config import CONFIG
 from app.core.logger import logger
 from app.model import User
 
-EXCLUDE_PATHS = ["/login", "/signup", "/signup/check"]
+EXCLUDE_PATHS = ["/login", "/signup", "/signup/check", "/public/college"]
 EXCLUDE_API_PATHS = ["/api" + api for api in EXCLUDE_PATHS]
 
 
