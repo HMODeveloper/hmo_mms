@@ -10,6 +10,7 @@ interface AuthContextValue {
   user: UserInfo | null
   setUser: (user: UserInfo | null) => void
   logout: () => void
+  isAuthenticated: boolean | null
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -19,25 +20,40 @@ export function AuthProvider({
   initialUser = null,
 }: {
   children: ReactNode
-  initialUser?: UserInfo | null
+  initialUser: UserInfo | null
 }) {
   const [user, setUser] = useState<UserInfo | null>(initialUser)
+  // null: loading
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
 
   useEffect(() => {
-    if (!user) {
+    if (!user && isAuthenticated === null) {
       getUserInfo()
-        .then(response => setUser(response))
-        .catch(() => setUser(null))
+        .then((response) => {
+          setUser(response)
+          setIsAuthenticated(true)
+        })
+        .catch(() => {
+          setUser(null)
+          setIsAuthenticated(false)
+        })
     }
-  }, [user])
+    else if (user && isAuthenticated === null) {
+      setIsAuthenticated(true)
+    }
+  }, [user, isAuthenticated])
 
   const logout = () => {
+    setIsAuthenticated(null)
     userLogout()
       .catch(() => console.error("Logout failed"))
-      .finally(() => setUser(null))
+      .finally(() => {
+        setUser(null)
+        setIsAuthenticated(false)
+      })
   }
 
-  const value = useMemo(() => ({ user, setUser, logout }), [user])
+  const value = useMemo(() => ({ user, setUser, logout, isAuthenticated }), [user, isAuthenticated])
 
   return (
     <AuthContext.Provider value={value}>
