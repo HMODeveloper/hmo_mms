@@ -1,10 +1,9 @@
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios"
 import axios from "axios"
-import config from "@/src/lib/config"
 import { RequestErrorImpl } from "@/src/models/response"
 
 const myAxios = axios.create({
-  baseURL: `${config.BACKEND_URL}/api`,
+  baseURL: "/api",
   timeout: 10000,
   withCredentials: true,
 })
