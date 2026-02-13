@@ -63,7 +63,7 @@ async def get_member_info_handler(
         student_id=user.student_id
         if current_user.sensitive_permission(user)
         else "***",
-        college=user.college.value,
+        college=user.college.name,
         school=user.school,
         major=user.major if current_user.sensitive_permission(user) else None,
         grade=user.grade if current_user.sensitive_permission(user) else None,

@@ -60,7 +60,7 @@ async def member_list_handler(
                     student_id=user.student_id
                     if current_user.sensitive_permission(user)
                     else "***",
-                    college=user.college.value,
+                    college=user.college.name,
                     school=user.school,
                     major=user.major
                     if current_user.sensitive_permission(user)

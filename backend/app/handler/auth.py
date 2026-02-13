@@ -99,7 +99,7 @@ async def get_user_info_handler(
         create_at=user.create_at.replace(tzinfo=timezone.utc),
         real_name=user.real_name,
         student_id=user.student_id,
-        college=user.college.value,
+        college=user.college.name,
         school=user.school,
         major=user.major,
         grade=user.grade,
