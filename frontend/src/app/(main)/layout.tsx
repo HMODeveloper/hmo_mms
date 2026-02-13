@@ -6,7 +6,7 @@ import { useEffect } from "react"
 import Navbar from "@/src/components/navbar"
 import { useAuth } from "@/src/contexts/auth"
 
-export default function RootLayout({
+export default function ({
   children,
 }: Readonly<{
   children: ReactNode

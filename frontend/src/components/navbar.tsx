@@ -4,6 +4,7 @@ import {
   IconLogout,
   IconUser,
 } from "@tabler/icons-react"
+import { router } from "next/client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import React, { useEffect, useState } from "react"
@@ -12,12 +13,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/src/contexts/auth"
-import { router } from "next/client";
 
 export default function Navbar() {
   const { user, logout } = useAuth()
