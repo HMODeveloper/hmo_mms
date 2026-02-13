@@ -7,4 +7,4 @@ class ChangePasswordRequest(BaseModel):
     new: str
 
 
-UpdateMemberInfoRequest = UpdateMemberInfoRequest
+UpdateUserInfoRequest = UpdateMemberInfoRequest
