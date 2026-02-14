@@ -74,7 +74,7 @@ async def init_db():
             )
 
             default_superadmin = User(
-                qq_id=0,
+                qq_id="0",
                 nickname="超级管理员",
                 real_name="超级管理员",
                 college=College.OTHERS,

@@ -18,7 +18,7 @@ class BaseUserDepartment(BaseModel):
 
 
 class BaseUserInfo(BaseModel):
-    qq_id: int = Field(..., serialization_alias="QQID")
+    qq_id: str = Field(..., serialization_alias="QQID")
     nickname: str
     mc_name: Optional[str] = Field(..., serialization_alias="mcName")
     create_at: datetime = Field(..., serialization_alias="createAt")
@@ -36,8 +36,8 @@ class BaseUserInfo(BaseModel):
 class BaseDepartmentInfo(BaseModel):
     name: str
     code: str
-    minister: List[int]
-    member: List[int]
+    minister: List[str]
+    member: List[str]
 
 
 class BaseCollegeInfo(BaseModel):

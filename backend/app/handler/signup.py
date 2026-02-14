@@ -12,7 +12,7 @@ from app.schema.signup import SignUpRequest
 
 
 async def check_qq_handler(
-    qq_id: int,
+    qq_id: str,
     db: AsyncSession = Depends(get_db),
 ):
     user = (await db.execute(select(User).where(User.qq_id == qq_id))).scalars().first()

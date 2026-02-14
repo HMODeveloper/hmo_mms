@@ -29,7 +29,7 @@
 - 表名: `users`
 - 字段
 	- `id` (`int`): 唯一标识符.
-	- `qq_id` (`int`): QQ号.
+	- `qq_id` (`str`): QQ号.
 	- `nickname` (`str`): 昵称.
 	- `mc_name` (`Optional[str]`): Minecraft用户名.
 	- `create_at` (`datetime`): 账号创建时间.
@@ -59,7 +59,7 @@
 - 表名: `deleted_users`
 - 字段
 	- `id` (`int`): 唯一标识符.
-	- `qq_id` (`int`): QQ号.
+	- `qq_id` (`str`): QQ号.
 	- `nickname` (`str`): 昵称.
 	- `mc_name` (`Optional[str]`): Minecraft用户名.
 	- `create_at` (`datetime`): 账号创建时间.
@@ -79,7 +79,7 @@
 | 说明     | 方法     | 接口              | 请求                                      | 响应                                           | 函数                                             |
 |--------|--------|-----------------|-----------------------------------------|----------------------------------------------|------------------------------------------------|
 | 获取注册信息 | `GET`  | `/signup`       | 无                                       | [SignUpInfoResponse](./app/schema/signup.py) | [signup_info_handler](./app/handler/signup.py) |
-| QQ号检查  | `GET`  | `/signup/check` | `qq_id: int`                            | `409 QQID_ALREADY_EXISTS`                    | [check_qq_handler](./app/handler/signup.py)    |
+| QQ号检查  | `GET`  | `/signup/check` | `qq_id: str`                            | `409 QQID_ALREADY_EXISTS`                    | [check_qq_handler](./app/handler/signup.py)    |
 | 注册     | `POST` | `/signup`       | [SignUpRequest](./app/schema/signup.py) | `409 INTEGRITY_ERROR`                        | [signup_handler](./app/handler/signup.py)      |
 
 ### 登录
@@ -106,10 +106,10 @@
 |--------|----------|----------------------------|---------------------------------------------------|-------------------------------------------------|---------------------------------------------------------------|
 | 成员列表   | `GET`    | `/member`                  | 无                                                 | [MemberListResponse](./app/schema/member.py)    | [member_list_handler](./app/handler/member/__init__.py)       |
 | 添加成员   | `POST`   | `/member`                  | [AddMemberRequest](./app/schema/member.py)        | `403 ADMIN_REQUIRED`, `409 INTEGRITY_ERROR`     | [add_member_handler](./app/handler/member/__init__.py)        |
-| 删除成员   | `DELETE` | `/member`                  | `qq_id: int`                                      | `404 USER_NOT_FOUND`, `403 SUPERADMIN_REQUIRED` | [remove_member_handler](./app/handler/member/__init__.py)     |
-| 获取成员信息 | `GET`    | `/member/{qq_id}/info`     | `qq_id: int`                                      | `404 USER_NOT_FOUND`                            | [get_member_info_handler](./app/handler/member/info.py)       |
+| 删除成员   | `DELETE` | `/member`                  | `qq_id: str`                                      | `404 USER_NOT_FOUND`, `403 SUPERADMIN_REQUIRED` | [remove_member_handler](./app/handler/member/__init__.py)     |
+| 获取成员信息 | `GET`    | `/member/{qq_id}/info`     | `qq_id: str`                                      | `404 USER_NOT_FOUND`                            | [get_member_info_handler](./app/handler/member/info.py)       |
 | 更新成员信息 | `PUT`    | `/member/{qq_id}/info`     | [UpdateMemberInfoRequest](./app/schema/member.py) | `403 ADMIN_REQUIRED`, `404 USER_NOT_FOUND`      | [update_member_info_handler](./app/handler/member/info.py)    |
-| 重置成员密码 | `PUT`    | `/member/{qq_id}/password` | `qq_id: int`                                      | `403 ADMIN_REQUIRED`, `404 USER_NOT_FOUND`      | [reset_member_password_handler](./app/handler/member/info.py) |
+| 重置成员密码 | `PUT`    | `/member/{qq_id}/password` | `qq_id: str`                                      | `403 ADMIN_REQUIRED`, `404 USER_NOT_FOUND`      | [reset_member_password_handler](./app/handler/member/info.py) |
 
 ### 部门管理
 
@@ -119,16 +119,16 @@
 | 添加部门   | `POST`   | `/department`                 | [AddDepartmentRequest](./app/schema/department.py) | `403 SUPERADMIN_REQUIRED`, `409 DEPT_CODE_EXISTS`, `409 DEPT_NAME_EXISTS`, `404 MINISTER_NOT_FOUND`, `404 MEMBER_NOT_FOUND`, `400 MINISTER_NOT_IN_MEMBERS`, `409 INTEGRITY_ERROR` | [add_department_handler](./app/handler/department/__init__.py)             |
 | 删除部门   | `DELETE` | `/department/{code}`          | `code: str`                                        | `403 SUPERADMIN_REQUIRED`, `404 DEPT_NOT_FOUND`, `400 DEPT_NOT_EMPTY`                                                                                                             | [remove_department_handler](./app/handler/department/__init__.py)          |
 | 部门成员列表 | `GET`    | `/department/{code}`          | `code: str`                                        | `404 DEPT_NOT_FOUND`                                                                                                                                                              | [department_member_list_handler](./app/handler/department/member.py)       |
-| 添加部门成员 | `POST`   | `/department/{code}/member`   | `code: str`, `qq_id: int`                          | `404 DEPT_NOT_FOUND`, `403 MINISTER_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_ALREADY_IN_DEPT`                                                                                   | [add_department_member_handler](./app/handler/department/member.py)        |
-| 移除部门成员 | `DELETE` | `/department/{code}/member`   | `code: str`, `qq_id: int`                          | `404 DEPT_NOT_FOUND`, `404 USER_NOT_FOUND`, `409 USER_NOT_IN_DEPT`, `403 SUPERADMIN_REQUIRED`, `403 MINISTER_REQUIRED`                                                            | [remove_department_member_handler](./app/handler/department/member.py)     |
-| 添加部长   | `POST`   | `/department/{code}/minister` | `code: str`, `qq_id: int`                          | `403 SUPERADMIN_REQUIRED`, `404 DEPT_NOT_FOUND`, `404 USER_NOT_FOUND`, `404 USER_NOT_IN_DEPT`, `409 USER_ALREADY_MINISTER`                                                        | [add_department_minister_handler](./app/handler/department/minister.py)    |
-| 移除部长   | `DELETE` | `/department/{code}/minister` | `code: str`, `qq_id: int`                          | `403 SUPERADMIN_REQUIRED`, `404 DEPT_NOT_FOUND`, `404 USER_NOT_FOUND`, `404 USER_NOT_IN_DEPT`, `409 USER_NOT_MINISTER`                                                            | [remove_department_minister_handler](./app/handler/department/minister.py) |
+| 添加部门成员 | `POST`   | `/department/{code}/member`   | `code: str`, `qq_id: str`                          | `404 DEPT_NOT_FOUND`, `403 MINISTER_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_ALREADY_IN_DEPT`                                                                                   | [add_department_member_handler](./app/handler/department/member.py)        |
+| 移除部门成员 | `DELETE` | `/department/{code}/member`   | `code: str`, `qq_id: str`                          | `404 DEPT_NOT_FOUND`, `404 USER_NOT_FOUND`, `409 USER_NOT_IN_DEPT`, `403 SUPERADMIN_REQUIRED`, `403 MINISTER_REQUIRED`                                                            | [remove_department_member_handler](./app/handler/department/member.py)     |
+| 添加部长   | `POST`   | `/department/{code}/minister` | `code: str`, `qq_id: str`                          | `403 SUPERADMIN_REQUIRED`, `404 DEPT_NOT_FOUND`, `404 USER_NOT_FOUND`, `404 USER_NOT_IN_DEPT`, `409 USER_ALREADY_MINISTER`                                                        | [add_department_minister_handler](./app/handler/department/minister.py)    |
+| 移除部长   | `DELETE` | `/department/{code}/minister` | `code: str`, `qq_id: str`                          | `403 SUPERADMIN_REQUIRED`, `404 DEPT_NOT_FOUND`, `404 USER_NOT_FOUND`, `404 USER_NOT_IN_DEPT`, `409 USER_NOT_MINISTER`                                                            | [remove_department_minister_handler](./app/handler/department/minister.py) |
 
 ### 超管权限
 
 | 说明      | 方法       | 接口            | 请求           | 响应                                                                                                | 函数                                                       |
 |---------|----------|---------------|--------------|---------------------------------------------------------------------------------------------------|----------------------------------------------------------|
-| 添加管理员   | `POST`   | `/admin`      | `qq_id: int` | `403 SUPERADMIN_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_ALREADY_ADMIN`                         | [add_admin_handler](./app/handler/superadmin.py)         |
-| 移除管理员   | `DELETE` | `/admin`      | `qq_id: int` | `403 SUPERADMIN_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_NOT_ADMIN`                             | [remove_admin_handler](./app/handler/superadmin.py)      |
-| 添加超级管理员 | `POST`   | `/superadmin` | `qq_id: int` | `403 SUPERADMIN_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_ALREADY_SUPERADMIN`                    | [add_superadmin_handler](./app/handler/superadmin.py)    |
-| 移除超级管理员 | `DELETE` | `/superadmin` | `qq_id: int` | `403 SUPERADMIN_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_NOT_SUPERADMIN`, `400 LAST_SUPERADMIN` | [remove_superadmin_handler](./app/handler/superadmin.py) |
+| 添加管理员   | `POST`   | `/admin`      | `qq_id: str` | `403 SUPERADMIN_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_ALREADY_ADMIN`                         | [add_admin_handler](./app/handler/superadmin.py)         |
+| 移除管理员   | `DELETE` | `/admin`      | `qq_id: str` | `403 SUPERADMIN_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_NOT_ADMIN`                             | [remove_admin_handler](./app/handler/superadmin.py)      |
+| 添加超级管理员 | `POST`   | `/superadmin` | `qq_id: str` | `403 SUPERADMIN_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_ALREADY_SUPERADMIN`                    | [add_superadmin_handler](./app/handler/superadmin.py)    |
+| 移除超级管理员 | `DELETE` | `/superadmin` | `qq_id: str` | `403 SUPERADMIN_REQUIRED`, `404 USER_NOT_FOUND`, `409 USER_NOT_SUPERADMIN`, `400 LAST_SUPERADMIN` | [remove_superadmin_handler](./app/handler/superadmin.py) |

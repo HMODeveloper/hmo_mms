@@ -18,7 +18,7 @@ from app.utils import get_current_user
 
 
 async def get_member_info_handler(
-    qq_id: int,
+    qq_id: str,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ) -> MemberInfoResponse:
@@ -78,7 +78,7 @@ async def get_member_info_handler(
 
 
 async def update_member_info_handler(
-    qq_id: int,
+    qq_id: str,
     request: UpdateMemberInfoRequest,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
@@ -138,7 +138,7 @@ async def update_member_info_handler(
 
 
 async def reset_member_password_handler(
-    qq_id: int,
+    qq_id: str,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):

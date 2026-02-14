@@ -16,7 +16,7 @@ class UpdateMemberInfoRequest(BaseModel):
 
 
 class AddMemberRequest(BaseModel):
-    qq_id: int = Field(..., alias="QQID")
+    qq_id: str = Field(..., alias="QQID")
     nickname: str
     password: str
     mc_name: Optional[str] = Field(None, alias="mcName")

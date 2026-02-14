@@ -51,7 +51,7 @@ async def add_admin_handler(
 
 
 async def remove_admin_handler(
-    qq_id: int,
+    qq_id: str,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -127,7 +127,7 @@ async def add_superadmin_handler(
 
 
 async def remove_superadmin_handler(
-    qq_id: int,
+    qq_id: str,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):

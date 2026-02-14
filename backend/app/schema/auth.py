@@ -4,7 +4,7 @@ from app.schema import BaseUserInfo
 
 
 class LoginRequest(BaseModel):
-    qq_id: int = Field(..., alias="QQID")
+    qq_id: str = Field(..., alias="QQID")
     password: str
 
 

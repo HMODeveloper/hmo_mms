@@ -87,7 +87,7 @@ async def add_department_member_handler(
 
 async def remove_department_member_handler(
     code: str,
-    qq_id: int,
+    qq_id: str,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):

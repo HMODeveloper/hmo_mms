@@ -121,7 +121,7 @@ class User(Base):
 
     Attributes:
         id (int): 唯一标识符.
-        qq_id (int): QQ号.
+        qq_id (str): QQ号.
         nickname (str): 昵称.
         mc_name (Optional[str]): Minecraft用户名.
         create_at (datetime): 账号创建时间.
@@ -154,7 +154,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
 
     # 基本信息
-    qq_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    qq_id: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     nickname: Mapped[str] = mapped_column(String(50), nullable=False)
     mc_name: Mapped[Optional[str]] = mapped_column(
         String(50), unique=True, nullable=True
@@ -232,7 +232,7 @@ class DeletedUser(Base):
 
     Attributes:
         id (int): 唯一标识符.
-        qq_id (int): QQ号.
+        qq_id (str): QQ号.
         nickname (str): 昵称.
         mc_name (Optional[str]): Minecraft用户名.
         create_at (datetime): 账号创建时间.
@@ -251,7 +251,7 @@ class DeletedUser(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
 
     # 基本信息
-    qq_id: Mapped[int] = mapped_column(Integer, unique=True, nullable=False)
+    qq_id: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     nickname: Mapped[str] = mapped_column(String(50), nullable=False)
     mc_name: Mapped[Optional[str]] = mapped_column(
         String(50), unique=True, nullable=True
