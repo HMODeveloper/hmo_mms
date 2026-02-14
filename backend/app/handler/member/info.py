@@ -121,6 +121,8 @@ async def update_member_info_handler(
             if matching_college == College.NOT_HNU:
                 if request.school is not None:
                     user.school = request.school
+            else:
+                user.school = None
         if request.major is not None:
             user.major = request.major
         if request.grade is not None:

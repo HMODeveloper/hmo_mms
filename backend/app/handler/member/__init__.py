@@ -118,6 +118,8 @@ async def add_member_handler(
     user.college = matching_college
     if matching_college == College.NOT_HNU:
         user.school = request.school
+    else:
+        user.school = None
 
     user.password = request.password
     user.create_at = datetime.now(timezone.utc)
