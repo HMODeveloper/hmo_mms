@@ -23,7 +23,7 @@ class BaseUserInfo(BaseModel):
     mc_name: Optional[str] = Field(..., serialization_alias="mcName")
     create_at: datetime = Field(..., serialization_alias="createAt")
     real_name: str = Field(..., serialization_alias="realName")
-    student_id: Optional[str] = Field(..., serialization_alias="studentId")
+    student_id: Optional[str] = Field(..., serialization_alias="studentID")
     college: str
     school: Optional[str]
     major: Optional[str]

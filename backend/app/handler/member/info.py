@@ -71,7 +71,7 @@ async def get_member_info_handler(
         if current_user.sensitive_permission(user)
         else None,
         departments=departments,
-        level=user.level.value,
+        level=user.level.name,
     )
 
     return member_info
@@ -100,8 +100,6 @@ async def update_member_info_handler(
     try:
         if request.nickname is not None:
             user.nickname = request.nickname
-        if request.password is not None:
-            user.password = request.password
         if request.mc_name is not None:
             user.mc_name = request.mc_name
         if request.real_name is not None:

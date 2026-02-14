@@ -3,7 +3,13 @@ export interface UserDepartmentInfo {
   code: string
 }
 
-export type UserLevel = "superadmin" | "admin" | "member"
+export type UserLevel = "SUPERADMIN" | "ADMIN" | "MEMBER"
+
+export const USER_LEVEL_MAP: Record<UserLevel, string> = {
+  SUPERADMIN: "超级管理员",
+  ADMIN: "管理员",
+  MEMBER: "成员",
+}
 
 export interface UserInfo {
   QQID: number

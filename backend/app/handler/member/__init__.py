@@ -72,7 +72,7 @@ async def member_list_handler(
                     if current_user.sensitive_permission(user)
                     else None,
                     departments=departments,
-                    level=user.level.value,
+                    level=user.level.name,
                 )
             )
 

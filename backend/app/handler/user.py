@@ -127,8 +127,6 @@ async def update_user_info_handler(
     try:
         if request.nickname is not None:
             user.nickname = request.nickname
-        if request.password is not None:
-            user.password = request.password
         if request.mc_name is not None:
             user.mc_name = request.mc_name
         if request.real_name is not None:

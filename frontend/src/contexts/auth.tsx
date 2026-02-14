@@ -9,6 +9,7 @@ import { getUserInfo, userLogout } from "@/src/apis/auth"
 interface AuthContextValue {
   user: UserInfo | null
   setUser: (user: UserInfo | null) => void
+  refreshUser: () => void
   logout: () => void
   isAuthenticated: boolean | null
 }
@@ -26,17 +27,21 @@ export function AuthProvider({
   // null: loading
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
 
+  const refreshUser = () => {
+    getUserInfo()
+      .then((response) => {
+        setUser(response)
+        setIsAuthenticated(true)
+      })
+      .catch(() => {
+        setUser(null)
+        setIsAuthenticated(false)
+      })
+  }
+
   useEffect(() => {
     if (!user && isAuthenticated === null) {
-      getUserInfo()
-        .then((response) => {
-          setUser(response)
-          setIsAuthenticated(true)
-        })
-        .catch(() => {
-          setUser(null)
-          setIsAuthenticated(false)
-        })
+      void refreshUser()
     }
     else if (user && isAuthenticated === null) {
       setIsAuthenticated(true)
@@ -53,7 +58,7 @@ export function AuthProvider({
       })
   }
 
-  const value = useMemo(() => ({ user, setUser, logout, isAuthenticated }), [user, isAuthenticated])
+  const value = useMemo(() => ({ user, setUser, refreshUser, logout, isAuthenticated }), [user, isAuthenticated])
 
   return (
     <AuthContext.Provider value={value}>

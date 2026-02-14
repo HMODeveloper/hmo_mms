@@ -105,7 +105,7 @@ async def get_user_info_handler(
         grade=user.grade,
         class_index=user.class_index,
         departments=departments,
-        level=user.level.value,
+        level=user.level.name,
     )
 
     return user_info
