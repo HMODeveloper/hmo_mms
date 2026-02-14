@@ -4,9 +4,8 @@ import {
   IconLogout,
   IconUser,
 } from "@tabler/icons-react"
-import { router } from "next/client"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,6 +20,7 @@ import { useAuth } from "@/src/contexts/auth"
 export default function Navbar() {
   const { user, logout } = useAuth()
   const pathname = usePathname()
+  const router = useRouter()
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
@@ -105,7 +105,7 @@ export default function Navbar() {
               )}
 
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem onClick={() => void router.push("/user")}>
+            <DropdownMenuItem onClick={() => router.push("/user")}>
               <IconUser size={16} />
               个人中心
             </DropdownMenuItem>

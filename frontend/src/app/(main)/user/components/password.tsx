@@ -1,3 +1,5 @@
+"use client"
+
 import type { ChangePasswordRequest } from "@/src/apis/user"
 import { IconArrowLeft, IconUpload } from "@tabler/icons-react"
 import { useState } from "react"
@@ -9,11 +11,6 @@ import { Input } from "@/components/ui/input"
 import { changePassword } from "@/src/apis/user"
 import { useAuth } from "@/src/contexts/auth"
 
-interface FormSchema {
-  old: string
-  new: string
-}
-
 export default function PasswordModal({
   isOpen,
   onClose,
@@ -23,7 +20,7 @@ export default function PasswordModal({
 }) {
   const { logout } = useAuth()
 
-  const [formData, setFormData] = useState<FormSchema>({
+  const [formData, setFormData] = useState<ChangePasswordRequest>({
     old: "",
     new: "",
   })
@@ -32,7 +29,7 @@ export default function PasswordModal({
     if (!formData.old || !formData.new)
       return
 
-    changePassword(formData as ChangePasswordRequest)
+    changePassword(formData)
       .then(() => {
         toast.success("密码修改成功")
         logout()

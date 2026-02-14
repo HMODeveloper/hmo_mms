@@ -1,3 +1,5 @@
+"use client"
+
 import type { UpdateUserInfoRequest } from "@/src/types/request"
 import { IconArrowLeft, IconEdit, IconRefresh, IconUpload } from "@tabler/icons-react"
 import dayjs from "dayjs"
@@ -13,18 +15,6 @@ import { useAuth } from "@/src/contexts/auth"
 import { USER_LEVEL_MAP } from "@/src/models/user"
 import { useColleges } from "@/src/stores/colleges"
 
-interface FormSchema {
-  nickname: string
-  mcName?: string
-  realName?: string
-  studentID?: string
-  college: string
-  school?: string
-  major?: string
-  grade?: number
-  classIndex?: number
-}
-
 export default function InfoSection() {
   const { user, refreshUser } = useAuth()
   const { colleges } = useColleges()
@@ -35,7 +25,7 @@ export default function InfoSection() {
   const [isEdited, setIsEdited] = useState(false)
 
   // 初始化表单数据函数
-  const initFormData = (userData = user): FormSchema => ({
+  const initFormData = (userData = user): UpdateUserInfoRequest => ({
     nickname: userData?.nickname || "",
     mcName: userData?.mcName || "",
     realName: userData?.realName || "",
@@ -47,7 +37,7 @@ export default function InfoSection() {
     classIndex: userData?.classIndex || undefined,
   })
 
-  const [formData, setFormData] = useState<FormSchema>(initFormData)
+  const [formData, setFormData] = useState<UpdateUserInfoRequest>(initFormData)
 
   useEffect(() => {
     if (user && !isEditing) {
@@ -75,7 +65,7 @@ export default function InfoSection() {
     user?.departments.map(item => item.name).join(", ") || "无"
   ), [user?.departments])
 
-  const handleInput = (updater: (v: FormSchema) => Partial<FormSchema>) => {
+  const handleInput = (updater: (v: UpdateUserInfoRequest) => Partial<UpdateUserInfoRequest>) => {
     if (!isEditing)
       return
 
@@ -95,19 +85,7 @@ export default function InfoSection() {
     if (!isEdited)
       return
 
-    const request: UpdateUserInfoRequest = {
-      nickname: formData.nickname,
-      mcName: formData.mcName,
-      realName: formData.realName,
-      studentID: formData.studentID,
-      college: formData.college,
-      school: formData.school,
-      major: formData.major,
-      grade: formData.grade,
-      classIndex: formData.classIndex,
-    }
-
-    updateInfo(request)
+    updateInfo(formData)
       .then(() => {
         toast.success("修改信息成功!")
         refreshUser()

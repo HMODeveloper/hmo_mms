@@ -1,3 +1,5 @@
+"use client"
+
 import { IconArrowLeft, IconX } from "@tabler/icons-react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"

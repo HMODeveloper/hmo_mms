@@ -8,14 +8,14 @@ interface CollegeStore {
   loading: boolean
   error: Error | null
 
-  fetchCollegeInfo: () => Promise<void>
+  fetchColleges: () => Promise<void>
 }
 
 const useCollegeStore = create<CollegeStore>(set => ({
   colleges: [],
   loading: false,
   error: null,
-  fetchCollegeInfo: async () => {
+  fetchColleges: async () => {
     set({ loading: true, error: null })
 
     try {
@@ -29,11 +29,11 @@ const useCollegeStore = create<CollegeStore>(set => ({
 }))
 
 export function useColleges() {
-  const { colleges, loading, error, fetchCollegeInfo } = useCollegeStore()
+  const { colleges, loading, error, fetchColleges } = useCollegeStore()
 
   useEffect(() => {
     if (colleges.length === 0 && !loading) {
-      void fetchCollegeInfo()
+      void fetchColleges()
     }
   }, [])
 

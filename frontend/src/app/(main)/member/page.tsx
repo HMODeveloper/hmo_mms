@@ -1,3 +1,34 @@
+"use client"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardFooter } from "@/components/ui/card"
+import AddModal from "@/src/app/(main)/member/components/add"
+import ListSection from "@/src/app/(main)/member/components/list"
+import { useAuth } from "@/src/contexts/auth"
+
 export default function () {
-  return <></>
+  const { user } = useAuth()
+  const [isAddModalDisplay, setIsAddModalDisplay] = useState(false)
+
+  return (
+    <div className="w-full max-w-6xl flex flex-col gap-4">
+      <ListSection />
+      { (user?.level === "ADMIN" || user?.level === "SUPERADMIN") && (
+        <Card>
+          <CardFooter className="justify-end gap-4">
+            <Button
+              onClick={() => setIsAddModalDisplay(true)}
+            >
+              添加成员
+            </Button>
+          </CardFooter>
+        </Card>
+      ) }
+      <AddModal
+        isOpen={isAddModalDisplay}
+        onClose={() => setIsAddModalDisplay(false)}
+      />
+    </div>
+  )
 }
