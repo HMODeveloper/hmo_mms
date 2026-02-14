@@ -28,6 +28,7 @@ export function AuthProvider({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
 
   const refreshUser = () => {
+    setIsAuthenticated(null)
     getUserInfo()
       .then((response) => {
         setUser(response)

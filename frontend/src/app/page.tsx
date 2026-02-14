@@ -8,11 +8,11 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { getUserInfo, userLogin } from "@/src/apis/auth"
+import { userLogin } from "@/src/apis/auth"
 import { useAuth } from "@/src/contexts/auth"
 
 function LoginForm() {
-  const { setUser } = useAuth()
+  const { refreshUser } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [{ QQID, password }, setForm] = useState({ QQID: "", password: "" })
 
@@ -31,15 +31,9 @@ function LoginForm() {
       password,
     }
     userLogin(request)
-      .then(async () => {
-        await getUserInfo()
-          .then((response) => {
-            setUser(response)
-            toast.success("登录成功")
-
-            void router.push("/dashboard")
-          })
-          .catch(() => null)
+      .then(() => {
+        refreshUser()
+        router.push("/dashboard")
       })
       .catch((error) => {
         switch (error.code) {
