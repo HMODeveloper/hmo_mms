@@ -1,6 +1,6 @@
 import type { AddUserRequest } from "@/src/types/request"
 import { IconArrowLeft, IconEye, IconEyeOff, IconRefresh, IconUpload } from "@tabler/icons-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -22,24 +22,28 @@ export default function AddModal({
   const { colleges } = useColleges()
 
   const [isChecked, setIsChecked] = useState(false)
-  const [QQID, setQQID] = useState<number | null>(null)
+  const [QQID, setQQID] = useState<string>("")
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState<AddUserRequest>({
-    QQID: QQID ?? 0,
+    QQID: "",
     nickname: "",
     password: "",
     realName: "",
     college: "",
   })
 
+  useEffect(() => {
+    setFormData(prev => ({ ...prev, QQID }))
+  }, [QQID])
+
   const handleCheckQQ = () => {
     if (isChecked) {
       setIsChecked(false)
-      setQQID(null)
+      setQQID("")
       return
     }
 
-    if (QQID === null)
+    if (!QQID)
       return
     checkQQ(QQID)
       .then(() => setIsChecked(true))
@@ -79,10 +83,9 @@ export default function AddModal({
               <FieldLabel>QQ号</FieldLabel>
               <Field orientation="horizontal">
                 <Input
-                  value={QQID ?? ""}
-                  type="number"
+                  value={QQID}
                   onInput={e =>
-                    setQQID(Number((e.target as HTMLInputElement).value))}
+                    setQQID((e.target as HTMLInputElement).value)}
                   placeholder="请输入 QQ 号"
                   disabled={isChecked}
                 />
@@ -120,11 +123,11 @@ export default function AddModal({
                 <Field>
                   <FieldLabel>游戏 ID</FieldLabel>
                   <Input
-                    value={formData.mcMame}
+                    value={formData.mcName}
                     onInput={e =>
                       setFormData(v => ({
                         ...v,
-                        mcMame: (e.target as HTMLInputElement).value,
+                        mcName: (e.target as HTMLInputElement).value,
                       }))}
                     placeholder="请输入昵称"
                   />
@@ -136,6 +139,12 @@ export default function AddModal({
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onInput={e =>
+                        setFormData(v => ({
+                          ...v,
+                          password: (e.target as HTMLInputElement).value,
+                        }))}
                       placeholder="请输入密码"
                     />
                     <Button

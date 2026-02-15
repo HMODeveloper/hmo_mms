@@ -10,18 +10,18 @@ export async function addMember(req: AddUserRequest) {
   return await request.post("/member", req)
 }
 
-export async function removeMember(QQID: number) {
+export async function removeMember(QQID: string) {
   return await request.delete(`/member/${QQID}`)
 }
 
-export async function memberInfo(QQID: number) {
+export async function memberInfo(QQID: string) {
   return await request.get<UserInfo>(`/member/${QQID}`)
 }
 
-export async function updateInfo(QQID: number, req: UpdateUserInfoRequest) {
+export async function updateInfo(QQID: string, req: UpdateUserInfoRequest) {
   return await request.put(`/member/${QQID}/info`, req)
 }
 
-export async function resetPassword(QQID: number) {
+export async function resetPassword(QQID: string) {
   return await request.put(`/member/${QQID}/password`)
 }

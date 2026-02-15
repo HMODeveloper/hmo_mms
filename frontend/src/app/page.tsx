@@ -27,7 +27,7 @@ function LoginForm() {
     setIsLoading(true)
 
     const request: LoginRequest = {
-      QQID: Number(QQID),
+      QQID,
       password,
     }
     userLogin(request)
@@ -57,7 +57,6 @@ function LoginForm() {
           <FieldLabel htmlFor="qq_id">QQ 号</FieldLabel>
           <Input
             id="qq_id"
-            type="number"
             value={QQID}
             onInput={e =>
               setForm(v => ({

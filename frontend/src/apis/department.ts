@@ -4,8 +4,8 @@ import request from "@/src/lib/client"
 export interface AddMemberRequest {
   name: string
   code: string
-  minister: number
-  member: number
+  minister: string
+  member: string
 }
 
 export async function departmentList() {
@@ -24,18 +24,18 @@ export async function departmentInfo(code: string) {
   return await request.get<DepartmentInfo>(`/department/${code}`)
 }
 
-export async function addDepartmentMember(code: string, QQID: number) {
+export async function addDepartmentMember(code: string, QQID: string) {
   return await request.post(`/department/${code}/member`, { QQID })
 }
 
-export async function removeDepartmentMember(code: string, QQID: number) {
+export async function removeDepartmentMember(code: string, QQID: string) {
   return await request.delete(`/department/${code}/member/${QQID}`)
 }
 
-export async function addDepartmentMinister(code: string, QQID: number) {
+export async function addDepartmentMinister(code: string, QQID: string) {
   return await request.post(`/department/${code}/minister`, { QQID })
 }
 
-export async function removeDepartmentMinister(code: string, QQID: number) {
+export async function removeDepartmentMinister(code: string, QQID: string) {
   return await request.delete(`/department/${code}/minister/${QQID}`)
 }

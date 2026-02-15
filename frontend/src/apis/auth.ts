@@ -2,7 +2,7 @@ import type { UserInfo } from "@/src/models/user"
 import request from "@/src/lib/client"
 
 export interface LoginRequest {
-  QQID: number
+  QQID: string
   password: string
 }
 

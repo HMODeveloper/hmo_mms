@@ -1,7 +1,7 @@
 import type { AddUserRequest } from "@/src/types/request"
 import request from "@/src/lib/client"
 
-export async function checkQQ(QQID: number) {
+export async function checkQQ(QQID: string) {
   return await request.get("/signup/check", { qq_id: QQID })
 }
 

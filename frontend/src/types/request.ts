@@ -11,10 +11,10 @@ export interface UpdateUserInfoRequest {
 }
 
 export interface AddUserRequest {
-  QQID: number
+  QQID: string
   nickname: string
   password: string
-  mcMame?: string
+  mcName?: string
   realName: string
   studentID?: string
   college: string

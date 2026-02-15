@@ -44,7 +44,7 @@ export default function ListSection() {
       case "mcName":
         return (a.mcName ?? "").localeCompare(b.mcName ?? "")
       case "QQID":
-        return a.QQID === b.QQID ? 0 : (a.QQID > b.QQID ? 1 : -1)
+        return a.QQID.localeCompare(b.QQID)
       case "createAt":
         return dayjs(a.createAt).isBefore(dayjs(b.createAt)) ? -1 : 1
       case "college":

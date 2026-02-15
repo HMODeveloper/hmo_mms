@@ -12,7 +12,7 @@ export const USER_LEVEL_MAP: Record<UserLevel, string> = {
 }
 
 export interface UserInfo {
-  QQID: number
+  QQID: string
   nickname: string
   mcName?: string
   createAt: string
