@@ -23,7 +23,7 @@ class AddMemberRequest(BaseModel):
     real_name: str = Field(..., alias="realName")
     student_id: Optional[str] = Field(None, alias="studentID")
     college: str
-    school: Optional[str]
-    major: Optional[str]
-    grade: Optional[int]
+    school: Optional[str] = None
+    major: Optional[str] = None
+    grade: Optional[int] = None
     class_index: Optional[int] = Field(None, alias="classIndex")

@@ -2,8 +2,7 @@
 
 import type { UpdateUserInfoRequest } from "@/src/types/request"
 import { IconArrowLeft, IconEdit, IconRefresh, IconUpload } from "@tabler/icons-react"
-import dayjs from "dayjs"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,10 +13,12 @@ import { updateInfo } from "@/src/apis/user"
 import { useAuth } from "@/src/contexts/auth"
 import { USER_LEVEL_MAP } from "@/src/models/user"
 import { useColleges } from "@/src/stores/colleges"
+import { createUserFormatter } from "@/src/utils/info"
 
 export default function InfoSection() {
   const { user, refreshUser } = useAuth()
   const { colleges } = useColleges()
+  const { formatCreateAt, formatDepartment, formatMajorClass, getCollegeName } = createUserFormatter()
 
   // 是否为编辑模式
   const [isEditing, setIsEditing] = useState(false)
@@ -45,25 +46,6 @@ export default function InfoSection() {
       setIsEdited(false)
     }
   }, [user, isEditing])
-
-  // 格式化专业班级显示: "专业2401"
-  const formatMajorClass = useMemo(() => {
-    const yy = formData.grade?.toString().slice(-2)
-    const index = formData.classIndex?.toString().padStart(2, "0")
-    if (yy && index && formData.major)
-      return `${formData.major}${yy}${index}`
-    return "---"
-  }, [formData.major, formData.grade, formData.classIndex])
-
-  // 学院名称
-  const collegeName = useMemo(() => (
-    colleges.find(item => item.code === formData.college)?.name || "---"
-  ), [formData.college, colleges])
-
-  // 格式化部门显示
-  const formatDepartment = useMemo(() => (
-    user?.departments.map(item => item.name).join(", ") || "无"
-  ), [user?.departments])
 
   const handleInput = (updater: (v: UpdateUserInfoRequest) => Partial<UpdateUserInfoRequest>) => {
     if (!isEditing)
@@ -137,7 +119,7 @@ export default function InfoSection() {
             <Field>
               <FieldLabel>注册时间</FieldLabel>
               <Input
-                value={dayjs(user?.createAt).format("YYYY-MM-DD")}
+                value={formatCreateAt(user?.createAt)}
                 onInput={() => {}}
               />
             </Field>
@@ -198,7 +180,7 @@ export default function InfoSection() {
                   <Field>
                     <FieldLabel>学院</FieldLabel>
                     <Input
-                      value={collegeName}
+                      value={getCollegeName(formData.college)}
                       onInput={() => {}}
                     />
                   </Field>
@@ -265,7 +247,7 @@ export default function InfoSection() {
                     <Field>
                       <FieldLabel>专业班级</FieldLabel>
                       <Input
-                        value={formatMajorClass}
+                        value={formatMajorClass(formData.grade, formData.classIndex, formData.major)}
                         onInput={() => {}}
                       />
                     </Field>
@@ -276,7 +258,7 @@ export default function InfoSection() {
             <Field>
               <FieldLabel>部门</FieldLabel>
               <Input
-                value={formatDepartment}
+                value={formatDepartment(user?.departments)}
                 onInput={() => {}}
               />
             </Field>

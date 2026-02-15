@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { addMember } from "@/src/apis/member"
 import { checkQQ } from "@/src/apis/signup"
 import { useColleges } from "@/src/stores/colleges"
+import { useMembers } from "@/src/stores/members"
 
 export default function AddModal({
   isOpen,
@@ -20,6 +21,7 @@ export default function AddModal({
   onClose: () => void
 }) {
   const { colleges } = useColleges()
+  const { refreshMembers } = useMembers()
 
   const [isChecked, setIsChecked] = useState(false)
   const [QQID, setQQID] = useState<string>("")
@@ -58,13 +60,16 @@ export default function AddModal({
       })
   }
 
-  const handleAdd = () => {
+  const handleSubmit = () => {
     if (!isChecked)
       return
 
     addMember(formData)
       .then(() => {
         toast.success("添加成功")
+        onClose()
+        void refreshMembers()
+        handleCheckQQ()
       })
       .catch(() => {
         toast.error("添加失败")
@@ -162,7 +167,7 @@ export default function AddModal({
                 <Field>
                   <FieldLabel>姓名</FieldLabel>
                   <Input
-                    value={formData.realName}
+                    value={formData.realName ?? ""}
                     onInput={e =>
                       setFormData(v => ({
                         ...v,
@@ -208,13 +213,13 @@ export default function AddModal({
                   </Select>
                 </Field>
 
-                {formData.college === "others"
+                {formData.college === "NOT_HNU"
                   ? (
                       //  学校: 仅外校学生显示
                       <Field>
                         <FieldLabel>学校</FieldLabel>
                         <Input
-                          value={formData.school}
+                          value={formData.school ?? ""}
                           onInput={e =>
                             setFormData(v => ({
                               ...v,
@@ -230,7 +235,7 @@ export default function AddModal({
                         <Field>
                           <FieldLabel>专业</FieldLabel>
                           <Input
-                            value={formData.major}
+                            value={formData.major ?? ""}
                             onInput={e =>
                               setFormData(v => ({
                                 ...v,
@@ -242,7 +247,7 @@ export default function AddModal({
                         <Field>
                           <FieldLabel>年级</FieldLabel>
                           <Input
-                            value={formData.grade}
+                            value={formData.grade ?? ""}
                             type="number"
                             onInput={e =>
                               setFormData(v => ({
@@ -255,7 +260,7 @@ export default function AddModal({
                         <Field>
                           <FieldLabel>班级序号</FieldLabel>
                           <Input
-                            value={formData.classIndex}
+                            value={formData.classIndex ?? ""}
                             type="number"
                             onInput={e =>
                               setFormData(v => ({
@@ -281,7 +286,7 @@ export default function AddModal({
           </Button>
           {isChecked && (
             <Button
-              onClick={handleAdd}
+              onClick={handleSubmit}
             >
               <IconUpload />
               添加

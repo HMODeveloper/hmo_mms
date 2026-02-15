@@ -37,5 +37,7 @@ export function useMembers() {
     }
   }, [])
 
-  return { members, loading, error }
+  const refreshMembers = fetchMembers
+
+  return { members, loading, error, refreshMembers }
 }

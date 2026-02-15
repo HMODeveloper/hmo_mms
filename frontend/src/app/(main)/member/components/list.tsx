@@ -2,14 +2,13 @@
 
 import type { UserInfo } from "@/src/models/user"
 import { IconArrowsSort, IconEye, IconSortAscending, IconSortDescending } from "@tabler/icons-react"
-import dayjs from "dayjs"
 import { useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useColleges } from "@/src/stores/colleges"
 import { useMembers } from "@/src/stores/members"
+import { createUserFormatter } from "@/src/utils/info"
 
 type SortOption = "nickname" | "mcName" | "QQID" | "createAt" | "college"
 const SORT_OPTION_MAP: Record<SortOption, string> = {
@@ -30,8 +29,8 @@ const SORT_OPTIONS: SortOption[] = ["nickname", "mcName", "QQID", "createAt", "c
 
 export default function ListSection() {
   const { members } = useMembers()
-  const { colleges } = useColleges()
   const router = useRouter()
+  const { formatCreateAt, formatDepartment, getCollegeName } = createUserFormatter()
 
   const [sortOption, setSortOption] = useState<SortOption>("nickname")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
@@ -44,9 +43,9 @@ export default function ListSection() {
       case "mcName":
         return (a.mcName ?? "").localeCompare(b.mcName ?? "")
       case "QQID":
-        return a.QQID.localeCompare(b.QQID)
+        return a.QQID.localeCompare(b.QQID, undefined, { numeric: true })
       case "createAt":
-        return dayjs(a.createAt).isBefore(dayjs(b.createAt)) ? -1 : 1
+        return new Date(a.createAt).getTime() - new Date(b.createAt).getTime()
       case "college":
         return (a.college).localeCompare(b.college)
       default:
@@ -61,14 +60,6 @@ export default function ListSection() {
       return isASC ? result : -result
     })
   ), [members, sortOption, sortDirection])
-
-  const getCollegeName = (user: UserInfo) => (
-    colleges.find(item => item.code === user.college)?.name || "---"
-  )
-
-  const formatDepartment = (user: UserInfo) => (
-    user.departments.map(item => item.name).join(", ") || "无"
-  )
 
   const handleSortOptionSwitch = () => {
     const currentIndex = SORT_OPTIONS.indexOf(sortOption) ?? 0
@@ -106,9 +97,9 @@ export default function ListSection() {
                 <TableCell className="text-center">{item.nickname}</TableCell>
                 <TableCell className="text-center">{item.mcName}</TableCell>
                 <TableCell className="text-center">{item.QQID}</TableCell>
-                <TableCell className="text-center">{dayjs(item.createAt).format("YYYY-MM-DD")}</TableCell>
-                <TableCell className="text-center">{getCollegeName(item)}</TableCell>
-                <TableCell className="text-center">{formatDepartment(item)}</TableCell>
+                <TableCell className="text-center">{formatCreateAt(item.createAt)}</TableCell>
+                <TableCell className="text-center">{getCollegeName(item.college)}</TableCell>
+                <TableCell className="text-center">{formatDepartment(item.departments)}</TableCell>
                 <TableCell className="text-center">
                   <Button
                     variant="ghost"
