@@ -31,7 +31,7 @@ export default function AddModal({
     nickname: "",
     password: "",
     realName: "",
-    college: "",
+    college: "OTHERS",
   })
 
   useEffect(() => {

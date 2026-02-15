@@ -93,6 +93,20 @@ function LoginForm() {
             登录
           </Button>
         </Field>
+        <div className="w-full text-center text-sm">
+          没有账号, 前往
+          <Button
+            variant="outline"
+            size="xs"
+            className="mx-2"
+            onClick={(e) => {
+              e.preventDefault()
+              router.push("/signup")
+            }}
+          >
+            注册
+          </Button>
+        </div>
       </FieldGroup>
     </form>
   )
