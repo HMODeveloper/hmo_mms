@@ -9,13 +9,20 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { updateInfo } from "@/src/apis/user"
+import { updateInfo } from "@/src/apis/member"
 import { useAuth } from "@/src/contexts/auth"
 import { useColleges } from "@/src/stores/colleges"
+import { useMembers } from "@/src/stores/members"
 import { createUserFormatter } from "@/src/utils/info"
 
-export default function InfoSection() {
-  const { user, refreshUser } = useAuth()
+export default function InfoSection({
+  QQID,
+}: {
+  QQID: string
+}) {
+  const { isAdmin } = useAuth()
+  const { members, refreshMembers } = useMembers()
+  const member = members.find(item => item.QQID === QQID)
   const { colleges } = useColleges()
   const { formatCreateAt, formatDepartment, formatMajorClass, getCollegeName, formatLevel } = createUserFormatter()
 
@@ -25,26 +32,26 @@ export default function InfoSection() {
   const [isEdited, setIsEdited] = useState(false)
 
   // 初始化表单数据函数
-  const initFormData = (userData = user): UpdateUserInfoRequest => ({
-    nickname: userData?.nickname || "",
-    mcName: userData?.mcName || "",
-    realName: userData?.realName || "",
-    studentID: userData?.studentID || "",
-    college: userData?.college || "",
-    school: userData?.school || "",
-    major: userData?.major || "",
-    grade: userData?.grade || undefined,
-    classIndex: userData?.classIndex || undefined,
+  const initFormData = (memberData = member): UpdateUserInfoRequest => ({
+    nickname: memberData?.nickname || "",
+    mcName: memberData?.mcName || "",
+    realName: memberData?.realName || "",
+    studentID: memberData?.studentID || "",
+    college: memberData?.college || "",
+    school: memberData?.school || "",
+    major: memberData?.major || "",
+    grade: memberData?.grade || undefined,
+    classIndex: memberData?.classIndex || undefined,
   })
 
   const [formData, setFormData] = useState<UpdateUserInfoRequest>(initFormData)
 
   useEffect(() => {
-    if (user && !isEditing) {
+    if (member && !isEditing) {
       setFormData(initFormData())
       setIsEdited(false)
     }
-  }, [user, isEditing])
+  }, [member, isEditing])
 
   const handleInput = (updater: (v: UpdateUserInfoRequest) => Partial<UpdateUserInfoRequest>) => {
     if (!isEditing)
@@ -66,10 +73,10 @@ export default function InfoSection() {
     if (!isEdited)
       return
 
-    updateInfo(formData)
+    updateInfo(QQID, formData)
       .then(() => {
         toast.success("修改信息成功!")
-        refreshUser()
+        void refreshMembers()
         handleReset()
         setIsEditing(false)
       })
@@ -81,7 +88,7 @@ export default function InfoSection() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>个人信息</CardTitle>
+        <CardTitle>用户信息</CardTitle>
       </CardHeader>
       <CardContent>
         <form className="w-full flex flex-col gap-4">
@@ -89,7 +96,7 @@ export default function InfoSection() {
             <Field>
               <FieldLabel>QQ 号</FieldLabel>
               <Input
-                value={user?.QQID ?? ""}
+                value={member?.QQID ?? ""}
                 onInput={() => {}}
               />
             </Field>
@@ -118,7 +125,7 @@ export default function InfoSection() {
             <Field>
               <FieldLabel>注册时间</FieldLabel>
               <Input
-                value={formatCreateAt(user?.createAt)}
+                value={formatCreateAt(member?.createAt)}
                 onInput={() => {}}
               />
             </Field>
@@ -257,51 +264,53 @@ export default function InfoSection() {
             <Field>
               <FieldLabel>部门</FieldLabel>
               <Input
-                value={formatDepartment(user?.departments)}
+                value={formatDepartment(member?.departments)}
                 onInput={() => {}}
               />
             </Field>
             <Field>
               <FieldLabel>权限级别</FieldLabel>
               <Input
-                value={formatLevel(user?.level)}
+                value={formatLevel(member?.level)}
                 onInput={() => {}}
               />
             </Field>
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter className="justify-end gap-4">
-        { isEditing
-          ? (
-              <>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsEditing(false)
-                    handleReset()
-                  }}
-                >
-                  <IconArrowLeft />
-                  取消
+      { isAdmin && (
+        <CardFooter className="justify-end gap-4">
+          { isEditing
+            ? (
+                <>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditing(false)
+                      handleReset()
+                    }}
+                  >
+                    <IconArrowLeft />
+                    取消
+                  </Button>
+                  <Button variant="outline" onClick={handleReset}>
+                    <IconRefresh />
+                    重置
+                  </Button>
+                  <Button onClick={handleUpdate}>
+                    <IconUpload />
+                    更新
+                  </Button>
+                </>
+              )
+            : (
+                <Button onClick={() => setIsEditing(true)}>
+                  <IconEdit />
+                  编辑
                 </Button>
-                <Button variant="outline" onClick={handleReset}>
-                  <IconRefresh />
-                  重置
-                </Button>
-                <Button onClick={handleUpdate}>
-                  <IconUpload />
-                  更新
-                </Button>
-              </>
-            )
-          : (
-              <Button onClick={() => setIsEditing(true)}>
-                <IconEdit />
-                编辑
-              </Button>
-            ) }
-      </CardFooter>
+              ) }
+        </CardFooter>
+      ) }
     </Card>
   )
 }

@@ -1,5 +1,6 @@
-import type { UserDepartmentInfo } from "@/src/models/user"
+import type { UserDepartmentInfo, UserLevel } from "@/src/models/user"
 import dayjs from "dayjs"
+import { USER_LEVEL_MAP } from "@/src/models/user"
 import { useColleges } from "@/src/stores/colleges"
 
 export function createUserFormatter() {
@@ -26,6 +27,12 @@ export function createUserFormatter() {
     return `${major}${yy}${index}`
   }
 
+  const formatLevel = (level?: UserLevel) => {
+    if (!level)
+      return "---"
+    return USER_LEVEL_MAP[level] ?? level
+  }
+
   const getCollegeName = (collegeCode?: string) => {
     if (!collegeCode)
       return "---"
@@ -37,5 +44,6 @@ export function createUserFormatter() {
     formatDepartment,
     formatMajorClass,
     getCollegeName,
+    formatLevel,
   }
 }

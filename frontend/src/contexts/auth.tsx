@@ -12,6 +12,7 @@ interface AuthContextValue {
   refreshUser: () => void
   logout: () => void
   isAuthenticated: boolean | null
+  isAdmin: boolean
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -59,7 +60,20 @@ export function AuthProvider({
       })
   }
 
-  const value = useMemo(() => ({ user, setUser, refreshUser, logout, isAuthenticated }), [user, isAuthenticated])
+  const isAdmin = useMemo(() => {
+    if (!user)
+      return false
+    return user.level === "SUPERADMIN" || user.level === "ADMIN"
+  }, [user])
+
+  const value = useMemo(() => ({
+    user,
+    setUser,
+    refreshUser,
+    logout,
+    isAuthenticated,
+    isAdmin,
+  }), [user, isAuthenticated])
 
   return (
     <AuthContext.Provider value={value}>
