@@ -88,7 +88,7 @@ export default function AddModal({
               <FieldLabel>QQ号</FieldLabel>
               <Field orientation="horizontal">
                 <Input
-                  value={QQID}
+                  value={QQID ?? ""}
                   onInput={e =>
                     setQQID((e.target as HTMLInputElement).value)}
                   placeholder="请输入 QQ 号"
@@ -116,7 +116,7 @@ export default function AddModal({
                 <Field>
                   <FieldLabel>昵称</FieldLabel>
                   <Input
-                    value={formData.nickname}
+                    value={formData.nickname ?? ""}
                     onInput={e =>
                       setFormData(v => ({
                         ...v,
@@ -128,7 +128,7 @@ export default function AddModal({
                 <Field>
                   <FieldLabel>游戏 ID</FieldLabel>
                   <Input
-                    value={formData.mcName}
+                    value={formData.mcName ?? ""}
                     onInput={e =>
                       setFormData(v => ({
                         ...v,
@@ -144,7 +144,7 @@ export default function AddModal({
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
-                      value={formData.password}
+                      value={formData.password ?? ""}
                       onInput={e =>
                         setFormData(v => ({
                           ...v,
@@ -179,7 +179,7 @@ export default function AddModal({
                 <Field>
                   <FieldLabel>学号</FieldLabel>
                   <Input
-                    value={formData.studentID}
+                    value={formData.studentID ?? ""}
                     onInput={e =>
                       setFormData(v => ({
                         ...v,
