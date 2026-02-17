@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { addMember } from "@/src/apis/member"
 import { checkQQ } from "@/src/apis/signup"
 import { useColleges } from "@/src/stores/colleges"
-import { useMembers } from "@/src/stores/members"
+import { useMember } from "@/src/stores/members"
 
 export default function AddModal({
   isOpen,
@@ -21,7 +21,7 @@ export default function AddModal({
   onClose: () => void
 }) {
   const { colleges } = useColleges()
-  const { refreshMembers } = useMembers()
+  const { update } = useMember()
 
   const [isChecked, setIsChecked] = useState(false)
   const [QQID, setQQID] = useState<string>("")
@@ -68,7 +68,7 @@ export default function AddModal({
       .then(() => {
         toast.success("添加成功")
         onClose()
-        void refreshMembers()
+        void update()
         handleCheckQQ()
       })
       .catch(() => {

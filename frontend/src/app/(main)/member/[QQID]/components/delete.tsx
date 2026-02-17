@@ -15,7 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { removeMember } from "@/src/apis/member"
-import { useMembers } from "@/src/stores/members"
+import { useMember } from "@/src/stores/members"
 
 export default function DeleteModal({
   QQID,
@@ -27,14 +27,14 @@ export default function DeleteModal({
   onClose: () => void
 }) {
   const router = useRouter()
-  const { refreshMembers } = useMembers()
+  const { update } = useMember()
 
   const handleSubmit = () => {
     removeMember(QQID)
       .then(() => {
         toast.success("用户已删除.")
         router.push("/member")
-        void refreshMembers()
+        void update()
       })
       .catch(() => {
         toast.error("用户删除失败")

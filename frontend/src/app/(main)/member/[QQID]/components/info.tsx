@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { updateInfo } from "@/src/apis/member"
 import { useAuth } from "@/src/contexts/auth"
 import { useColleges } from "@/src/stores/colleges"
-import { useMembers } from "@/src/stores/members"
+import { useMember } from "@/src/stores/members"
 import { createUserFormatter } from "@/src/utils/info"
 
 export default function InfoSection({
@@ -21,7 +21,7 @@ export default function InfoSection({
   QQID: string
 }) {
   const { isAdmin } = useAuth()
-  const { members, refreshMembers } = useMembers()
+  const { members, update } = useMember()
   const member = members.find(item => item.QQID === QQID)
   const { colleges } = useColleges()
   const { formatCreateAt, formatDepartment, formatMajorClass, getCollegeName, formatLevel } = createUserFormatter()
@@ -76,7 +76,7 @@ export default function InfoSection({
     updateInfo(QQID, formData)
       .then(() => {
         toast.success("修改信息成功!")
-        void refreshMembers()
+        void update()
         handleReset()
         setIsEditing(false)
       })

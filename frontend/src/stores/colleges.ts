@@ -8,34 +8,54 @@ interface CollegeStore {
   loading: boolean
   error: Error | null
 
-  fetchColleges: () => Promise<void>
+  setColleges: (colleges: CollegeInfo[]) => void
+  setLoading: (loading: boolean) => void
+  setError: (error: Error | null) => void
 }
 
 const useCollegeStore = create<CollegeStore>(set => ({
   colleges: [],
   loading: false,
   error: null,
-  fetchColleges: async () => {
-    set({ loading: true, error: null })
-
-    try {
-      const response = await getCollegesInfo()
-      set({ colleges: response, loading: false })
+  setColleges: colleges => set({ colleges }),
+  setLoading: (loading) => {
+    if (loading) {
+      set({ loading: true, error: null })
     }
-    catch (error) {
-      set({ error: error as Error, loading: false })
+    else {
+      set({ loading: false })
     }
   },
+  setError: (error: Error | null) => set({ error }),
 }))
 
 export function useColleges() {
-  const { colleges, loading, error, fetchColleges } = useCollegeStore()
+  const { colleges, loading, error, setColleges, setLoading, setError } = useCollegeStore()
+
+  const update = async () => {
+    setLoading(true)
+    try {
+      const response = await getCollegesInfo()
+      setColleges(response)
+    }
+    catch (error) {
+      setError(error instanceof Error ? error : new Error("学院信息加载失败"))
+    }
+    finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     if (colleges.length === 0 && !loading) {
-      void fetchColleges()
+      void update()
     }
   }, [])
 
-  return { colleges, loading, error }
+  return {
+    colleges,
+    loading,
+    error,
+    update,
+  }
 }

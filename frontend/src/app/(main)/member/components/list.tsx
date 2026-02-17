@@ -7,7 +7,7 @@ import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useMembers } from "@/src/stores/members"
+import { useMember } from "@/src/stores/members"
 import { createUserFormatter } from "@/src/utils/info"
 
 type SortOption = "nickname" | "mcName" | "QQID" | "createAt" | "college"
@@ -28,7 +28,7 @@ const SORT_DIRECTION_MAP: Record<SortDirection, string> = {
 const SORT_OPTIONS: SortOption[] = ["nickname", "mcName", "QQID", "createAt", "college"]
 
 export default function ListSection() {
-  const { members } = useMembers()
+  const { members } = useMember()
   const router = useRouter()
   const { formatCreateAt, formatDepartment, getCollegeName } = createUserFormatter()
 
