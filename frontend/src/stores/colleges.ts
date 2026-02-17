@@ -1,3 +1,5 @@
+"use client"
+
 import type { CollegeInfo } from "@/src/models/college"
 import { useEffect } from "react"
 import { create } from "zustand"

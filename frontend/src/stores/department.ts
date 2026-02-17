@@ -1,7 +1,10 @@
+"use client"
+
 import { useEffect } from "react"
 import { create } from "zustand"
 import { departmentInfo, departmentList } from "@/src/apis/department"
 import { Department } from "@/src/models/department"
+import { useMember } from "@/src/stores/members"
 
 interface DepartmentStore {
   departments: Department[]
@@ -31,21 +34,30 @@ const useDepartmentStore = create<DepartmentStore>(set => ({
 
 export function useDepartment() {
   const { departments, loading, error, setDepartments, setLoading, setError } = useDepartmentStore()
+  const { members } = useMember()
 
   const update = async (code?: string) => {
     setLoading(true)
     try {
       if (code) {
+        // TODO: 造成循环导入!
         const response = await departmentInfo(code)
-        const { departments } = useDepartmentStore.getState()
-        const newDepartment = departments.map(item =>
-          item.code === code ? new Department(response) : item,
-        )
-        setDepartments(newDepartment)
+        setDepartments(departments.map((item) => {
+          if (item.code === code) {
+            const department = new Department(response)
+            department.loadAssociations(members)
+            return department
+          }
+          return item
+        }))
       }
       else {
         const response = await departmentList()
-        setDepartments(response.map(item => new Department(item)))
+        setDepartments(response.map((item) => {
+          const department = new Department(item)
+          department.loadAssociations(members)
+          return department
+        }))
       }
     }
     catch (error) {
@@ -67,5 +79,6 @@ export function useDepartment() {
     loading,
     error,
     update,
+    setDepartments,
   }
 }

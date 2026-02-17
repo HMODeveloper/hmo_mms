@@ -14,7 +14,7 @@ export default function () {
   return (
     <div className="w-full max-w-6xl flex flex-col gap-4">
       <ListSection />
-      { (user?.level === "ADMIN" || user?.level === "SUPERADMIN") && (
+      { user?.isAdmin && (
         <Card>
           <CardFooter className="justify-end gap-4">
             <Button
@@ -24,7 +24,7 @@ export default function () {
             </Button>
           </CardFooter>
         </Card>
-      ) }
+      )}
       <AddModal
         isOpen={isAddModalDisplay}
         onClose={() => setIsAddModalDisplay(false)}

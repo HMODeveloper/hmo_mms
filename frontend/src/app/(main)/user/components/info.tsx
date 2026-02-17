@@ -12,12 +12,10 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { updateInfo } from "@/src/apis/user"
 import { useAuth } from "@/src/contexts/auth"
 import { useColleges } from "@/src/stores/colleges"
-import { createUserFormatter } from "@/src/utils/info"
 
 export default function InfoSection() {
   const { user, update } = useAuth()
   const { colleges } = useColleges()
-  const { formatCreateAt, formatDepartment, formatMajorClass, getCollegeName, formatLevel } = createUserFormatter()
 
   // 是否为编辑模式
   const [isEditing, setIsEditing] = useState(false)
@@ -30,7 +28,7 @@ export default function InfoSection() {
     mcName: userData?.mcName || "",
     realName: userData?.realName || "",
     studentID: userData?.studentID || "",
-    college: userData?.college || "",
+    college: userData?.college.code || "",
     school: userData?.school || "",
     major: userData?.major || "",
     grade: userData?.grade || undefined,
@@ -118,7 +116,7 @@ export default function InfoSection() {
             <Field>
               <FieldLabel>注册时间</FieldLabel>
               <Input
-                value={formatCreateAt(user?.createAt)}
+                value={user?.formattedCreateAt ?? ""}
                 onInput={() => {}}
               />
             </Field>
@@ -179,7 +177,7 @@ export default function InfoSection() {
                   <Field>
                     <FieldLabel>学院</FieldLabel>
                     <Input
-                      value={getCollegeName(formData.college)}
+                      value={user?.college.name ?? ""}
                       onInput={() => {}}
                     />
                   </Field>
@@ -246,7 +244,7 @@ export default function InfoSection() {
                     <Field>
                       <FieldLabel>专业班级</FieldLabel>
                       <Input
-                        value={formatMajorClass(formData.grade, formData.classIndex, formData.major)}
+                        value={user?.formattedMajorClass ?? ""}
                         onInput={() => {}}
                       />
                     </Field>
@@ -257,14 +255,14 @@ export default function InfoSection() {
             <Field>
               <FieldLabel>部门</FieldLabel>
               <Input
-                value={formatDepartment(user?.departments)}
+                value={user?.formattedDepartments ?? ""}
                 onInput={() => {}}
               />
             </Field>
             <Field>
               <FieldLabel>权限级别</FieldLabel>
               <Input
-                value={formatLevel(user?.level)}
+                value={user?.level.name ?? ""}
                 onInput={() => {}}
               />
             </Field>

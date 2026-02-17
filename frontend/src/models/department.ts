@@ -1,6 +1,5 @@
 import type { User } from "@/src/models/user"
 import type { DepartmentInfo } from "@/src/types/response"
-import { useMember } from "@/src/stores/members"
 
 export interface DepartmentInterface {
   name: string
@@ -24,8 +23,7 @@ export class Department implements DepartmentInterface {
     this.member = []
   }
 
-  loadAssociations() {
-    const { members } = useMember()
+  loadAssociations(members: User[]) {
     const ministerSet = new Set(this._data.minister)
     const memberSet = new Set(this._data.member)
 

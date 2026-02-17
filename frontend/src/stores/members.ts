@@ -1,7 +1,11 @@
+"use client"
+
 import { useEffect } from "react"
 import { create } from "zustand"
 import { memberList } from "@/src/apis/member"
 import { User } from "@/src/models/user"
+import { useColleges } from "@/src/stores/colleges"
+import { useDepartment } from "@/src/stores/department"
 
 interface MemberStore {
   members: User[]
@@ -31,12 +35,18 @@ const useMemberStore = create<MemberStore>(set => ({
 
 export function useMember() {
   const { members, loading, error, setMembers, setLoading, setError } = useMemberStore()
+  const { departments } = useDepartment()
+  const { colleges } = useColleges()
 
   const update = async () => {
     setLoading(true)
     try {
       const response = await memberList()
-      setMembers(response.map(item => new User(item)))
+      setMembers(response.map((item) => {
+        const user = new User(item)
+        user.loadAssociations(colleges, departments)
+        return user
+      }))
     }
     catch (error) {
       setError(error instanceof Error ? error : new Error("成员信息加载失败"))
@@ -57,5 +67,6 @@ export function useMember() {
     loading,
     error,
     update,
+    setMembers,
   }
 }

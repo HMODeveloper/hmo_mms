@@ -13,18 +13,16 @@ import { updateInfo } from "@/src/apis/member"
 import { useAuth } from "@/src/contexts/auth"
 import { useColleges } from "@/src/stores/colleges"
 import { useMember } from "@/src/stores/members"
-import { createUserFormatter } from "@/src/utils/info"
 
 export default function InfoSection({
   QQID,
 }: {
   QQID: string
 }) {
-  const { isAdmin } = useAuth()
+  const { user } = useAuth()
   const { members, update } = useMember()
   const member = members.find(item => item.QQID === QQID)
   const { colleges } = useColleges()
-  const { formatCreateAt, formatDepartment, formatMajorClass, getCollegeName, formatLevel } = createUserFormatter()
 
   // 是否为编辑模式
   const [isEditing, setIsEditing] = useState(false)
@@ -37,7 +35,7 @@ export default function InfoSection({
     mcName: memberData?.mcName || "",
     realName: memberData?.realName || "",
     studentID: memberData?.studentID || "",
-    college: memberData?.college || "",
+    college: memberData?.college.code || "",
     school: memberData?.school || "",
     major: memberData?.major || "",
     grade: memberData?.grade || undefined,
@@ -125,7 +123,7 @@ export default function InfoSection({
             <Field>
               <FieldLabel>注册时间</FieldLabel>
               <Input
-                value={formatCreateAt(member?.createAt)}
+                value={member?.formattedCreateAt ?? ""}
                 onInput={() => {}}
               />
             </Field>
@@ -186,7 +184,7 @@ export default function InfoSection({
                   <Field>
                     <FieldLabel>学院</FieldLabel>
                     <Input
-                      value={getCollegeName(formData.college)}
+                      value={member?.college.name ?? ""}
                       onInput={() => {}}
                     />
                   </Field>
@@ -253,7 +251,7 @@ export default function InfoSection({
                     <Field>
                       <FieldLabel>专业班级</FieldLabel>
                       <Input
-                        value={formatMajorClass(formData.grade, formData.classIndex, formData.major)}
+                        value={member?.formattedMajorClass ?? ""}
                         onInput={() => {}}
                       />
                     </Field>
@@ -264,21 +262,21 @@ export default function InfoSection({
             <Field>
               <FieldLabel>部门</FieldLabel>
               <Input
-                value={formatDepartment(member?.departments)}
+                value={member?.formattedDepartments ?? ""}
                 onInput={() => {}}
               />
             </Field>
             <Field>
               <FieldLabel>权限级别</FieldLabel>
               <Input
-                value={formatLevel(member?.level)}
+                value={member?.level.name ?? ""}
                 onInput={() => {}}
               />
             </Field>
           </FieldGroup>
         </form>
       </CardContent>
-      { isAdmin && (
+      { user?.isAdmin && (
         <CardFooter className="justify-end gap-4">
           { isEditing
             ? (

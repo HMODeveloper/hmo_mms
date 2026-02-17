@@ -11,7 +11,7 @@ import { useAuth } from "@/src/contexts/auth"
 
 export default function () {
   const { QQID } = useParams<{ QQID: string }>()
-  const { isAdmin } = useAuth()
+  const { user } = useAuth()
 
   const [isPasswordDisplayed, setIsPasswordDisplayed] = useState(false)
   const [isDeleteDisplayed, setIsDeleteDisplayed] = useState(false)
@@ -19,7 +19,7 @@ export default function () {
   return (
     <div className="w-full max-w-6xl flex flex-col gap-4">
       <InfoSection QQID={QQID} />
-      { isAdmin && (
+      { user?.isAdmin && (
         <Card>
           <CardFooter className="justify-end gap-4">
             <Button onClick={() => setIsPasswordDisplayed(true)}>
