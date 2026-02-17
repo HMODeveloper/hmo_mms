@@ -12,7 +12,7 @@ import { userLogin } from "@/src/apis/auth"
 import { useAuth } from "@/src/contexts/auth"
 
 function LoginForm() {
-  const { refreshUser } = useAuth()
+  const { update } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [{ QQID, password }, setForm] = useState({ QQID: "", password: "" })
 
@@ -32,7 +32,7 @@ function LoginForm() {
     }
     userLogin(request)
       .then(() => {
-        refreshUser()
+        update()
         router.push("/dashboard")
       })
       .catch((error) => {

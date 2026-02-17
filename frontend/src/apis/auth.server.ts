@@ -1,4 +1,4 @@
-import type { UserInfo } from "@/src/models/user"
+import type { UserInfo } from "@/src/types/response"
 import request from "@/src/lib/server"
 
 export async function getUserInfo() {

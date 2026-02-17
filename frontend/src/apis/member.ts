@@ -1,5 +1,5 @@
-import type { UserInfo } from "@/src/models/user"
 import type { AddUserRequest, UpdateUserInfoRequest } from "@/src/types/request"
+import type { UserInfo } from "@/src/types/response"
 import request from "@/src/lib/client"
 
 export async function memberList() {

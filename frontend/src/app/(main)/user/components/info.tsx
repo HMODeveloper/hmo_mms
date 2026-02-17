@@ -15,7 +15,7 @@ import { useColleges } from "@/src/stores/colleges"
 import { createUserFormatter } from "@/src/utils/info"
 
 export default function InfoSection() {
-  const { user, refreshUser } = useAuth()
+  const { user, update } = useAuth()
   const { colleges } = useColleges()
   const { formatCreateAt, formatDepartment, formatMajorClass, getCollegeName, formatLevel } = createUserFormatter()
 
@@ -69,7 +69,7 @@ export default function InfoSection() {
     updateInfo(formData)
       .then(() => {
         toast.success("修改信息成功!")
-        refreshUser()
+        update()
         handleReset()
         setIsEditing(false)
       })

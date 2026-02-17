@@ -1,14 +1,14 @@
-import type { DepartmentInfo } from "@/src/models/department"
 import { useEffect } from "react"
 import { create } from "zustand"
 import { departmentInfo, departmentList } from "@/src/apis/department"
+import { Department } from "@/src/models/department"
 
 interface DepartmentStore {
-  departments: DepartmentInfo[]
+  departments: Department[]
   loading: boolean
   error: Error | null
 
-  setDepartments: (departments: DepartmentInfo[]) => void
+  setDepartments: (departments: Department[]) => void
   setLoading: (loading: boolean) => void
   setError: (error: Error | null) => void
 }
@@ -39,13 +39,13 @@ export function useDepartment() {
         const response = await departmentInfo(code)
         const { departments } = useDepartmentStore.getState()
         const newDepartment = departments.map(item =>
-          item.code === code ? response : item,
+          item.code === code ? new Department(response) : item,
         )
         setDepartments(newDepartment)
       }
       else {
         const response = await departmentList()
-        setDepartments(response)
+        setDepartments(response.map(item => new Department(item)))
       }
     }
     catch (error) {

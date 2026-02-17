@@ -1,18 +1,17 @@
 "use client"
 
 import type { ReactNode } from "react"
-import type { UserInfo } from "@/src/models/user"
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react"
-
 import { getUserInfo, userLogout } from "@/src/apis/auth"
 
+import { User } from "@/src/models/user"
+
 interface AuthContextValue {
-  user: UserInfo | null
-  setUser: (user: UserInfo | null) => void
-  refreshUser: () => void
+  user: User | null
+  setUser: (user: User | null) => void
+  update: () => void
   logout: () => void
   isAuthenticated: boolean | null
-  isAdmin: boolean
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -22,17 +21,17 @@ export function AuthProvider({
   initialUser = null,
 }: {
   children: ReactNode
-  initialUser: UserInfo | null
+  initialUser: User | null
 }) {
-  const [user, setUser] = useState<UserInfo | null>(initialUser)
+  const [user, setUser] = useState<User | null>(initialUser)
   // null: loading
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
 
-  const refreshUser = () => {
+  const update = () => {
     setIsAuthenticated(null)
     getUserInfo()
       .then((response) => {
-        setUser(response)
+        setUser(new User(response))
         setIsAuthenticated(true)
       })
       .catch(() => {
@@ -43,7 +42,7 @@ export function AuthProvider({
 
   useEffect(() => {
     if (!user && isAuthenticated === null) {
-      void refreshUser()
+      void update()
     }
     else if (user && isAuthenticated === null) {
       setIsAuthenticated(true)
@@ -60,19 +59,12 @@ export function AuthProvider({
       })
   }
 
-  const isAdmin = useMemo(() => {
-    if (!user)
-      return false
-    return user.level === "SUPERADMIN" || user.level === "ADMIN"
-  }, [user])
-
   const value = useMemo(() => ({
     user,
     setUser,
-    refreshUser,
+    update,
     logout,
     isAuthenticated,
-    isAdmin,
   }), [user, isAuthenticated])
 
   return (

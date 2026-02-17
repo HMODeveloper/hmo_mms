@@ -1,6 +1,6 @@
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios"
 import axios from "axios"
-import { RequestErrorImpl } from "@/src/models/response"
+import { RequestErrorImpl } from "@/src/models/error"
 
 const myAxios = axios.create({
   baseURL: "/api",

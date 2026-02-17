@@ -1,14 +1,14 @@
-import type { UserInfo } from "@/src/models/user"
 import { useEffect } from "react"
 import { create } from "zustand"
 import { memberList } from "@/src/apis/member"
+import { User } from "@/src/models/user"
 
 interface MemberStore {
-  members: UserInfo[]
+  members: User[]
   loading: boolean
   error: Error | null
 
-  setMembers: (members: UserInfo[]) => void
+  setMembers: (members: User[]) => void
   setLoading: (loading: boolean) => void
   setError: (error: Error | null) => void
 }
@@ -36,7 +36,7 @@ export function useMember() {
     setLoading(true)
     try {
       const response = await memberList()
-      setMembers(response)
+      setMembers(response.map(item => new User(item)))
     }
     catch (error) {
       setError(error instanceof Error ? error : new Error("成员信息加载失败"))

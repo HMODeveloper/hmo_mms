@@ -1,4 +1,4 @@
-import type { DepartmentInfo } from "@/src/models/department"
+import type { DepartmentInfo } from "@/src/types/response"
 import request from "@/src/lib/client"
 
 export interface AddMemberRequest {
