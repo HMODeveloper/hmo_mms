@@ -53,7 +53,7 @@ async def department_list_handler(
                 )
             )
 
-        return DepartmentListResponse(result)
+        return result
     except Exception as e:
         logger.error(e)
         raise ErrorResponse()
