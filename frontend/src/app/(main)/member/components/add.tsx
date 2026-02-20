@@ -10,8 +10,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Separator } from "@/components/ui/separator"
 import { addMember } from "@/src/apis/member"
 import { checkQQ } from "@/src/apis/signup"
-import { useColleges } from "@/src/stores/colleges"
-import { useMember } from "@/src/stores/members"
+import { useAppData } from "@/src/stores/app"
 
 export default function AddModal({
   isOpen,
@@ -20,8 +19,8 @@ export default function AddModal({
   isOpen: boolean
   onClose: () => void
 }) {
-  const { colleges } = useColleges()
-  const { update } = useMember()
+  const { getAllColleges, updateMembers } = useAppData()
+  const colleges = getAllColleges()
 
   const [isChecked, setIsChecked] = useState(false)
   const [QQID, setQQID] = useState<string>("")
@@ -68,7 +67,7 @@ export default function AddModal({
       .then(() => {
         toast.success("添加成功")
         onClose()
-        void update()
+        void updateMembers()
         handleCheckQQ()
       })
       .catch(() => {

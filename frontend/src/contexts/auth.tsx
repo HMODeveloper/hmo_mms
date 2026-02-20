@@ -34,7 +34,7 @@ export function initUser(
 
 interface AuthContextValue {
   user: User | null
-  update: (getCollege?: (code: string) => BaseCollegeInfo | undefined, getDepartment?: (code: string) => Department | null) => void
+  update: (getCollege?: (code: string) => BaseCollegeInfo | undefined, getDepartment?: (code: string) => Department | null) => Promise<void>
   logout: () => void
   isAuthenticated: boolean | null
 }
@@ -52,20 +52,20 @@ export function AuthProvider({
   // null: loading
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
 
-  const update = (
+  const update = async (
     getCollege?: (code: string) => BaseCollegeInfo | undefined,
     getDepartment?: (code: string) => Department | null,
-  ) => {
+  ): Promise<void> => {
     setIsAuthenticated(null)
-    getUserInfo()
-      .then((response) => {
-        setUser(initUser(response, getCollege, getDepartment))
-        setIsAuthenticated(true)
-      })
-      .catch(() => {
-        setUser(null)
-        setIsAuthenticated(false)
-      })
+    try {
+      const response = await getUserInfo()
+      setUser(initUser(response, getCollege, getDepartment))
+      setIsAuthenticated(true)
+    }
+    catch {
+      setUser(null)
+      setIsAuthenticated(false)
+    }
   }
 
   useEffect(() => {

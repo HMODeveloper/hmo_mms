@@ -1,6 +1,7 @@
 "use client"
 
-import type { AddUserRequest } from "@/src/schema/request"
+import type { BaseCollegeInfo } from "@/src/schema/common"
+import type { AddMemberRequest } from "@/src/schema/member"
 import { IconArrowLeft, IconEye, IconEyeOff, IconRefresh, IconUpload } from "@tabler/icons-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -11,17 +12,21 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
+import { getCollegesInfo } from "@/src/apis/public"
 import { checkQQ, signUp } from "@/src/apis/signup"
-import { useColleges } from "@/src/stores/colleges"
 
 export default function () {
   const router = useRouter()
-  const { colleges } = useColleges()
+  const [colleges, setColleges] = useState<BaseCollegeInfo[]>([])
+
+  useEffect(() => {
+    getCollegesInfo().then(setColleges).catch(() => {})
+  }, [])
 
   const [isChecked, setIsChecked] = useState(false)
   const [QQID, setQQID] = useState<string>("")
   const [showPassword, setShowPassword] = useState(false)
-  const [formData, setFormData] = useState<AddUserRequest>({
+  const [formData, setFormData] = useState<AddMemberRequest>({
     QQID: "",
     nickname: "",
     password: "",
@@ -30,7 +35,7 @@ export default function () {
   })
 
   useEffect(() => {
-    setFormData(prev => ({ ...prev, QQID }))
+    setFormData((prev: AddMemberRequest) => ({ ...prev, QQID }))
   }, [QQID])
 
   const handleCheckQQ = () => {
@@ -113,7 +118,7 @@ export default function () {
                     <Input
                       value={formData.nickname ?? ""}
                       onInput={e =>
-                        setFormData(v => ({
+                        setFormData((v: AddMemberRequest) => ({
                           ...v,
                           nickname: (e.target as HTMLInputElement).value,
                         }))}
@@ -125,7 +130,7 @@ export default function () {
                     <Input
                       value={formData.mcName ?? ""}
                       onInput={e =>
-                        setFormData(v => ({
+                        setFormData((v: AddMemberRequest) => ({
                           ...v,
                           mcName: (e.target as HTMLInputElement).value,
                         }))}
@@ -141,7 +146,7 @@ export default function () {
                         type={showPassword ? "text" : "password"}
                         value={formData.password ?? ""}
                         onInput={e =>
-                          setFormData(v => ({
+                          setFormData((v: AddMemberRequest) => ({
                             ...v,
                             password: (e.target as HTMLInputElement).value,
                           }))}
@@ -164,7 +169,7 @@ export default function () {
                     <Input
                       value={formData.realName ?? ""}
                       onInput={e =>
-                        setFormData(v => ({
+                        setFormData((v: AddMemberRequest) => ({
                           ...v,
                           realName: (e.target as HTMLInputElement).value,
                         }))}
@@ -176,7 +181,7 @@ export default function () {
                     <Input
                       value={formData.studentID ?? ""}
                       onInput={e =>
-                        setFormData(v => ({
+                        setFormData((v: AddMemberRequest) => ({
                           ...v,
                           studentID: (e.target as HTMLInputElement).value,
                         }))}
@@ -188,7 +193,7 @@ export default function () {
                     <Select
                       value={formData.college}
                       onValueChange={value =>
-                        setFormData(v => ({
+                        setFormData((v: AddMemberRequest) => ({
                           ...v,
                           college: value,
                         }))}
@@ -216,7 +221,7 @@ export default function () {
                           <Input
                             value={formData.school ?? ""}
                             onInput={e =>
-                              setFormData(v => ({
+                              setFormData((v: AddMemberRequest) => ({
                                 ...v,
                                 school: (e.target as HTMLInputElement).value,
                               }))}
@@ -232,7 +237,7 @@ export default function () {
                             <Input
                               value={formData.major ?? ""}
                               onInput={e =>
-                                setFormData(v => ({
+                                setFormData((v: AddMemberRequest) => ({
                                   ...v,
                                   major: (e.target as HTMLInputElement).value,
                                 }))}
@@ -245,7 +250,7 @@ export default function () {
                               value={formData.grade ?? ""}
                               type="number"
                               onInput={e =>
-                                setFormData(v => ({
+                                setFormData((v: AddMemberRequest) => ({
                                   ...v,
                                   grade: Number((e.target as HTMLInputElement).value),
                                 }))}
@@ -258,7 +263,7 @@ export default function () {
                               value={formData.classIndex ?? ""}
                               type="number"
                               onInput={e =>
-                                setFormData(v => ({
+                                setFormData((v: AddMemberRequest) => ({
                                   ...v,
                                   classIndex: Number((e.target as HTMLInputElement).value),
                                 }))}

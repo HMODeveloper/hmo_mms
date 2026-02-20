@@ -2,7 +2,7 @@
 
 import type { UpdateMemberInfoRequest } from "@/src/schema/request"
 import { IconArrowLeft, IconEdit, IconRefresh, IconUpload } from "@tabler/icons-react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,8 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { updateInfo } from "@/src/apis/member"
 import { useAuth } from "@/src/contexts/auth"
-import { useColleges } from "@/src/stores/colleges"
-import { useMember } from "@/src/stores/members"
+import { useAppData } from "@/src/stores/app"
 
 export default function InfoSection({
   QQID,
@@ -20,9 +19,9 @@ export default function InfoSection({
   QQID: string
 }) {
   const { user } = useAuth()
-  const { members, update } = useMember()
-  const member = members.find(item => item.QQID === QQID)
-  const { colleges } = useColleges()
+  const { getMember, updateMembers, getAllColleges } = useAppData()
+  const member = getMember(QQID)
+  const colleges = getAllColleges()
 
   // 是否为编辑模式
   const [isEditing, setIsEditing] = useState(false)
@@ -43,13 +42,6 @@ export default function InfoSection({
   })
 
   const [formData, setFormData] = useState<UpdateMemberInfoRequest>(initFormData)
-
-  useEffect(() => {
-    if (member && !isEditing) {
-      setFormData(initFormData())
-      setIsEdited(false)
-    }
-  }, [member, isEditing])
 
   const handleInput = (updater: (v: UpdateMemberInfoRequest) => Partial<UpdateMemberInfoRequest>) => {
     if (!isEditing)
@@ -74,7 +66,7 @@ export default function InfoSection({
     updateInfo(QQID, formData)
       .then(() => {
         toast.success("修改信息成功!")
-        void update()
+        void updateMembers()
         handleReset()
         setIsEditing(false)
       })
@@ -101,7 +93,7 @@ export default function InfoSection({
             <Field>
               <FieldLabel>用户名</FieldLabel>
               <Input
-                value={formData.nickname}
+                value={isEditing ? formData.nickname : member?.nickname ?? ""}
                 onInput={e =>
                   handleInput(v => ({
                     ...v,
@@ -112,7 +104,7 @@ export default function InfoSection({
             <Field>
               <FieldLabel>游戏 ID</FieldLabel>
               <Input
-                value={formData.mcName ?? ""}
+                value={isEditing ? formData.mcName ?? "" : member?.mcName ?? ""}
                 onInput={e =>
                   handleInput(v => ({
                     ...v,
@@ -132,7 +124,7 @@ export default function InfoSection({
             <Field>
               <FieldLabel>姓名</FieldLabel>
               <Input
-                value={formData.realName ?? ""}
+                value={isEditing ? formData.realName ?? "" : member?.realName ?? ""}
                 onInput={e =>
                   handleInput(v => ({
                     ...v,
@@ -143,7 +135,7 @@ export default function InfoSection({
             <Field>
               <FieldLabel>学号</FieldLabel>
               <Input
-                value={formData.studentID ?? ""}
+                value={isEditing ? formData.studentID ?? "" : member?.studentID ?? ""}
                 onInput={e =>
                   handleInput(v => ({
                     ...v,
@@ -191,11 +183,11 @@ export default function InfoSection({
                 ) }
 
             {/* 学校字段: 仅外校学生显示 */ }
-            { formData.college === "NOT_HNU" && (
+            { (isEditing ? formData.college : member?.college.code) === "NOT_HNU" && (
               <Field>
                 <FieldLabel>学校</FieldLabel>
                 <Input
-                  value={formData.school ?? ""}
+                  value={isEditing ? formData.school ?? "" : member?.school ?? ""}
                   onInput={e =>
                     handleInput(v => ({
                       ...v,
@@ -206,7 +198,7 @@ export default function InfoSection({
             ) }
 
             {/* 专业班级字段: 仅本校学生显示, 显示时合并, 编辑时分开 */ }
-            { formData.college !== "NOT_HNU" && (
+            { (isEditing ? formData.college : member?.college.code) !== "NOT_HNU" && (
               isEditing
                 ? (
                     <>
@@ -284,8 +276,8 @@ export default function InfoSection({
                   <Button
                     variant="outline"
                     onClick={() => {
-                      setIsEditing(false)
                       handleReset()
+                      setIsEditing(false)
                     }}
                   >
                     <IconArrowLeft />
@@ -302,7 +294,12 @@ export default function InfoSection({
                 </>
               )
             : (
-                <Button onClick={() => setIsEditing(true)}>
+                <Button
+                  onClick={() => {
+                    handleReset()
+                    setIsEditing(true)
+                  }}
+                >
                   <IconEdit />
                   编辑
                 </Button>

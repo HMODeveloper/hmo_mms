@@ -1,10 +1,11 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useDepartment } from "@/src/stores/department"
+import { useAppData } from "@/src/stores/app"
 
 export default function () {
-  const { departments } = useDepartment()
+  const { getAllDepartments } = useAppData()
+  const departments = getAllDepartments()
 
   return (
     <div className="w-full max-w-6xl flex flex-col gap-4">
