@@ -1,10 +1,5 @@
-import type { UpdateUserInfoRequest } from "@/src/types/request"
+import type { ChangePasswordRequest, UpdateUserInfoRequest } from "@/src/schema/user"
 import request from "@/src/lib/client"
-
-export interface ChangePasswordRequest {
-  old: string
-  new: string
-}
 
 export async function changePassword(req: ChangePasswordRequest) {
   return await request.put("/user/password", req)

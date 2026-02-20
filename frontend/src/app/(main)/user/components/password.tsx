@@ -1,6 +1,6 @@
 "use client"
 
-import type { ChangePasswordRequest } from "@/src/apis/user"
+import type { ChangePasswordRequest } from "@/src/schema/user"
 import { IconArrowLeft, IconUpload } from "@tabler/icons-react"
 import { useState } from "react"
 import { toast } from "sonner"

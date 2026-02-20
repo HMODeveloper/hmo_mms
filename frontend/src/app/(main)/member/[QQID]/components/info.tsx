@@ -1,6 +1,6 @@
 "use client"
 
-import type { UpdateUserInfoRequest } from "@/src/types/request"
+import type { UpdateMemberInfoRequest } from "@/src/schema/request"
 import { IconArrowLeft, IconEdit, IconRefresh, IconUpload } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -30,7 +30,7 @@ export default function InfoSection({
   const [isEdited, setIsEdited] = useState(false)
 
   // 初始化表单数据函数
-  const initFormData = (memberData = member): UpdateUserInfoRequest => ({
+  const initFormData = (memberData = member): UpdateMemberInfoRequest => ({
     nickname: memberData?.nickname || "",
     mcName: memberData?.mcName || "",
     realName: memberData?.realName || "",
@@ -42,7 +42,7 @@ export default function InfoSection({
     classIndex: memberData?.classIndex || undefined,
   })
 
-  const [formData, setFormData] = useState<UpdateUserInfoRequest>(initFormData)
+  const [formData, setFormData] = useState<UpdateMemberInfoRequest>(initFormData)
 
   useEffect(() => {
     if (member && !isEditing) {
@@ -51,7 +51,7 @@ export default function InfoSection({
     }
   }, [member, isEditing])
 
-  const handleInput = (updater: (v: UpdateUserInfoRequest) => Partial<UpdateUserInfoRequest>) => {
+  const handleInput = (updater: (v: UpdateMemberInfoRequest) => Partial<UpdateMemberInfoRequest>) => {
     if (!isEditing)
       return
 

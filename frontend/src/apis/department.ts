@@ -1,18 +1,11 @@
-import type { DepartmentInfo } from "@/src/types/response"
+import type { AddDepartmentRequest, DepartmentInfoResponse, DepartmentListResponse } from "@/src/schema/department"
 import request from "@/src/lib/client"
 
-export interface AddMemberRequest {
-  name: string
-  code: string
-  minister: string
-  member: string
-}
-
 export async function departmentList() {
-  return await request.get<DepartmentInfo[]>("/department")
+  return await request.get<DepartmentListResponse>("/department")
 }
 
-export async function addDepartment(req: AddMemberRequest) {
+export async function addDepartment(req: AddDepartmentRequest) {
   return await request.post("/department", req)
 }
 
@@ -21,7 +14,7 @@ export async function removeDepartment(code: string) {
 }
 
 export async function departmentInfo(code: string) {
-  return await request.get<DepartmentInfo>(`/department/${code}`)
+  return await request.get<DepartmentInfoResponse>(`/department/${code}`)
 }
 
 export async function addDepartmentMember(code: string, QQID: string) {

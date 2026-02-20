@@ -1,4 +1,4 @@
-import type { AddUserRequest } from "@/src/types/request"
+import type { AddMemberRequest } from "@/src/schema/member"
 import { IconArrowLeft, IconEye, IconEyeOff, IconRefresh, IconUpload } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -26,7 +26,7 @@ export default function AddModal({
   const [isChecked, setIsChecked] = useState(false)
   const [QQID, setQQID] = useState<string>("")
   const [showPassword, setShowPassword] = useState(false)
-  const [formData, setFormData] = useState<AddUserRequest>({
+  const [formData, setFormData] = useState<AddMemberRequest>({
     QQID: "",
     nickname: "",
     password: "",

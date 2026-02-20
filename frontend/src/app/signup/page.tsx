@@ -1,6 +1,6 @@
 "use client"
 
-import type { AddUserRequest } from "@/src/types/request"
+import type { AddUserRequest } from "@/src/schema/request"
 import { IconArrowLeft, IconEye, IconEyeOff, IconRefresh, IconUpload } from "@tabler/icons-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"

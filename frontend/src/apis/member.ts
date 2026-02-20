@@ -1,12 +1,11 @@
-import type { AddUserRequest, UpdateUserInfoRequest } from "@/src/types/request"
-import type { UserInfo } from "@/src/types/response"
+import type { AddMemberRequest, MemberInfoResponse, MemberListResponse, UpdateMemberInfoRequest } from "@/src/schema/member"
 import request from "@/src/lib/client"
 
 export async function memberList() {
-  return await request.get<UserInfo[]>("/member")
+  return await request.get<MemberListResponse>("/member")
 }
 
-export async function addMember(req: AddUserRequest) {
+export async function addMember(req: AddMemberRequest) {
   return await request.post("/member", req)
 }
 
@@ -15,10 +14,10 @@ export async function removeMember(QQID: string) {
 }
 
 export async function memberInfo(QQID: string) {
-  return await request.get<UserInfo>(`/member/${QQID}`)
+  return await request.get<MemberInfoResponse>(`/member/${QQID}`)
 }
 
-export async function updateInfo(QQID: string, req: UpdateUserInfoRequest) {
+export async function updateInfo(QQID: string, req: UpdateMemberInfoRequest) {
   return await request.put(`/member/${QQID}/info`, req)
 }
 

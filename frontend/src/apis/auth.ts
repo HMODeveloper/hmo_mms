@@ -1,10 +1,5 @@
-import type { UserInfo } from "@/src/types/response"
+import type { LoginRequest, UserInfoResponse } from "@/src/schema/auth"
 import request from "@/src/lib/client"
-
-export interface LoginRequest {
-  QQID: string
-  password: string
-}
 
 export async function userLogin(req: LoginRequest) {
   return await request.post("/login", req)
@@ -15,5 +10,5 @@ export async function userLogout() {
 }
 
 export async function getUserInfo() {
-  return await request.get<UserInfo>("/user/info")
+  return await request.get<UserInfoResponse>("/user/info")
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import type { UpdateUserInfoRequest } from "@/src/types/request"
+import type { UpdateUserInfoRequest } from "@/src/schema/user"
 import { IconArrowLeft, IconEdit, IconRefresh, IconUpload } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"

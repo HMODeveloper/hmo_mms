@@ -1,4 +1,4 @@
-export interface UpdateUserInfoRequest {
+export interface UpdateMemberInfoRequest {
   nickname?: string
   mcName?: string
   realName?: string
@@ -10,7 +10,7 @@ export interface UpdateUserInfoRequest {
   classIndex?: number
 }
 
-export interface AddUserRequest {
+export interface AddMemberRequest {
   QQID: string
   nickname: string
   password: string
