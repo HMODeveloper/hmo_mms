@@ -13,43 +13,83 @@ import { useMemberStore } from "@/src/stores/member"
 interface Store {
   initialized: boolean
   loading: boolean
+  membersLoading: boolean
+  departmentsLoading: boolean
+  collegesLoading: boolean
   setInitialized: (value: boolean) => void
   setLoading: (value: boolean) => void
+  setMembersLoading: (value: boolean) => void
+  setDepartmentsLoading: (value: boolean) => void
+  setCollegesLoading: (value: boolean) => void
 }
 
 const useAppStore = create<Store>(set => ({
   initialized: false,
   loading: false,
+  membersLoading: false,
+  departmentsLoading: false,
+  collegesLoading: false,
   setInitialized: value => set({ initialized: value }),
   setLoading: value => set({ loading: value }),
+  setMembersLoading: value => set({ membersLoading: value }),
+  setDepartmentsLoading: value => set({ departmentsLoading: value }),
+  setCollegesLoading: value => set({ collegesLoading: value }),
 }))
 
 export function useAppData() {
   const memberStore = useMemberStore()
   const departmentStore = useDepartmentStore()
   const collegeStore = useCollegeStore()
-  const { initialized, loading, setInitialized, setLoading } = useAppStore()
+  const { initialized, loading, membersLoading, departmentsLoading, collegesLoading, setInitialized, setLoading, setMembersLoading, setDepartmentsLoading, setCollegesLoading } = useAppStore()
 
   async function updateMembers() {
-    const response = await memberList()
-    useMemberStore.getState().setmembers(response)
+    if (membersLoading)
+      return
+    setMembersLoading(true)
+    try {
+      const response = await memberList()
+      useMemberStore.getState().setmembers(response)
+    }
+    finally {
+      setMembersLoading(false)
+    }
   }
 
   async function updateDepartments() {
-    const response = await departmentList()
-    useDepartmentStore.getState().setDepartments(response)
+    if (departmentsLoading)
+      return
+    setDepartmentsLoading(true)
+    try {
+      const response = await departmentList()
+      useDepartmentStore.getState().setDepartments(response)
+    }
+    finally {
+      setDepartmentsLoading(false)
+    }
   }
 
   async function updateColleges() {
-    const response = await getCollegesInfo()
-    useCollegeStore.getState().setColleges(response)
+    if (collegesLoading)
+      return
+    setCollegesLoading(true)
+    try {
+      const response = await getCollegesInfo()
+      useCollegeStore.getState().setColleges(response)
+    }
+    finally {
+      setCollegesLoading(false)
+    }
   }
 
   async function init() {
     if (loading)
       return
     setLoading(true)
-    await Promise.all([updateMembers(), updateDepartments(), updateColleges()]).finally(() => {
+    await Promise.all([
+      updateMembers(),
+      updateDepartments(),
+      updateColleges(),
+    ]).finally(() => {
       setInitialized(true)
       setLoading(false)
     })
