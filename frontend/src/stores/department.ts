@@ -1,70 +1,20 @@
-"use client"
-
-import { useEffect } from "react"
+import type { BaseDepartmentInfo } from "@/src/schema/common"
 import { create } from "zustand"
-import { departmentInfo, departmentList } from "@/src/apis/department"
-import { Department } from "@/src/models/department"
 
-interface DepartmentStore {
-  departments: Department[]
-  loading: boolean
-  error: Error | null
+export type StoreDepartment = BaseDepartmentInfo
 
-  setDepartments: (departments: Department[]) => void
-  setLoading: (loading: boolean) => void
-  setError: (error: Error | null) => void
+interface Store {
+  data: Map<string, StoreDepartment>
+  setDepartments: (departments: StoreDepartment[]) => void
+  getDepartment: (code: string) => StoreDepartment | undefined
+  getAllDepartments: () => StoreDepartment[]
 }
 
-const useDepartmentStore = create<DepartmentStore>(set => ({
-  departments: [],
-  loading: false,
-  error: null,
-  setDepartments: departments => set({ departments }),
-  setLoading: (loading) => {
-    if (loading) {
-      set({ loading: true, error: null })
-    }
-    else {
-      set({ loading: false })
-    }
-  },
-  setError: (error: Error | null) => set({ error }),
+export const useDepartmentStore = create<Store>((set, get) => ({
+  data: new Map(),
+  setDepartments: departments => set({
+    data: new Map(departments.map(item => [item.code, item])),
+  }),
+  getDepartment: code => get().data.get(code),
+  getAllDepartments: () => Array.from(get().data.values()),
 }))
-
-export function useDepartment() {
-  const { departments, loading, error, setDepartments, setLoading, setError } = useDepartmentStore()
-
-  const update = async (code?: string) => {
-    setLoading(true)
-    try {
-      if (code) {
-        const response = await departmentInfo(code)
-        setDepartments(departments.map(item => item.code === code ? new Department(response) : item))
-      }
-      else {
-        const response = await departmentList()
-        setDepartments(response.map(item => new Department(item)))
-      }
-    }
-    catch (error) {
-      setError(error instanceof Error ? error : new Error("部门信息加载失败"))
-    }
-    finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    if (departments.length === 0 && !loading) {
-      void update()
-    }
-  }, [])
-
-  return {
-    departments,
-    loading,
-    error,
-    update,
-    setDepartments,
-  }
-}

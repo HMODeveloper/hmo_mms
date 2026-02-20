@@ -1,3 +1,3 @@
-import type { BaseCollegeInfo } from "@/src/schema/response"
+import type { BaseCollegeInfo } from "@/src/schema/common"
 
-export type CollegeListResponse = BaseCollegeInfo
+export type CollegeListResponse = BaseCollegeInfo[]

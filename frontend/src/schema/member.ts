@@ -1,4 +1,4 @@
-import type { BaseUserInfo } from "@/src/schema/response"
+import type { BaseUserInfo } from "@/src/schema/common"
 
 export type { AddMemberRequest, UpdateMemberInfoRequest } from "@/src/schema/request"
 

@@ -1,4 +1,4 @@
-import type { BaseDepartmentInfo } from "@/src/schema/response"
+import type { BaseDepartmentInfo } from "@/src/schema/common"
 
 export type DepartmentListResponse = BaseDepartmentInfo[]
 

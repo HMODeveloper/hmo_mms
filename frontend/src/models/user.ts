@@ -1,8 +1,5 @@
-import type { CollegeInfo } from "@/src/models/college"
-import type { DepartmentInterface } from "@/src/models/department"
-import type { UserInfo } from "@/src/types/response"
+import type { Department } from "@/src/models/department"
 import dayjs from "dayjs"
-import { Department } from "@/src/models/department"
 
 export type UserLevel = "SUPERADMIN" | "ADMIN" | "MEMBER"
 
@@ -12,16 +9,6 @@ export const USER_LEVEL_MAP: Record<UserLevel, string> = {
   MEMBER: "成员",
 }
 
-interface CollegeInterface {
-  name: string
-  code: string
-}
-
-interface LevelInterface {
-  code: string
-  name: string
-}
-
 export interface UserInterface {
   QQID: string
   nickname: string
@@ -29,68 +16,58 @@ export interface UserInterface {
   createAt: string
   realName?: string
   studentID?: string
-  college: CollegeInterface
+  college: {
+    name: string
+    code: string
+  }
   school?: string
   major?: string
   grade?: number
   classIndex?: number
-  departments: DepartmentInterface[]
-  level: LevelInterface
+  level: {
+    name: string
+    code: UserLevel
+  }
+  departments: Department[]
 }
 
 export class User implements UserInterface {
-  _data: UserInfo
   QQID: string
   nickname: string
   mcName?: string
   createAt: string
   realName?: string
   studentID?: string
-  college: CollegeInterface = { name: "错误", code: "ERROR" }
+  college: {
+    name: string
+    code: string
+  }
+
   school?: string
   major?: string
   grade?: number
   classIndex?: number
-  departments: DepartmentInterface[] = []
-  level: LevelInterface = { code: "MEMBER", name: "成员" }
+  level: {
+    name: string
+    code: UserLevel
+  }
 
-  constructor(data: UserInfo) {
-    this._data = data
+  departments: Department[]
+
+  constructor(data: UserInterface) {
     this.QQID = data.QQID
     this.nickname = data.nickname
     this.mcName = data.mcName
     this.createAt = data.createAt
     this.realName = data.realName
     this.studentID = data.studentID
-    this.college = {
-      name: data.college,
-      code: data.college,
-    }
+    this.college = { ...data.college }
     this.school = data.school
     this.major = data.major
     this.grade = data.grade
     this.classIndex = data.classIndex
-    this.departments = data.departments.map(item => new Department({
-      name: item.name,
-      code: item.code,
-      minister: [],
-      member: [],
-    }))
-    this.level = {
-      code: data.level,
-      name: USER_LEVEL_MAP[data.level] || data.level,
-    }
-  }
-
-  loadAssociations(colleges: CollegeInfo[], departments: Department[]) {
-    const college = colleges.find(item => item.code === this.college.code)
-    this.college = {
-      name: college ? college.name : this.college.name,
-      code: this.college.code,
-    }
-
-    const codes = new Set(this.departments.map(item => item.code))
-    this.departments = departments.filter(item => codes.has(item.code))
+    this.level = { ...data.level }
+    this.departments = data.departments
   }
 
   get isAdmin(): boolean {
