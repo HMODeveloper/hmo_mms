@@ -5,13 +5,15 @@ import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import Navbar from "@/src/components/navbar"
 import { useAuth } from "@/src/contexts/auth"
+import { useAppData } from "@/src/stores/app"
 
 export default function ({
   children,
 }: Readonly<{
   children: ReactNode
 }>) {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, update } = useAuth()
+  const { initialized, getCollege, getDepartment } = useAppData()
   const router = useRouter()
 
   useEffect(() => {
@@ -20,7 +22,12 @@ export default function ({
     }
   }, [isAuthenticated, router])
 
-  // 在鉴权检查期间显示加载状态
+  useEffect(() => {
+    if (initialized && isAuthenticated === true) {
+      update(getCollege, getDepartment)
+    }
+  }, [initialized])
+
   if (isAuthenticated === null) {
     return (
       <div className="flex flex-col h-screen items-center justify-center">

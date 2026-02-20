@@ -65,7 +65,7 @@ export function useAppData() {
     if (!raw)
       return null
 
-    const college = collegeStore.getCollege(raw.college)
+    const college = getCollege(raw.college)
     if (!college)
       return null
 
@@ -113,6 +113,10 @@ export function useAppData() {
     return new Department(department)
   }
 
+  function getCollege(code: string) {
+    return collegeStore.getCollege(code)
+  }
+
   function getAllMembers(): User[] {
     return memberStore.getAllMembers().map(item => getMember(item.QQID)).filter(Boolean) as User[]
   }
@@ -134,6 +138,7 @@ export function useAppData() {
     updateColleges,
     getMember,
     getDepartment,
+    getCollege,
     getAllMembers,
     getAllDepartments,
     getAllColleges,

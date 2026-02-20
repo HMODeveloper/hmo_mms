@@ -1,15 +1,40 @@
 "use client"
 
 import type { ReactNode } from "react"
+import type { Department } from "@/src/models/department"
+import type { BaseCollegeInfo, BaseUserInfo } from "@/src/schema/common"
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { getUserInfo, userLogout } from "@/src/apis/auth"
+import { User, USER_LEVEL_MAP } from "@/src/models/user"
 
-import { User } from "@/src/models/user"
+export function initUser(
+  data: BaseUserInfo,
+  getCollege?: (code: string) => BaseCollegeInfo | undefined,
+  getDepartment?: (code: string) => Department | null,
+): User {
+  const college = getCollege?.(data.college)
+
+  return new User({
+    ...data,
+    college: college
+      ? { name: college.name, code: college.code }
+      : { name: data.college, code: data.college },
+    level: {
+      name: USER_LEVEL_MAP[data.level] ?? USER_LEVEL_MAP.MEMBER,
+      code: data.level ?? "MEMBER",
+    },
+    get departments() {
+      if (getDepartment) {
+        return data.departments.map(d => getDepartment(d.code)).filter(Boolean) as Department[]
+      }
+      return data.departments.map(d => ({ name: d.name, code: d.code, minister: [], member: [] } as Department))
+    },
+  })
+}
 
 interface AuthContextValue {
   user: User | null
-  setUser: (user: User | null) => void
-  update: () => void
+  update: (getCollege?: (code: string) => BaseCollegeInfo | undefined, getDepartment?: (code: string) => Department | null) => void
   logout: () => void
   isAuthenticated: boolean | null
 }
@@ -27,11 +52,14 @@ export function AuthProvider({
   // null: loading
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
 
-  const update = () => {
+  const update = (
+    getCollege?: (code: string) => BaseCollegeInfo | undefined,
+    getDepartment?: (code: string) => Department | null,
+  ) => {
     setIsAuthenticated(null)
     getUserInfo()
       .then((response) => {
-        setUser(new User(response))
+        setUser(initUser(response, getCollege, getDepartment))
         setIsAuthenticated(true)
       })
       .catch(() => {
@@ -61,7 +89,6 @@ export function AuthProvider({
 
   const value = useMemo(() => ({
     user,
-    setUser,
     update,
     logout,
     isAuthenticated,

@@ -1,6 +1,6 @@
 "use client"
 
-import type { LoginRequest } from "@/src/apis/auth"
+import type { LoginRequest } from "@/src/schema/auth"
 import { IconLoader, IconLogin2 } from "@tabler/icons-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"

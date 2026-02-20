@@ -3,8 +3,7 @@ import type { ReactNode } from "react"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Toaster } from "@/components/ui/sonner"
 import { getUserInfo } from "@/src/apis/auth.server"
-import { AuthProvider } from "@/src/contexts/auth"
-import { User } from "@/src/models/user"
+import { AuthProvider, initUser } from "@/src/contexts/auth"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -27,7 +26,7 @@ export default async function RootLayout({
   children: ReactNode
 }>) {
   const user = await getUserInfo()
-    .then(response => new User(response))
+    .then(response => initUser(response))
     .catch(() => null)
 
   return (
