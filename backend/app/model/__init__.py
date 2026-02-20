@@ -165,9 +165,7 @@ class User(Base):
 
     # 敏感信息
     real_name: Mapped[str] = mapped_column(String(20), nullable=False)
-    student_id: Mapped[Optional[str]] = mapped_column(
-        String(20), unique=True, nullable=True
-    )
+    student_id: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     college: Mapped[College] = mapped_column(SAEnum(College), nullable=False)
     school: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     major: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
@@ -262,9 +260,7 @@ class DeletedUser(Base):
 
     # 敏感信息
     real_name: Mapped[str] = mapped_column(String(20), nullable=False)
-    student_id: Mapped[Optional[str]] = mapped_column(
-        String(20), unique=True, nullable=True
-    )
+    student_id: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     college: Mapped[College] = mapped_column(SAEnum(College), nullable=False)
     school: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     major: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
