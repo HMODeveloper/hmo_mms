@@ -73,7 +73,7 @@ export default function () {
   }
 
   return (
-    <div className="w-full max-w-6xl flex flex-col gap-4">
+    <>
       <Card>
         <CardHeader>
           <CardTitle>添加部门</CardTitle>
@@ -164,6 +164,6 @@ export default function () {
           </Button>
         </CardFooter>
       </Card>
-    </div>
+    </>
   )
 }

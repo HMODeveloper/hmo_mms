@@ -17,7 +17,7 @@ export default function () {
   const [isDeleteDisplayed, setIsDeleteDisplayed] = useState(false)
 
   return (
-    <div className="w-full max-w-6xl flex flex-col gap-4">
+    <>
       <InfoSection QQID={QQID} />
       { user?.isAdmin && (
         <Card>
@@ -44,6 +44,6 @@ export default function () {
           />
         </Card>
       ) }
-    </div>
+    </>
   )
 }

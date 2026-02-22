@@ -9,7 +9,7 @@ export default function () {
   const router = useRouter()
 
   return (
-    <div className="w-full max-w-6xl flex flex-col gap-4">
+    <>
       <ListSection />
       <Card>
         <CardFooter className="justify-end gap-4">
@@ -20,6 +20,6 @@ export default function () {
           </Button>
         </CardFooter>
       </Card>
-    </div>
+    </>
   )
 }

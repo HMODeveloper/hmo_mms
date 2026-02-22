@@ -12,7 +12,7 @@ export default function () {
   const [isAddModalDisplay, setIsAddModalDisplay] = useState(false)
 
   return (
-    <div className="w-full max-w-6xl flex flex-col gap-4">
+    <>
       <ListSection />
       { user?.isAdmin && (
         <Card>
@@ -29,6 +29,6 @@ export default function () {
         isOpen={isAddModalDisplay}
         onClose={() => setIsAddModalDisplay(false)}
       />
-    </div>
+    </>
   )
 }

@@ -12,7 +12,7 @@ export default function () {
   const [isDeleteDisplayed, setIsDeleteDisplayed] = useState(false)
 
   return (
-    <div className="w-full max-w-6xl flex flex-col gap-4">
+    <>
       <InfoSection />
       <Card>
         <CardFooter className="justify-end gap-4">
@@ -35,6 +35,6 @@ export default function () {
           onClose={() => setIsDeleteDisplayed(false)}
         />
       </Card>
-    </div>
+    </>
   )
 }
