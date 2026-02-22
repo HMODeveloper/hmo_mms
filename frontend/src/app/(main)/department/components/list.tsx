@@ -1,16 +1,17 @@
 "use client"
 
+import type { Department } from "@/src/models/department"
 import { IconEye } from "@tabler/icons-react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useAppData } from "@/src/stores/app"
 
-export default function ListSection() {
-  const { getAllDepartments } = useAppData()
-  const departments = getAllDepartments()
-
+export default function ({
+  departments,
+}: {
+  departments: Department[]
+}) {
   return (
     <Card>
       <CardHeader>

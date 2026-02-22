@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog"
 import { resetPassword } from "@/src/apis/member"
 
-export default function PasswordModal({
+export default function ({
   QQID,
   isOpen,
   onClose,

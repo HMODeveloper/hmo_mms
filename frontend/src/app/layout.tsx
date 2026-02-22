@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: "湖南大学岳麓幻境社社员管理系统",
 }
 
-export default async function RootLayout({
+export default async function ({
   children,
 }: Readonly<{
   children: ReactNode

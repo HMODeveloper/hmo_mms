@@ -12,7 +12,7 @@ import { addMember } from "@/src/apis/member"
 import { checkQQ } from "@/src/apis/signup"
 import { useAppData } from "@/src/stores/app"
 
-export default function AddModal({
+export default function ({
   isOpen,
   onClose,
 }: {

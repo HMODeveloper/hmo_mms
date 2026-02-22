@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { removeUser } from "@/src/apis/user"
 
-export default function DeleteModal({
+export default function ({
   isOpen,
   onClose,
 }: {

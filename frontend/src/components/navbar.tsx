@@ -22,7 +22,7 @@ interface NavItem {
   label: string
 }
 
-export default function Navbar() {
+export default function () {
   const { user, logout } = useAuth()
   const pathname = usePathname()
   const router = useRouter()

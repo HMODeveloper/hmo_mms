@@ -7,15 +7,18 @@ import DeleteModal from "@/src/app/(main)/user/components/delete"
 import InfoSection from "@/src/app/(main)/user/components/info"
 import PasswordModal from "@/src/app/(main)/user/components/password"
 import { useBread } from "@/src/contexts/bread"
+import { useAppData } from "@/src/stores/app"
 
 export default function () {
   useBread("个人中心")
+  const { getAllColleges } = useAppData()
+  const colleges = getAllColleges()
   const [isPasswordDisplayed, setIsPasswordDisplayed] = useState(false)
   const [isDeleteDisplayed, setIsDeleteDisplayed] = useState(false)
 
   return (
     <>
-      <InfoSection />
+      <InfoSection colleges={colleges} />
       <Card>
         <CardFooter className="justify-end gap-4">
           <Button onClick={() => setIsPasswordDisplayed(true)}>

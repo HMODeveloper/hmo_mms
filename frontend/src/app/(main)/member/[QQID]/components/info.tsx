@@ -1,6 +1,8 @@
 "use client"
 
+import type { User } from "@/src/models/user"
 import type { UpdateMemberInfoRequest } from "@/src/schema/request"
+import type { StoreCollege } from "@/src/stores/college"
 import { IconArrowLeft, IconEdit, IconRefresh, IconUpload } from "@tabler/icons-react"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -11,19 +13,17 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { updateInfo } from "@/src/apis/member"
 import { useAuth } from "@/src/contexts/auth"
-import { useBread } from "@/src/contexts/bread"
 import { useAppData } from "@/src/stores/app"
 
-export default function InfoSection({
-  QQID,
+export default function ({
+  member,
+  colleges,
 }: {
-  QQID: string
+  member: User | null
+  colleges: StoreCollege[]
 }) {
   const { user } = useAuth()
-  const { getMember, updateMembers, getAllColleges } = useAppData()
-  const member = getMember(QQID)
-  const colleges = getAllColleges()
-  useBread("成员管理", member?.nickname ?? QQID)
+  const { updateMembers } = useAppData()
 
   // 是否为编辑模式
   const [isEditing, setIsEditing] = useState(false)
@@ -65,7 +65,7 @@ export default function InfoSection({
     if (!isEdited)
       return
 
-    updateInfo(QQID, formData)
+    updateInfo(member?.QQID ?? "", formData)
       .then(() => {
         toast.success("修改信息成功!")
         void updateMembers()

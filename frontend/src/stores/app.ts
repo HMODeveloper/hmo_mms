@@ -1,3 +1,4 @@
+import type { DepartmentInterface } from "@/src/models/department"
 import type { UserInterface } from "@/src/models/user"
 import { useEffect } from "react"
 import { create } from "zustand"
@@ -140,7 +141,7 @@ export function useAppData() {
     if (!raw)
       return null
 
-    const department: Department = {
+    const department: DepartmentInterface = {
       name: raw.name,
       code: raw.code,
       get member() {

@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { changePassword } from "@/src/apis/user"
 import { useAuth } from "@/src/contexts/auth"
 
-export default function PasswordModal({
+export default function ({
   isOpen,
   onClose,
 }: {

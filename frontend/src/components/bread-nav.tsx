@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { useBread } from "@/src/contexts/bread"
 
-export default function BreadNav() {
+export default function () {
   const { labels } = useBread()
   const router = useRouter()
   const pathname = usePathname()

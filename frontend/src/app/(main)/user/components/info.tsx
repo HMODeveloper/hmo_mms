@@ -1,6 +1,7 @@
 "use client"
 
 import type { UpdateUserInfoRequest } from "@/src/schema/user"
+import type { StoreCollege } from "@/src/stores/college"
 import { IconArrowLeft, IconEdit, IconRefresh, IconUpload } from "@tabler/icons-react"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -13,10 +14,13 @@ import { updateInfo } from "@/src/apis/user"
 import { useAuth } from "@/src/contexts/auth"
 import { useAppData } from "@/src/stores/app"
 
-export default function InfoSection() {
+export default function ({
+  colleges,
+}: {
+  colleges: StoreCollege[]
+}) {
   const { user, update } = useAuth()
-  const { getAllColleges, getCollege, getDepartment } = useAppData()
-  const colleges = getAllColleges()
+  const { getCollege, getDepartment } = useAppData()
 
   // 是否为编辑模式
   const [isEditing, setIsEditing] = useState(false)

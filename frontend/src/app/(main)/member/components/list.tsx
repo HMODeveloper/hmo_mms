@@ -27,7 +27,7 @@ const SORT_DIRECTION_MAP: Record<SortDirection, string> = {
 
 const SORT_OPTIONS: SortOption[] = ["nickname", "mcName", "QQID", "createAt", "college"]
 
-export default function ListSection() {
+export default function () {
   const { getAllMembers } = useAppData()
 
   const [sortOption, setSortOption] = useState<SortOption>("nickname")

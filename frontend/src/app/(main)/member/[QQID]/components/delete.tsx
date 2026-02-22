@@ -17,7 +17,7 @@ import {
 import { removeMember } from "@/src/apis/member"
 import { useAppData } from "@/src/stores/app"
 
-export default function DeleteModal({
+export default function ({
   QQID,
   isOpen,
   onClose,

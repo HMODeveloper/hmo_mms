@@ -8,17 +8,23 @@ import DeleteModal from "@/src/app/(main)/member/[QQID]/components/delete"
 import InfoSection from "@/src/app/(main)/member/[QQID]/components/info"
 import PasswordModal from "@/src/app/(main)/member/[QQID]/components/password"
 import { useAuth } from "@/src/contexts/auth"
+import { useBread } from "@/src/contexts/bread"
+import { useAppData } from "@/src/stores/app"
 
 export default function () {
   const { QQID } = useParams<{ QQID: string }>()
   const { user } = useAuth()
+  const { getMember, getAllColleges } = useAppData()
+  const member = getMember(QQID)
+  const colleges = getAllColleges()
+  useBread("成员管理", member?.nickname ?? QQID)
 
   const [isPasswordDisplayed, setIsPasswordDisplayed] = useState(false)
   const [isDeleteDisplayed, setIsDeleteDisplayed] = useState(false)
 
   return (
     <>
-      <InfoSection QQID={QQID} />
+      <InfoSection member={member} colleges={colleges} />
       { user?.isAdmin && (
         <Card>
           <CardFooter className="justify-end gap-4">

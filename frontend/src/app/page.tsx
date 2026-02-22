@@ -112,7 +112,7 @@ function LoginForm() {
   )
 }
 
-export default function IndexPage() {
+export default function () {
   return (
     <div className="flex min-h-screen items-center justify-center px-4 lg:px-16">
       <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-between gap-2 sm:gap-8 lg:gap-12">
