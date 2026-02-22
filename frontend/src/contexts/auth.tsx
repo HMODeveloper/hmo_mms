@@ -7,31 +7,6 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from "
 import { getUserInfo, userLogout } from "@/src/apis/auth"
 import { User, USER_LEVEL_MAP } from "@/src/models/user"
 
-export function initUser(
-  data: BaseUserInfo,
-  getCollege?: (code: string) => BaseCollegeInfo | undefined,
-  getDepartment?: (code: string) => Department | null,
-): User {
-  const college = getCollege?.(data.college)
-
-  return new User({
-    ...data,
-    college: college
-      ? { name: college.name, code: college.code }
-      : { name: data.college, code: data.college },
-    level: {
-      name: USER_LEVEL_MAP[data.level] ?? USER_LEVEL_MAP.MEMBER,
-      code: data.level ?? "MEMBER",
-    },
-    get departments() {
-      if (getDepartment) {
-        return data.departments.map(d => getDepartment(d.code)).filter(Boolean) as Department[]
-      }
-      return data.departments.map(d => ({ name: d.name, code: d.code, minister: [], member: [] } as Department))
-    },
-  })
-}
-
 interface AuthContextValue {
   user: User | null
   update: (getCollege?: (code: string) => BaseCollegeInfo | undefined, getDepartment?: (code: string) => Department | null) => Promise<void>
@@ -107,4 +82,29 @@ export function useAuth() {
     throw new Error("useAuth must be used within an AuthProvider")
   }
   return ctx
+}
+
+export function initUser(
+  data: BaseUserInfo,
+  getCollege?: (code: string) => BaseCollegeInfo | undefined,
+  getDepartment?: (code: string) => Department | null,
+): User {
+  const college = getCollege?.(data.college)
+
+  return new User({
+    ...data,
+    college: college
+      ? { name: college.name, code: college.code }
+      : { name: data.college, code: data.college },
+    level: {
+      name: USER_LEVEL_MAP[data.level] ?? USER_LEVEL_MAP.MEMBER,
+      code: data.level ?? "MEMBER",
+    },
+    get departments() {
+      if (getDepartment) {
+        return data.departments.map(d => getDepartment(d.code)).filter(Boolean) as Department[]
+      }
+      return data.departments.map(d => ({ name: d.name, code: d.code, minister: [], member: [] } as unknown as Department))
+    },
+  })
 }

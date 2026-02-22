@@ -12,11 +12,13 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { addDepartment } from "@/src/apis/department"
+import { useBread } from "@/src/contexts/bread"
 import { useAppData } from "@/src/stores/app"
 
 export default function () {
   const { getAllMembers } = useAppData()
   const members = getAllMembers()
+  useBread("部门管理", "添加部门")
 
   const [formData, setFormData] = useState<AddDepartmentRequest>({
     name: "",

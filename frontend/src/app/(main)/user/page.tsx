@@ -6,8 +6,10 @@ import { Card, CardFooter } from "@/components/ui/card"
 import DeleteModal from "@/src/app/(main)/user/components/delete"
 import InfoSection from "@/src/app/(main)/user/components/info"
 import PasswordModal from "@/src/app/(main)/user/components/password"
+import { useBread } from "@/src/contexts/bread"
 
 export default function () {
+  useBread("个人中心")
   const [isPasswordDisplayed, setIsPasswordDisplayed] = useState(false)
   const [isDeleteDisplayed, setIsDeleteDisplayed] = useState(false)
 

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { updateInfo } from "@/src/apis/member"
 import { useAuth } from "@/src/contexts/auth"
+import { useBread } from "@/src/contexts/bread"
 import { useAppData } from "@/src/stores/app"
 
 export default function InfoSection({
@@ -22,6 +23,7 @@ export default function InfoSection({
   const { getMember, updateMembers, getAllColleges } = useAppData()
   const member = getMember(QQID)
   const colleges = getAllColleges()
+  useBread("成员管理", member?.nickname ?? QQID)
 
   // 是否为编辑模式
   const [isEditing, setIsEditing] = useState(false)
