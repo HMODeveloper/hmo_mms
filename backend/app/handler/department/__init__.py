@@ -39,10 +39,11 @@ async def department_list_handler(
             minister_list = []
             member_list = []
 
-            for user in dept.users:
-                member_list.append(user.qq_id)
-                if user.is_minister(dept.code):
-                    minister_list.append(user.qq_id)
+            # 直接从关联表读取数据，避免触发懒加载
+            for ud in dept.user_departments:
+                member_list.append(ud.user.qq_id)
+                if ud.is_minister:
+                    minister_list.append(ud.user.qq_id)
 
             result.append(
                 BaseDepartmentInfo(
@@ -240,10 +241,11 @@ async def department_info_handler(
 
     minister_list = []
     member_list = []
-    for user in department.users:
-        member_list.append(user.qq_id)
-        if user.is_minister(department.code):
-            minister_list.append(user.qq_id)
+    # 直接从关联表读取数据，避免触发懒加载
+    for ud in department.user_departments:
+        member_list.append(ud.user.qq_id)
+        if ud.is_minister:
+            minister_list.append(ud.user.qq_id)
 
     return DepartmentInfoResponse(
         name=department.name,

@@ -39,16 +39,38 @@ async def add_department_member_handler(
             status_code=404,
             code="DEPT_NOT_FOUND",
         )
-
     # Check if current user is minister of this department or superadmin
-    if not (
-        current_user.has_permission(UserLevel.SUPERADMIN)
-        or current_user.is_minister(code)
-    ):
-        raise ErrorResponse(
-            status_code=403,
-            code="MINISTER_REQUIRED",
+    if not current_user.has_permission(UserLevel.SUPERADMIN):
+        # 预加载 current_user 的部门关系
+        current_user_with_depts = (
+            (
+                await db.execute(
+                    select(User)
+                    .where(User.id == current_user.id)
+                    .options(
+                        joinedload(User.user_departments).joinedload(
+                            UserDepartment.department
+                        )
+                    )
+                )
+            )
+            .scalars()
+            .first()
         )
+
+        # 检查是否为该部门的部长
+        is_minister = False
+        if current_user_with_depts and current_user_with_depts.user_departments:
+            for ud in current_user_with_depts.user_departments:
+                if ud.is_minister and ud.department.code == code:
+                    is_minister = True
+                    break
+
+        if not is_minister:
+            raise ErrorResponse(
+                status_code=403,
+                code="MINISTER_REQUIRED",
+            )
 
     user = (
         (await db.execute(select(User).where(User.qq_id == request.qq_id)))
@@ -148,14 +170,37 @@ async def remove_department_member_handler(
             )
     else:
         # If removing regular member, check if current user is minister or superadmin
-        if not (
-            current_user.has_permission(UserLevel.SUPERADMIN)
-            or current_user.is_minister(code)
-        ):
-            raise ErrorResponse(
-                status_code=403,
-                code="MINISTER_REQUIRED",
+        if not current_user.has_permission(UserLevel.SUPERADMIN):
+            # 预加载 current_user 的部门关系
+            current_user_with_depts = (
+                (
+                    await db.execute(
+                        select(User)
+                        .where(User.id == current_user.id)
+                        .options(
+                            joinedload(User.user_departments).joinedload(
+                                UserDepartment.department
+                            )
+                        )
+                    )
+                )
+                .scalars()
+                .first()
             )
+
+            # 检查是否为该部门的部长
+            is_minister = False
+            if current_user_with_depts and current_user_with_depts.user_departments:
+                for ud in current_user_with_depts.user_departments:
+                    if ud.is_minister and ud.department.code == code:
+                        is_minister = True
+                        break
+
+            if not is_minister:
+                raise ErrorResponse(
+                    status_code=403,
+                    code="MINISTER_REQUIRED",
+                )
 
     try:
         # Remove the UserDepartment association
