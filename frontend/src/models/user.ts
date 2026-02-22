@@ -52,7 +52,11 @@ export class User implements UserInterface {
     code: UserLevel
   }
 
-  departments: Department[]
+  private readonly _getDepartments: () => Department[]
+
+  get departments(): Department[] {
+    return this._getDepartments()
+  }
 
   constructor(data: UserInterface) {
     this.QQID = data.QQID
@@ -67,7 +71,7 @@ export class User implements UserInterface {
     this.grade = data.grade
     this.classIndex = data.classIndex
     this.level = { ...data.level }
-    this.departments = data.departments
+    this._getDepartments = () => data.departments
   }
 
   get isAdmin(): boolean {

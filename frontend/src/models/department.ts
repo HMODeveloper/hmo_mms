@@ -10,13 +10,22 @@ export interface DepartmentInterface {
 export class Department implements DepartmentInterface {
   name: string
   code: string
-  minister: User[]
-  member: User[]
+
+  private readonly _getMinister: () => User[]
+  private readonly _getMember: () => User[]
+
+  get minister(): User[] {
+    return this._getMinister()
+  }
+
+  get member(): User[] {
+    return this._getMember()
+  }
 
   constructor(data: DepartmentInterface) {
     this.name = data.name
     this.code = data.code
-    this.minister = data.minister
-    this.member = data.member
+    this._getMinister = () => data.minister
+    this._getMember = () => data.member
   }
 }

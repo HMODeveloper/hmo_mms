@@ -40,13 +40,13 @@ export default function ListSection() {
                     : <Badge variant="secondary">无</Badge>}
                 </TableCell>
                 <TableCell className="text-center">
-                  {item.minister.length > 0
+                  {item.member.length > 0
                     ? (
                         <>
-                          {item.minister.slice(0, 5).map(item => (
+                          {item.member.slice(0, 5).map(item => (
                             <Badge key={item.QQID} variant="secondary">{item.nickname}</Badge>
                           ))}
-                          {item.minister.length > 5 && <Badge variant="secondary">...</Badge>}
+                          {item.member.length > 5 && <Badge variant="secondary">...</Badge>}
                         </>
                       )
                     : <Badge variant="secondary">无</Badge>}
