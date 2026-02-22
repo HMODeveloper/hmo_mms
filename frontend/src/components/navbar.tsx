@@ -17,6 +17,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/src/contexts/auth"
 
+interface NavItem {
+  href: string
+  label: string
+}
+
 export default function Navbar() {
   const { user, logout } = useAuth()
   const pathname = usePathname()
@@ -32,13 +37,13 @@ export default function Navbar() {
   }
 
   // 导航链接配置
-  const navItems = [
+  const navItems: NavItem[] = [
     { href: "/dashboard", label: "首页" },
     { href: "/member", label: "成员管理" },
-    { href: "/department", label: "部门管理" },
-    { href: "/superadmin", label: "超管功能" },
+    user.isAdmin && { href: "/department", label: "部门管理" },
+    user.level.code === "SUPERADMIN" && { href: "/superadmin", label: "超管功能" },
     { href: "/user", label: "个人中心" },
-  ]
+  ].filter(Boolean) as NavItem[]
 
   const handleLogout = () => {
     logout()
