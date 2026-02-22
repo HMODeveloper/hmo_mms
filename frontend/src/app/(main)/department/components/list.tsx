@@ -34,8 +34,8 @@ export default function ListSection() {
                 <TableCell className="text-center">{item.name}</TableCell>
                 <TableCell className="text-center">
                   {item.minister.length > 0
-                    ? item.minister.map(item => (
-                        <Badge key={item.QQID} variant="secondary">{item.nickname}</Badge>
+                    ? item.minister.map(i => (
+                        <Badge key={i.QQID} variant="secondary">{i.nickname}</Badge>
                       ))
                     : <Badge variant="secondary">无</Badge>}
                 </TableCell>
@@ -43,8 +43,10 @@ export default function ListSection() {
                   {item.member.length > 0
                     ? (
                         <>
-                          {item.member.slice(0, 5).map(item => (
-                            <Badge key={item.QQID} variant="secondary">{item.nickname}</Badge>
+                          {item.member.slice(0, 5).map(i => (
+                            item.minister.map(i => i.QQID).includes(i.QQID)
+                              ? <Badge key={i.QQID} variant="destructive">{i.nickname}</Badge>
+                              : <Badge key={i.QQID} variant="secondary">{i.nickname}</Badge>
                           ))}
                           {item.member.length > 5 && <Badge variant="secondary">...</Badge>}
                         </>
