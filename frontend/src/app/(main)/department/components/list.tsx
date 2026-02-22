@@ -1,6 +1,7 @@
 "use client"
 
 import { IconEye } from "@tabler/icons-react"
+import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -52,10 +53,10 @@ export default function ListSection() {
                 </TableCell>
                 <TableCell className="text-center">
                   <Badge asChild>
-                    <a href={`/department/${item.code}`}>
+                    <Link href={`/department/${item.code}`}>
                       <IconEye />
                       详情
-                    </a>
+                    </Link>
                   </Badge>
                 </TableCell>
               </TableRow>

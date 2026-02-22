@@ -2,8 +2,9 @@
 
 import type { User } from "@/src/models/user"
 import { IconArrowsSort, IconEye, IconSortAscending, IconSortDescending } from "@tabler/icons-react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { useMemo, useState } from "react"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -28,7 +29,6 @@ const SORT_OPTIONS: SortOption[] = ["nickname", "mcName", "QQID", "createAt", "c
 
 export default function ListSection() {
   const { getAllMembers } = useAppData()
-  const router = useRouter()
 
   const [sortOption, setSortOption] = useState<SortOption>("nickname")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
@@ -96,16 +96,30 @@ export default function ListSection() {
                 <TableCell className="text-center">{item.mcName}</TableCell>
                 <TableCell className="text-center">{item.QQID}</TableCell>
                 <TableCell className="text-center">{item.formattedCreateAt}</TableCell>
-                <TableCell className="text-center">{item.college.name}</TableCell>
-                <TableCell className="text-center">{item.formattedDepartments}</TableCell>
                 <TableCell className="text-center">
-                  <Button
-                    variant="ghost"
-                    onClick={() => router.push(`/member/${item.QQID}`)}
-                  >
-                    <IconEye />
-                    详情
-                  </Button>
+                  {item.college.code === "NOT_HNU"
+                    ? <Badge variant="destructive">{item.school}</Badge>
+                    : <Badge variant="secondary">{item.college.name}</Badge>}
+                </TableCell>
+                <TableCell className="text-center">
+                  {item.departments.length > 0
+                    ? (
+                        <>
+                          {item.departments.slice(0, 2).map(item => (
+                            <Badge key={item.code} variant="secondary">{item.name}</Badge>
+                          ))}
+                          {item.departments.length > 2 && <Badge variant="secondary">...</Badge>}
+                        </>
+                      )
+                    : <Badge variant="secondary">无</Badge>}
+                </TableCell>
+                <TableCell className="text-center">
+                  <Badge asChild>
+                    <Link href={`/member/${item.QQID}`}>
+                      <IconEye />
+                      详情
+                    </Link>
+                  </Badge>
                 </TableCell>
               </TableRow>
             ))}
