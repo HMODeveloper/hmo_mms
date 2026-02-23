@@ -1,20 +1,9 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import { Geist, Geist_Mono } from "next/font/google"
 import { Toaster } from "@/components/ui/sonner"
 import { getUserInfo } from "@/src/apis/auth.server"
 import { AuthProvider, initUser } from "@/src/contexts/auth"
 import "./globals.css"
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-})
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-})
 
 export const metadata: Metadata = {
   title: "湖南大学岳麓幻境社社员管理系统",
@@ -31,9 +20,7 @@ export default async function ({
 
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable}  ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         <AuthProvider initialUser={user}>
           {children}
         </AuthProvider>
