@@ -40,7 +40,7 @@ export default function () {
   const navItems: NavItem[] = [
     { href: "/dashboard", label: "首页" },
     { href: "/member", label: "成员管理" },
-    user.isAdmin && { href: "/department", label: "部门管理" },
+    { href: "/department", label: "部门管理" },
     user.level.code === "SUPERADMIN" && { href: "/superadmin", label: "超管功能" },
     { href: "/user", label: "个人中心" },
   ].filter(Boolean) as NavItem[]

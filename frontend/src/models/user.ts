@@ -78,8 +78,12 @@ export class User implements UserInterface {
     return this.level.code === "SUPERADMIN"
   }
 
+  get isPureAdmin(): boolean {
+    return this.level.code === "ADMIN"
+  }
+
   get isAdmin(): boolean {
-    return this.isSuperAdmin || this.level.code === "ADMIN"
+    return this.isSuperAdmin || this.isPureAdmin
   }
 
   get formattedCreateAt(): string {
