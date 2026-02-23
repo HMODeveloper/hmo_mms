@@ -15,8 +15,8 @@ AddDepartmentRequest = BaseDepartmentInfo
 
 
 class AddDepartmentMemberRequest(BaseModel):
-    qq_id: str = Field(..., serialization_alias="QQID")
+    qq_id: str = Field(..., alias="QQID")
 
 
 class AddDepartmentMinisterRequest(BaseModel):
-    qq_id: str = Field(..., serialization_alias="QQID")
+    qq_id: str = Field(..., alias="QQID")
