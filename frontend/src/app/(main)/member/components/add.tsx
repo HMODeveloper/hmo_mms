@@ -72,8 +72,17 @@ export default function ({
         void updateMembers()
         handleCheckQQ()
       })
-      .catch(() => {
-        toast.error("添加失败")
+      .catch((error) => {
+        switch (error.code) {
+          case "ADMIN_REQUIRED":
+            toast.error("需要管理员权限.")
+            break
+          case "INTEGRITY_ERROR":
+            toast.error("请确保所有字段都已正确填写.")
+            break
+          default:
+            toast.error("注册失败, 请稍后再试")
+        }
       })
   }
 

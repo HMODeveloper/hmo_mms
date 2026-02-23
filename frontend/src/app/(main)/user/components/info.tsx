@@ -70,8 +70,14 @@ export default function ({
           handleReset()
         })
       })
-      .catch(() => {
-        toast.error("修改信息失败，请稍后再试")
+      .catch((error) => {
+        switch (error.code) {
+          case "INTEGRITY_ERROR":
+            toast.error("请检查输入的信息")
+            break
+          default:
+            toast.error("修改信息失败，请稍后再试")
+        }
       })
   }
 

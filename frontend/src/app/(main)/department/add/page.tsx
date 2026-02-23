@@ -69,8 +69,29 @@ export default function () {
       .then(() => {
         toast.success("添加部门成功!")
       })
-      .catch(() => {
-        toast.error("添加部门失败，请稍后再试")
+      .catch((error) => {
+        switch (error.code) {
+          case "SUPERADMIN_REQUIRED":
+            toast.error("需要超级管理员权限.")
+            break
+          case "DEPT_CODE_EXISTS":
+            toast.error("部门代码已存在.")
+            break
+          case "DEPT_NAME_EXISTS":
+            toast.error("部门名称已存在.")
+            break
+          case "MINISTER_NOT_FOUND":
+            toast.error("部长列表中有用户不存在.")
+            break
+          case "MEMBER_NOT_FOUND":
+            toast.error("成员列表中有用户不存在.")
+            break
+          case "MINISTER_NOT_IN_MEMBERS":
+            toast.error("部长必须同时是成员.")
+            break
+          default:
+            toast.error("添加部门失败, 请稍后再试.")
+        }
       })
   }
 

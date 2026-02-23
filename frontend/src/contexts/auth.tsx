@@ -5,6 +5,7 @@ import type { Department } from "@/src/models/department"
 import type { BaseCollegeInfo, BaseUserInfo } from "@/src/schema/common"
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { getUserInfo, userLogout } from "@/src/apis/auth"
+import { RequestErrorImpl } from "@/src/models/error"
 import { User, USER_LEVEL_MAP } from "@/src/models/user"
 
 interface AuthContextValue {
@@ -37,7 +38,17 @@ export function AuthProvider({
       setUser(initUser(response, getCollege, getDepartment))
       setIsAuthenticated(true)
     }
-    catch {
+    catch (error) {
+      if (error instanceof RequestErrorImpl) {
+        switch (error.code) {
+          case "USER_NOT_FOUND":
+            console.error("用户不存在.")
+            break
+          default:
+            console.error("信息获取失败.")
+        }
+      }
+
       setUser(null)
       setIsAuthenticated(false)
     }
@@ -55,7 +66,15 @@ export function AuthProvider({
   const logout = () => {
     setIsAuthenticated(null)
     userLogout()
-      .catch(() => console.error("Logout failed"))
+      .catch((error) => {
+        switch (error.code) {
+          case "USER_NOT_FOUND":
+            console.error("用户不存在.")
+            break
+          default:
+            console.error("登出失败.")
+        }
+      })
       .finally(() => {
         setUser(null)
         setIsAuthenticated(false)

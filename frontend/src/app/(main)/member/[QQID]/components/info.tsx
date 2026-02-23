@@ -70,8 +70,17 @@ export default function ({
         handleReset()
         setIsEditing(false)
       })
-      .catch(() => {
-        toast.error("修改信息失败，请稍后再试")
+      .catch((error) => {
+        switch (error.code) {
+          case "USER_NOT_FOUND":
+            toast.error("用户不存在.")
+            break
+          case "ADMIN_REQUIRED":
+            toast.error("需要管理员权限.")
+            break
+          default:
+            toast.error("修改失败, 请稍后再试.")
+        }
       })
   }
 

@@ -36,8 +36,20 @@ export default function ({
         router.push("/member")
         void updateMembers()
       })
-      .catch(() => {
-        toast.error("用户删除失败")
+      .catch((error) => {
+        switch (error.code) {
+          case "USER_NOT_FOUND":
+            toast.error("用户不存在.")
+            break
+          case "ADMIN_REQUIRED":
+            toast.error("需要管理员权限.")
+            break
+          case "SUPERADMIN_REQUIRED":
+            toast.error("需要超级管理员权限.")
+            break
+          default:
+            toast.error("删除失败, 请稍后再试.")
+        }
       })
   }
 
