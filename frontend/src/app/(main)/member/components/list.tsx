@@ -2,6 +2,7 @@
 
 import type { User } from "@/src/models/user"
 import { IconArrowsSort, IconEye, IconSortAscending, IconSortDescending } from "@tabler/icons-react"
+import dayjs from "dayjs"
 import Link from "next/link"
 import { useMemo, useState } from "react"
 import { Badge } from "@/components/ui/badge"
@@ -43,7 +44,7 @@ export default function () {
       case "QQID":
         return a.QQID.localeCompare(b.QQID, undefined, { numeric: true })
       case "createAt":
-        return new Date(a.createAt).getTime() - new Date(b.createAt).getTime()
+        return dayjs(b.createAt).isAfter(dayjs(a.createAt)) ? 1 : -1
       case "college":
         return (a.college.name).localeCompare(b.college.name)
       default:
@@ -52,7 +53,7 @@ export default function () {
   }
 
   const sortedMembers = useMemo((): User[] => (
-    getAllMembers().sort((a: User, b: User) => {
+    Array.from(getAllMembers()).sort((a: User, b: User) => {
       const isASC = sortDirection === "asc"
       const result = compareByField(a, b, sortOption)
       return isASC ? result : -result
