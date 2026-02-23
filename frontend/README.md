@@ -44,7 +44,7 @@ frontend/
 │   ├── schema/                # 数据验证 Schema
 │   └── lib/                   # 工具函数
 │       ├── client.ts          # 客户端工具
-│       ├── server.ts          # 服务端工具
+│       ├── server.ts          # 服务端工具[README.md](../README.md)
 │       └── config.ts          # 配置
 │
 ├── components/                # shadcn/ui 组件
@@ -74,5 +74,5 @@ pnpm dev
 
 ```env
 # API 后端地址
-NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 ```

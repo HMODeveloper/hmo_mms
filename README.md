@@ -86,5 +86,5 @@ DEFAULT_PASSWORD="reset-user-password"
 
 ```env
 # API 后端地址 (保证与后端 .env 中 PORT 配置一致)
-NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 ```
