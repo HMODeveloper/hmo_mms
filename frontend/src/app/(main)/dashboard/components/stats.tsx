@@ -1,10 +1,11 @@
 "use client"
 
 import type { ElementType } from "react"
+import type { Department } from "@/src/models/department"
+import type { User } from "@/src/models/user"
 import { IconBuilding, IconCrown, IconUsers } from "@tabler/icons-react"
 import { useMemo } from "react"
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useAppData } from "@/src/stores/app"
 
 function StatCard({
   icon: Icon,
@@ -33,11 +34,13 @@ function StatCard({
   )
 }
 
-export default function () {
-  const { getAllMembers, getAllDepartments } = useAppData()
-
-  const members = useMemo(() => getAllMembers(), [getAllMembers])
-  const departments = useMemo(() => getAllDepartments(), [getAllDepartments])
+export default function ({
+  members,
+  departments,
+}: {
+  members: User[]
+  departments: Department[]
+}) {
   const admins = useMemo(() => members.filter(m => m.isAdmin).length, [members])
 
   return (

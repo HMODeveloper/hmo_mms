@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams } from "next/navigation"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardFooter } from "@/components/ui/card"
 import DeleteModal from "@/src/app/(main)/member/[QQID]/components/delete"
@@ -14,18 +14,29 @@ import { useAppData } from "@/src/stores/app"
 export default function () {
   const { QQID } = useParams<{ QQID: string }>()
   const { user } = useAuth()
-  const { getMember, getAllColleges } = useAppData()
-  const member = getMember(QQID)
-  const colleges = getAllColleges()
+  const { getMember, getAllColleges, updateMembers } = useAppData()
+
+  const member = useMemo(() => getMember(QQID), [getMember, QQID])
+  const colleges = useMemo(() => getAllColleges(), [getAllColleges])
+
   useBread("成员管理", member?.nickname ?? QQID)
 
   const [isPasswordDisplayed, setIsPasswordDisplayed] = useState(false)
   const [isDeleteDisplayed, setIsDeleteDisplayed] = useState(false)
 
+  if (!member) {
+    return null
+  }
+
   return (
     <>
-      <InfoSection member={member} colleges={colleges} />
-      { user?.isAdmin && (
+      <InfoSection
+        member={member}
+        colleges={colleges}
+        user={user}
+        updateMembers={updateMembers}
+      />
+      {user?.isAdmin && (
         <Card>
           <CardFooter className="justify-end gap-4">
             <Button onClick={() => setIsPasswordDisplayed(true)}>
@@ -49,7 +60,7 @@ export default function () {
             onClose={() => setIsDeleteDisplayed(false)}
           />
         </Card>
-      ) }
+      )}
     </>
   )
 }

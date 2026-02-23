@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useAppData } from "@/src/stores/app"
 
 type SortOption = "nickname" | "mcName" | "QQID" | "createAt" | "college"
 const SORT_OPTION_MAP: Record<SortOption, string> = {
@@ -28,9 +27,11 @@ const SORT_DIRECTION_MAP: Record<SortDirection, string> = {
 
 const SORT_OPTIONS: SortOption[] = ["nickname", "mcName", "QQID", "createAt", "college"]
 
-export default function () {
-  const { getAllMembers } = useAppData()
-
+export default function ({
+  members,
+}: {
+  members: User[]
+}) {
   const [sortOption, setSortOption] = useState<SortOption>("nickname")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
 
@@ -53,12 +54,12 @@ export default function () {
   }
 
   const sortedMembers = useMemo((): User[] => (
-    Array.from(getAllMembers()).sort((a: User, b: User) => {
+    Array.from(members).sort((a: User, b: User) => {
       const isASC = sortDirection === "asc"
       const result = compareByField(a, b, sortOption)
       return isASC ? result : -result
     })
-  ), [getAllMembers, sortOption, sortDirection])
+  ), [members, sortOption, sortDirection])
 
   const handleSortOptionSwitch = () => {
     const currentIndex = SORT_OPTIONS.indexOf(sortOption) ?? 0

@@ -12,25 +12,23 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { updateInfo } from "@/src/apis/member"
-import { useAuth } from "@/src/contexts/auth"
-import { useAppData } from "@/src/stores/app"
 
 export default function ({
   member,
   colleges,
+  user,
+  updateMembers,
 }: {
-  member: User | null
+  member: User
   colleges: StoreCollege[]
+  user: User | null
+  updateMembers: () => Promise<void>
 }) {
-  const { user } = useAuth()
-  const { updateMembers } = useAppData()
-
   // 是否为编辑模式
   const [isEditing, setIsEditing] = useState(false)
   // 是否有改动
   const [isEdited, setIsEdited] = useState(false)
 
-  // 初始化表单数据函数
   const initFormData = (memberData = member): UpdateMemberInfoRequest => ({
     nickname: memberData?.nickname || "",
     mcName: memberData?.mcName || "",
@@ -65,7 +63,7 @@ export default function ({
     if (!isEdited)
       return
 
-    updateInfo(member?.QQID ?? "", formData)
+    updateInfo(member.QQID, formData)
       .then(() => {
         toast.success("修改信息成功!")
         void updateMembers()
@@ -88,14 +86,14 @@ export default function ({
             <Field>
               <FieldLabel>QQ 号</FieldLabel>
               <Input
-                value={member?.QQID ?? ""}
+                value={member.QQID}
                 onInput={() => {}}
               />
             </Field>
             <Field>
               <FieldLabel>用户名</FieldLabel>
               <Input
-                value={isEditing ? formData.nickname : member?.nickname ?? ""}
+                value={isEditing ? formData.nickname : member.nickname}
                 onInput={e =>
                   handleInput(v => ({
                     ...v,
@@ -106,7 +104,7 @@ export default function ({
             <Field>
               <FieldLabel>游戏 ID</FieldLabel>
               <Input
-                value={isEditing ? formData.mcName ?? "" : member?.mcName ?? ""}
+                value={isEditing ? formData.mcName ?? "" : member.mcName ?? ""}
                 onInput={e =>
                   handleInput(v => ({
                     ...v,
@@ -117,7 +115,7 @@ export default function ({
             <Field>
               <FieldLabel>注册时间</FieldLabel>
               <Input
-                value={member?.formattedCreateAt ?? ""}
+                value={member.formattedCreateAt}
                 onInput={() => {}}
               />
             </Field>
@@ -126,7 +124,7 @@ export default function ({
             <Field>
               <FieldLabel>姓名</FieldLabel>
               <Input
-                value={isEditing ? formData.realName ?? "" : member?.realName ?? ""}
+                value={isEditing ? formData.realName ?? "" : member.realName ?? ""}
                 onInput={e =>
                   handleInput(v => ({
                     ...v,
@@ -137,7 +135,7 @@ export default function ({
             <Field>
               <FieldLabel>学号</FieldLabel>
               <Input
-                value={isEditing ? formData.studentID ?? "" : member?.studentID ?? ""}
+                value={isEditing ? formData.studentID ?? "" : member.studentID ?? ""}
                 onInput={e =>
                   handleInput(v => ({
                     ...v,
@@ -178,18 +176,18 @@ export default function ({
                   <Field>
                     <FieldLabel>学院</FieldLabel>
                     <Input
-                      value={member?.college.name ?? ""}
+                      value={member.college.name}
                       onInput={() => {}}
                     />
                   </Field>
                 ) }
 
             {/* 学校字段: 仅外校学生显示 */ }
-            { (isEditing ? formData.college : member?.college.code) === "NOT_HNU" && (
+            { (isEditing ? formData.college : member.college.code) === "NOT_HNU" && (
               <Field>
                 <FieldLabel>学校</FieldLabel>
                 <Input
-                  value={isEditing ? formData.school ?? "" : member?.school ?? ""}
+                  value={isEditing ? formData.school ?? "" : member.school ?? ""}
                   onInput={e =>
                     handleInput(v => ({
                       ...v,
@@ -200,7 +198,7 @@ export default function ({
             ) }
 
             {/* 专业班级字段: 仅本校学生显示, 显示时合并, 编辑时分开 */ }
-            { (isEditing ? formData.college : member?.college.code) !== "NOT_HNU" && (
+            { (isEditing ? formData.college : member.college.code) !== "NOT_HNU" && (
               isEditing
                 ? (
                     <>
@@ -245,7 +243,7 @@ export default function ({
                     <Field>
                       <FieldLabel>专业班级</FieldLabel>
                       <Input
-                        value={member?.formattedMajorClass ?? ""}
+                        value={member.formattedMajorClass ?? ""}
                         onInput={() => {}}
                       />
                     </Field>
@@ -256,14 +254,14 @@ export default function ({
             <Field>
               <FieldLabel>部门</FieldLabel>
               <Input
-                value={member?.formattedDepartments ?? ""}
+                value={member.formattedDepartments ?? ""}
                 onInput={() => {}}
               />
             </Field>
             <Field>
               <FieldLabel>权限级别</FieldLabel>
               <Input
-                value={member?.level.name ?? ""}
+                value={member.level.name}
                 onInput={() => {}}
               />
             </Field>

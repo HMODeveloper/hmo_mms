@@ -1,21 +1,23 @@
 "use client"
 
+import type { User } from "@/src/models/user"
 import dayjs from "dayjs"
 import Link from "next/link"
 import { useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useAppData } from "@/src/stores/app"
 
-export default function () {
-  const { getAllMembers } = useAppData()
-
+export default function ({
+  members,
+}: {
+  members: User[]
+}) {
   const recentMembers = useMemo(() => (
-    Array.from(getAllMembers())
+    Array.from(members)
       .sort((a, b) => dayjs(b.createAt).isAfter(dayjs(a.createAt)) ? 1 : -1)
       .slice(0, 5)
-  ), [getAllMembers])
+  ), [members])
 
   return (
     <Card>

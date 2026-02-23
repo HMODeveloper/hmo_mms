@@ -32,8 +32,7 @@ function LoginForm() {
     }
     userLogin(request)
       .then(() => {
-        update()
-        router.push("/dashboard")
+        update().then(() => router.push("/dashboard"))
       })
       .catch((error) => {
         switch (error.code) {

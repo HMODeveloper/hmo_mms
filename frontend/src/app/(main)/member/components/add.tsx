@@ -1,4 +1,5 @@
 import type { AddMemberRequest } from "@/src/schema/member"
+import type { StoreCollege } from "@/src/stores/college"
 import { IconArrowLeft, IconEye, IconEyeOff, IconRefresh, IconUpload } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -13,14 +14,15 @@ import { checkQQ } from "@/src/apis/signup"
 import { useAppData } from "@/src/stores/app"
 
 export default function ({
+  colleges,
   isOpen,
   onClose,
 }: {
+  colleges: StoreCollege[]
   isOpen: boolean
   onClose: () => void
 }) {
-  const { getAllColleges, updateMembers } = useAppData()
-  const colleges = getAllColleges()
+  const { updateMembers } = useAppData()
 
   const [isChecked, setIsChecked] = useState(false)
   const [QQID, setQQID] = useState<string>("")

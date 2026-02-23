@@ -9,17 +9,16 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { changePassword } from "@/src/apis/user"
-import { useAuth } from "@/src/contexts/auth"
 
 export default function ({
   isOpen,
   onClose,
+  logout,
 }: {
   isOpen: boolean
   onClose: () => void
+  logout: () => void
 }) {
-  const { logout } = useAuth()
-
   const [formData, setFormData] = useState<ChangePasswordRequest>({
     old: "",
     new: "",

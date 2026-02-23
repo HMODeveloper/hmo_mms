@@ -1,6 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardFooter } from "@/components/ui/card"
 import ListSection from "@/src/app/(main)/department/components/list"
@@ -10,7 +11,7 @@ import { useAppData } from "@/src/stores/app"
 export default function () {
   const router = useRouter()
   const { getAllDepartments } = useAppData()
-  const departments = getAllDepartments()
+  const departments = useMemo(() => getAllDepartments(), [getAllDepartments])
   useBread("部门管理")
 
   return (

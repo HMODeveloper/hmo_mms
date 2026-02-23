@@ -9,10 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 export default function ({
   department,
 }: {
-  department: Department | null
+  department: Department
 }) {
-  const members = department?.member || []
-  const ministers = department?.minister || []
+  const members = department.member
+  const ministers = department.minister
 
   return (
     <Card>
@@ -24,14 +24,14 @@ export default function ({
           <Field>
             <FieldLabel>部门名称</FieldLabel>
             <Input
-              value={department?.name}
+              value={department.name}
               readOnly
             />
           </Field>
           <Field>
             <FieldLabel>部门代码</FieldLabel>
             <Input
-              value={department?.code}
+              value={department.code}
               readOnly
             />
           </Field>
@@ -60,7 +60,7 @@ export default function ({
                       ? item.departments.map(i => (
                           <Badge
                             key={i.code}
-                            variant={i.code === department?.code ? "destructive" : "secondary"}
+                            variant={i.code === department.code ? "destructive" : "secondary"}
                           >
                             {i.name}
                           </Badge>

@@ -2,6 +2,7 @@
 
 import dayjs from "dayjs"
 import Link from "next/link"
+import { useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import DepartmentSection from "@/src/app/(main)/dashboard/components/department"
@@ -9,10 +10,15 @@ import MembersSection from "@/src/app/(main)/dashboard/components/members"
 import StatsSection from "@/src/app/(main)/dashboard/components/stats"
 import { useAuth } from "@/src/contexts/auth"
 import { useBread } from "@/src/contexts/bread"
+import { useAppData } from "@/src/stores/app"
 
 export default function () {
   const { user } = useAuth()
+  const { getAllMembers, getAllDepartments } = useAppData()
   useBread("首页")
+
+  const members = useMemo(() => getAllMembers(), [getAllMembers])
+  const departments = useMemo(() => getAllDepartments(), [getAllDepartments])
 
   return (
     <>
@@ -35,9 +41,9 @@ export default function () {
           </CardDescription>
         </CardHeader>
       </Card>
-      <StatsSection />
-      <MembersSection />
-      <DepartmentSection />
+      <StatsSection members={members} departments={departments} />
+      <MembersSection members={members} />
+      <DepartmentSection departments={departments} />
     </>
   )
 }

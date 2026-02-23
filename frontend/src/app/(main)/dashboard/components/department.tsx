@@ -1,16 +1,16 @@
 "use client"
 
+import type { Department } from "@/src/models/department"
 import Link from "next/link"
-import { useMemo } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useAppData } from "@/src/stores/app"
 
-export default function () {
-  const { getAllDepartments } = useAppData()
-  const departments = useMemo(() => getAllDepartments(), [getAllDepartments])
-
+export default function ({
+  departments,
+}: {
+  departments: Department[]
+}) {
   return (
     <Card>
       <CardHeader>

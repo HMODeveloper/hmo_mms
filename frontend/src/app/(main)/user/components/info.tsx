@@ -1,5 +1,6 @@
 "use client"
 
+import type { User } from "@/src/models/user"
 import type { UpdateUserInfoRequest } from "@/src/schema/user"
 import type { StoreCollege } from "@/src/stores/college"
 import { IconArrowLeft, IconEdit, IconRefresh, IconUpload } from "@tabler/icons-react"
@@ -11,17 +12,16 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { updateInfo } from "@/src/apis/user"
-import { useAuth } from "@/src/contexts/auth"
-import { useAppData } from "@/src/stores/app"
 
 export default function ({
   colleges,
+  user,
+  update,
 }: {
   colleges: StoreCollege[]
+  user: User | null
+  update: () => Promise<void>
 }) {
-  const { user, update } = useAuth()
-  const { getCollege, getDepartment } = useAppData()
-
   // 是否为编辑模式
   const [isEditing, setIsEditing] = useState(false)
   // 是否有改动
@@ -65,7 +65,7 @@ export default function ({
     updateInfo(formData)
       .then(() => {
         toast.success("修改信息成功!")
-        update(getCollege, getDepartment).then(() => {
+        update().then(() => {
           setIsEditing(false)
           handleReset()
         })

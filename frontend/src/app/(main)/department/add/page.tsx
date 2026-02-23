@@ -2,7 +2,7 @@
 
 import type { AddDepartmentRequest } from "@/src/schema/department"
 import { IconUpload } from "@tabler/icons-react"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -17,7 +17,7 @@ import { useAppData } from "@/src/stores/app"
 
 export default function () {
   const { getAllMembers } = useAppData()
-  const members = getAllMembers()
+  const members = useMemo(() => getAllMembers(), [getAllMembers])
   useBread("部门管理", "添加部门")
 
   const [formData, setFormData] = useState<AddDepartmentRequest>({

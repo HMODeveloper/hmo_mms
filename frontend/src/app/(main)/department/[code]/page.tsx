@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams } from "next/navigation"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardFooter } from "@/components/ui/card"
 import DeleteModal from "@/src/app/(main)/department/[code]/components/delete"
@@ -14,13 +14,19 @@ import { useAppData } from "@/src/stores/app"
 export default function () {
   const { code } = useParams<{ code: string }>()
   const { getDepartment, getAllMembers, updateDepartments, updateMembers } = useAppData()
-  const department = getDepartment(code)
-  const members = getAllMembers()
   const { user } = useAuth()
+
+  const department = useMemo(() => getDepartment(code), [getDepartment, code])
+  const members = useMemo(() => getAllMembers(), [getAllMembers])
+
   useBread("部门管理", department?.name ?? code)
 
   const [isEditDisplayed, setIsEditDisplayed] = useState(false)
   const [isDeleteDisplayed, setIsDeleteDisplayed] = useState(false)
+
+  if (!department) {
+    return null
+  }
 
   return (
     <>
@@ -38,18 +44,16 @@ export default function () {
               删除部门
             </Button>
           </CardFooter>
-          { department && (
-            <EditModal
-              user={user}
-              department={department}
-              members={members}
-              isOpen={isEditDisplayed}
-              onClose={() => setIsEditDisplayed(false)}
-              onChange={() =>
-                Promise.all([updateDepartments(), updateMembers()]).then(() => {})}
-            />
-          ) }
-          { user?.isSuperAdmin && (
+          <EditModal
+            user={user}
+            department={department}
+            members={members}
+            isOpen={isEditDisplayed}
+            onClose={() => setIsEditDisplayed(false)}
+            onChange={() =>
+              Promise.all([updateDepartments(), updateMembers()]).then(() => {})}
+          />
+          {user?.isSuperAdmin && (
             <DeleteModal
               code={code}
               isOpen={isDeleteDisplayed}
@@ -57,9 +61,9 @@ export default function () {
               onChange={() =>
                 Promise.all([updateDepartments(), updateMembers()]).then(() => {})}
             />
-          ) }
+          )}
         </Card>
-      ) }
+      )}
     </>
   )
 }
