@@ -45,9 +45,12 @@ export default function ({
                     ? (
                         <>
                           {item.member.slice(0, 5).map(i => (
-                            item.minister.map(i => i.QQID).includes(i.QQID)
-                              ? <Badge key={i.QQID} variant="destructive">{i.nickname}</Badge>
-                              : <Badge key={i.QQID} variant="secondary">{i.nickname}</Badge>
+                            <Badge
+                              key={i.QQID}
+                              variant={item.minister.map(i => i.QQID).includes(i.QQID) ? "destructive" : "secondary"}
+                            >
+                              {i.nickname}
+                            </Badge>
                           ))}
                           {item.member.length > 5 && <Badge variant="secondary">...</Badge>}
                         </>

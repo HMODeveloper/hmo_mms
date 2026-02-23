@@ -74,8 +74,12 @@ export class User implements UserInterface {
     this._getDepartments = () => data.departments
   }
 
+  get isSuperAdmin(): boolean {
+    return this.level.code === "SUPERADMIN"
+  }
+
   get isAdmin(): boolean {
-    return this.level.code === "SUPERADMIN" || this.level.code === "ADMIN"
+    return this.isSuperAdmin || this.level.code === "ADMIN"
   }
 
   get formattedCreateAt(): string {
@@ -95,5 +99,9 @@ export class User implements UserInterface {
     const yy = this.grade.toString().slice(-2)
     const index = this.classIndex.toString().padStart(2, "0")
     return `${this.major}${yy}${index}`
+  }
+
+  isMinister(code: string): boolean {
+    return this.departments.find(item => item.code === code)?.minister.some(item => item.QQID === this.QQID) || this.isSuperAdmin
   }
 }
