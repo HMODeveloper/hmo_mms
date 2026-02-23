@@ -1,0 +1,31 @@
+{
+  "name": "hmo_mms",
+  "version": "1.0.0",
+  "description": "湖南大学岳麓幻境社社员管理系统",
+  "scripts": {
+    "install": "pnpm run install:frontend && pnpm run install:backend",
+    "install:frontend": "cd frontend && pnpm install",
+    "install:backend": "cd backend && uv sync",
+    "dev": "concurrently --raw \"pnpm run dev:backend\" \"pnpm run dev:frontend\"",
+    "dev:frontend": "cd frontend && pnpm dev",
+    "dev:backend": "cd backend && uv run python -m app.main",
+    "build": "pnpm run build:frontend",
+    "build:frontend": "cd frontend && pnpm build",
+    "deploy": "pnpm install && pnpm build",
+    "start": "concurrently --raw \"pnpm run start:backend\" \"pnpm run start:frontend\"",
+    "start:frontend": "cd frontend && pnpm start",
+    "start:backend": "cd backend && uv run python -m app.main",
+    "lint": "pnpm run lint:frontend",
+    "lint:frontend": "cd frontend && pnpm lint",
+    "lint:fix": "pnpm run lint:fix:frontend",
+    "lint:fix:frontend": "cd frontend && pnpm fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HMODeveloper/hmo_mms.git"
+  },
+  "private": true,
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
