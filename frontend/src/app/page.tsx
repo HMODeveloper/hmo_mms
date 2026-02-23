@@ -50,7 +50,13 @@ function LoginForm() {
   }
 
   return (
-    <form className="w-full max-w-96 h-auto lg:h-144 p-6 lg:p-8 rounded-lg shadow-md flex items-center justify-center">
+    <form
+      className="w-full max-w-96 h-auto lg:h-144 p-6 lg:p-8 rounded-lg shadow-md flex items-center justify-center"
+      onSubmit={(e) => {
+        e.preventDefault()
+        handleLogin()
+      }}
+    >
       <FieldGroup className="w-full">
         <Field>
           <FieldLabel htmlFor="qq_id">QQ 号</FieldLabel>
@@ -81,8 +87,6 @@ function LoginForm() {
         </Field>
         <Field>
           <Button
-            type="button"
-            onClick={handleLogin}
             disabled={isLoading}
             className="w-full"
           >
